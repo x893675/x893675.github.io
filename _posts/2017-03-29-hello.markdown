@@ -1,0 +1,27 @@
+---
+layout:     post
+title:      "First Blog"
+subtitle:   " \"Hello World, Hello Blog\""
+date:       2017-03-29 12:00:00
+author:     "Hanamichi"
+header-img: "img/post-bg-2015.jpg"
+catalog: true
+tags:
+    - 生活
+
+---
+
+
+>"my world is on!"
+
+# 前言
+
+作为一个程序员，想要一个自己的博客好久了，查了很多相关的资料，甚至都已经准备去阿里买虚拟主机了，最后无意间发现github可以搭建个人博客，就这么拖拖拉拉的弄了几个月，在今天终于基本完成了。
+
+总算有个地方可以好好写点东西了。
+
+这个博客模板fork自[Hux](http://huangxuan.me)
+
+
+
+
