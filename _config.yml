@@ -70,7 +70,7 @@ ba_track_id: 1175fbe98dd8a0a089507a904acb5144
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "写写代码，做做设计，<br>离开世界之前，一切都是过程"
+sidebar-about-description: "愿人生不只是寂寞如雪，<br>愿有伊人余生多指教。"
 sidebar-avatar: /img/avatar-hux.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
@@ -90,22 +90,19 @@ service-worker: true
 # Friends
 friends: [
     {
-        title: "待定1",
+        title: "添加",
         href: "#"
     },{
-        title: "待定2",
+        title: "友情",
         href: "#"
     },{
-        title: "待定3",
+        title: "链接",
         href: "#"
     },{
-        title: "待定4",
+        title: "请邮箱",
         href: "#"
     },{
-        title: "待定5",
-        href: "#"
-    },{
-        title: "待定6",
+        title: "联系",
         href: "#"
     }
 ]
