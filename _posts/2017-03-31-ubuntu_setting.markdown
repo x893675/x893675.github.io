@@ -105,4 +105,8 @@ Linux 内核镜像包含以下包：
 `sudo apt-get purge linux-image-3.19.0-15`
 `sudo apt-get purge linux-headers-3.19.0-15`
 
+## 编译安装单个内核模块
+
+
+
 **未完待续...**
