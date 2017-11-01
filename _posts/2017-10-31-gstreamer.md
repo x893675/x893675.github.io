@@ -302,7 +302,68 @@ Gstreamer支持两种类型的数据流，分别是push模式和pull模式。在
 * 媒体类型
 * 其他
 
+### spice中gstreamer的使用
+
 ![spice-gstreamer](/img/in-post/post-gstreamer/gstreamer2.png)
+
+```c
+static int spice_gst_encoder_encode_frame(VideoEncoder *video_encoder,
+                                          uint32_t frame_mm_time,
+                                          const SpiceBitmap *bitmap,
+                                          const SpiceRect *src, int top_down,
+                                          gpointer bitmap_opaque,
+                                          VideoBuffer **outbuf)
+{
+	//..........
+  
+ 	if (rate_control_is_active(encoder) &&
+        (handle_server_drops(encoder, frame_mm_time) ||
+         frame_mm_time < encoder->next_frame_mm_time)) {
+        /* Drop the frame to limit the outgoing bit rate. */
+        return VIDEO_ENCODER_FRAME_DROP;
+    }
+
+    if (!configure_pipeline(encoder)) {
+        encoder->errors++;
+        return VIDEO_ENCODER_FRAME_UNSUPPORTED;
+    }
+
+    uint64_t start = spice_get_monotonic_time_ns();
+    int rc = push_raw_frame(encoder, bitmap, src, top_down, bitmap_opaque);
+    if (rc == VIDEO_ENCODER_FRAME_ENCODE_DONE) {
+        rc = pull_compressed_buffer(encoder, outbuf);
+        if (rc != VIDEO_ENCODER_FRAME_ENCODE_DONE) {
+            /* The input buffer will be stuck in the pipeline, preventing
+             * later ones from being processed. Furthermore something went
+             * wrong with this pipeline, so it may be safer to rebuild it
+             * from scratch.
+             */
+            free_pipeline(encoder);
+            encoder->errors++;
+        }
+    }
+  
+  //...........
+}
+
+static int push_raw_frame(SpiceGstEncoder *encoder,
+                          const SpiceBitmap *bitmap,
+                          const SpiceRect *src, int top_down,
+                          gpointer bitmap_opaque)
+{
+	//........对当前帧进行一些处理
+
+    GstFlowReturn ret = gst_app_src_push_buffer(encoder->appsrc, buffer);
+    if (ret != GST_FLOW_OK) {
+        spice_warning("GStreamer error: unable to push source buffer (%d)", ret);
+        return VIDEO_ENCODER_FRAME_UNSUPPORTED;
+    }
+
+    return VIDEO_ENCODER_FRAME_ENCODE_DONE;
+}
+```
+
+
 
 ### gstreamer管道创建样例程序
 
