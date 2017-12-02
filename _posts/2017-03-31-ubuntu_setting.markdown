@@ -74,7 +74,7 @@ Gnome Tweak Tool能够帮助你定制比如字体、主题等
 
 ## 编译内核
 
-1. linux内核源码位于`/usr/src`目录下，在linux官网下载内核源码，放在该目录下
+1. linux内核源码位于`/usr/src`目录下，在linux官网下载内核源码(sudo apt-get source linux-xxx)，放在该目录下
 2. 复制系统中现有源码目录下的`.config`文件到新下载的源码目录下
 3. `make menuconfig`
 4. 选择load→OK→Save→OK→EXIT→EXIT
@@ -104,6 +104,22 @@ Linux 内核镜像包含以下包：
 
 `sudo apt-get purge linux-image-3.19.0-15`
 `sudo apt-get purge linux-headers-3.19.0-15`
+
+## 编译内核deb包
+
+1. apt-get update
+2. apt-get upgrade
+3. apt-get dist-upgrade
+4. apt-get source linux-image-$(uname -r)
+5. apt-get build-dep linux-image-$(uname -r)
+6. cd the download kernel source dir
+7. cp /boot/config-$(uname -r) ./.config
+8. apt-get install libncurses5 libncurses5-dev
+9. apt-get install qt3-dev-tools libqt3-mt-dev(可能需要，可能找不到包，与源有关)
+10. make menuconfig(default)
+11. make-kpkg -j N --initrd --append-to-version=my-very-own-kernel kernel-image kernel-headers(N为cpu核心数，my-very-own-kernel为自己给内核的版本号)
+12. dpkg -i *.deb
+13. update-grub
 
 ## 编译安装单个内核模块
 

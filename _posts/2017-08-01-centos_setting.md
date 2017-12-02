@@ -70,6 +70,82 @@ yum clean headers #清除缓存目录下的 headers
 yum clean oldheaders #清除缓存目录下旧的 headers
 ```
 
+## rpm命令
+
+1 **语法**
+
+```bash
+rpm (选项)(参数)
+```
+
+2 **选项**
+
+```bash
+-a：查询所有套件；
+-b<完成阶段><套件档>+或-t <完成阶段><套件档>+：设置包装套件的完成阶段，并指定套件档的文件名称； 
+-c：只列出组态配置文件，本参数需配合"-l"参数使用； 
+-d：只列出文本文件，本参数需配合"-l"参数使用； 
+-e<套件档>或--erase<套件档>：删除指定的套件； 
+-f<文件>+：查询拥有指定文件的套件； 
+-h或--hash：套件安装时列出标记； 
+-i：显示套件的相关信息；
+-i<套件档>或--install<套件档>：安装指定的套件档； 
+-l：显示套件的文件列表； 
+-p<套件档>+：查询指定的RPM套件档； 
+-q：使用询问模式，当遇到任何问题时，rpm指令会先询问用户； 
+-R：显示套件的关联性信息； 
+-s：显示文件状态，本参数需配合"-l"参数使用； 
+-U<套件档>或--upgrade<套件档>：升级指定的套件档； 
+-v：显示指令执行过程； 
+-vv：详细显示指令执行过程，便于排错。
+```
+
+3 **参数**
+
+```bash
+软件包：指定要操纵的rpm软件包。
+```
+
+4 **实例**
+
+* 安装rpm包:`rpm -ivh your-package.rpm`
+* 强制安装rpm包:`rpm -ivh --force your-pachage.rpm`
+* 忽略所有依赖和文件关系安装:`rpm -ivh --force --nodeps your-pachage.rpm`
+* 安装src.rpm包:`rpm -i your-package.src.rpm`,源码在`/usr/src`目录下
+* 卸载rpm包:`rpm -e 包名`包名含版本号等信息，不能有rpm后缀，使用`--nodeps`强制卸载
+
+5 **不安装提取rpm包文件**
+
+```bash
+rpm2cpio xxx.rpm | cpio -vi 
+rpm2cpio xxx.rpm | cpio -idmv 
+rpm2cpio xxx.rpm | cpio --extract --make-directories
+
+//参数i和extract相同，表示提取文件。v表示指示执行进程，d和make-directory相同，表示根据包中文件原来的路径建立目录，m表示保持文件的更新时间
+```
+
+6 **查看rpm包中有哪些文件**
+
+* 一个没有安装过的软件包，使用`rpm -qlp xxxx.rpm`
+* 一个已经安装过的软件包，还可以使用`rpm -ql xxxxx.rpm`
+
+7 **获取软件包的版本描述等信息**
+
+* 一个没有安装过的软件包，使用`rpm -qip xxxxx.rpm`，查看包等Changelog信息`rpm -qip xxx.rpm --changelog`
+* 一个已经安装过的软件包，还可以使用`rpm -qi xxxxxx.rpm`
+
+8 **查看某个程序所在的包** 
+
+```
+返回软件包的全名: rpm -qf `which 程序名`
+返回软件包的有关信息: rpm -qif `which 程序名`
+返回软件包的文件列表: rpm -qlf `which 程序名`
+```
+
+## rpmbuild及SPEC文件详解
+
+[rpmbuild和spec文件详解](hanamichi.wiki/2017/12/02/rpmbuild/)
+
 ## 内核相关
 
 1 更新内核模块后执行`dracut -H -f /boot/initramfs-$(uname -r).img $(uname -r)`
