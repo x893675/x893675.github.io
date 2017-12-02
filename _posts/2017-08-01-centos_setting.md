@@ -144,7 +144,7 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 
 ## rpmbuild及SPEC文件详解
 
-[rpmbuild和spec文件详解](hanamichi.wiki/2017/12/02/rpmbuild/)
+[rpmbuild和spec文件详解](http://hanamichi.wiki/2017/12/02/rpmbuild/)
 
 ## 内核相关
 
