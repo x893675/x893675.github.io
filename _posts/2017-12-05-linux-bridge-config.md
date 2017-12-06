@@ -20,7 +20,7 @@ tags:
 
 更改文件中的以下条目：
 
-```Bash
+```bash
 # NAME,DEVICE,UUID写成自己环境中的值
 TYPE=Ethernet
 BOOTPROTO=none
@@ -51,7 +51,7 @@ DNS1=202.103.24.68
 
 禁用网络过滤
 
-```Bash
+```bash
 #增加以下条目
 net.bridge.bridge-nf-call-ip6tables = 0
 net.bridge.bridge-nf-call-iptables = 0

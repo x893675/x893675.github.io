@@ -18,7 +18,7 @@ tags:
 
 qemu中有些命令行的参数可以使用xml直接定义，另外一些不能直接定义的需要使用libvrit提供的`qemu:commandline`标签来配置。
 
-````Xml
+````xml
 <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
   <!--- 虚拟机定义（os,cpu,mem等） -->
   <device>
@@ -54,7 +54,7 @@ qemu中有些命令行的参数可以使用xml直接定义，另外一些不能�
 
 `virsh net-list --all`
 
-```Bash
+```bash
 # virsh net-define /usr/share/libvirt/networks/default.xml
 # virsh net-autostart default
 # virsh net-start default
@@ -66,7 +66,7 @@ qemu中有些命令行的参数可以使用xml直接定义，另外一些不能�
 
 `# vim /etc/sysctl.conf`
 
-```Bash
+```bash
  net.ipv4.ip_forward = 1
 ```
 
