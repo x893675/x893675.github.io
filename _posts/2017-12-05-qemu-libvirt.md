@@ -40,7 +40,7 @@ qemu中有些命令行的参数可以使用xml直接定义，另外一些不能�
 </qemu:commandline>
 ```
 
-```Xml
+```xml
 <qemu:commandline>
    <qemu:env name='my_env' value='my_value'/>
 </qemu:commandline>
@@ -72,23 +72,23 @@ qemu中有些命令行的参数可以使用xml直接定义，另外一些不能�
 
 虚拟机xml文件网络配置如下：
 
-```Xml
-  <interface type='network'>
-     <source network='default'/>
-     <mac address='00:16:3e:1a:b3:4a'/>
-  </interface>
+```xml
+<interface type='network'>
+   <source network='default'/>
+   <mac address='00:16:3e:1a:b3:4a'/>
+</interface>
 ```
 
 #### 桥接模式
 
 linux网桥配置参考文章：[Linux下网桥配置](http://hanamichi.wiki/2017/12/05/linux-bridge-config/)
 
-```Xml
- <interface type='bridge'>
-    <source bridge='br0'/>
-    <mac address='00:16:3e:1a:b3:4a'/>
-    <model type='virtio'/>
- </interface>
+```xml
+<interface type='bridge'>
+  <source bridge='br0'/>
+  <mac address='00:16:3e:1a:b3:4a'/>
+  <model type='virtio'/>
+</interface>
 ```
 
 ## pci设备透传
