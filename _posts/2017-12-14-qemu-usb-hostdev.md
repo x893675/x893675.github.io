@@ -2,7 +2,7 @@
 layout:     post
 title:      "QEMU-usb总结"
 subtitle:   " \" usb重定向和透传 \""
-date:       2017-09-01 12:00:00
+date:       2017-12-14 12:00:00
 author:     "Hanamichi"
 header-img: "img/post-bg-unix-linux.jpg"
 catalog: true
