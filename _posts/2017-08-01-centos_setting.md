@@ -146,6 +146,14 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 
 [rpmbuild和spec文件详解](http://hanamichi.wiki/2017/12/02/rpmbuild/)
 
+[centos官方rpm包](http://vault.centos.org/)
+
+[阿里云官方镜像站](http://mirrors.aliyun.com/)
+
+[linux各版本源码快速查询比较](http://elixir.free-electrons.com/linux/latest/source)
+
+<a href="https://github.com/x893675/myApp/raw/master/atiflash-4.26.0.1.tar.gz" download target="_blank">Click here to download</a>
+
 ## 内核相关
 
 1 更新内核模块后执行`dracut -H -f /boot/initramfs-$(uname -r).img $(uname -r)`
@@ -171,6 +179,8 @@ GRUB_DEFAULT="CentOS Linux (3.10.0-327.36.1.el7.x86_64) 7 (Core)"
 
 $ grub2-mkconfig -o /boot/grub2/grub.cfg
 ```
+
+**注意**：如果系统是使用uefi引导的，那么引导的配置文件目录是`/boot/efi/EFI/centos/grub.cfg`
 
 3 未完待续…
 
