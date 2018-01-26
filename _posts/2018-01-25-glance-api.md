@@ -15,12 +15,6 @@ tags:
 
 #OpenStack Glance API整理
 
----
-
-[TOC]
-
----
-
 ## 特别说明
 
 本文作为Glance镜像服务的快速上手指南，假设读者已经掌握OpenStack认证相关内容，并已取得认证令牌(OS_TOKEN)以及各资源的入口地址，文中以curl演示各个接口的调用方法，实际开发中可灵活选用任意RESTful工具或函数库。
