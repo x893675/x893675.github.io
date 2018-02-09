@@ -19,7 +19,7 @@ glance源码使用了wsgi、evenlet、webob、paste等类库，需要了解这�
 
 **glance服务架构**:
 
-![glance架构](/img/in-post/architecture.png)
+![glance架构](/img/in-post/post-glance-souce/architecture.png)
 
 glance架构是标准的c/s结构，通过restfulAPI交互。
 
@@ -29,7 +29,7 @@ glance架构是标准的c/s结构，通过restfulAPI交互。
 
 **glance层次图**：
 
-![glance层次图](/img/in-post/glance_layers.png)
+![glance层次图](/img/in-post/post-glance-souce/glance_layers.png)
 
 从层次图可以看到，客户端程序发送的所有请求都会路由到具体的处理函数，经过身份验证后进行一系列处理，其中location模块与glance store交互，连接到具体的存储后端，在与数据库交互中，registry模块的功能是可选的（暂时还不清楚，目前感觉与镜像服务的主要功能关联不大）。
 
