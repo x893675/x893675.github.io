@@ -2,7 +2,7 @@
 layout:     post
 title:      "OpenStack Glance"
 subtitle:   " \"Glance 源码分析\""
-date:       2018-01-09 12:00:00
+date:       2018-02-09 12:00:00
 author:     "Hanamichi"
 header-img: "img/post-bg-2015.jpg"
 catalog: true
