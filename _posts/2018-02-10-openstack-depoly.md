@@ -39,7 +39,7 @@ ip根据自己的环境更改
 4. su – stack
 5. cd devstack
 
-###编写配置文件
+### 编写配置文件
 
 在 /opt/stack/devstack 目录下，创建 local.conf
 
