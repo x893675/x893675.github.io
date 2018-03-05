@@ -72,6 +72,43 @@ Gnome Tweak Tool能够帮助你定制比如字体、主题等
 
 `sudo apt-get install numix-wallpaper-*`
 
+## plasma桌面环境搭建
+
+`apt-get install plasma-desktop`
+
+## 网络代理配置
+
+1.**安装ss客户端**
+
+```shell
+sudo add-apt-repository ppa:hzwhuang/ss-qt5
+sudo apt-get update
+sudo apt-get install shadowsocks-qt5
+```
+
+2.**终端配置ss代理**
+
+终端下使用ss代理需要第三方软件privoxy
+
+安装privoxy：`sudo apt-get install privoxy`
+
+配置privoxy：
+
+```bash
+vim /etc/privoxy/config
+
+#找到listen-address那一行，修改值为 privoxy 监听的地址，一般使用默认127.0.0.1:8118
+
+#去掉forward-socks5那一行的注释，修改值为ss代理的ip和端口，注意不要删除斜杠和点
+
+systemctl restart privoxy
+
+export http_proxy=http://127.0.0.1:8118
+export https_proxy=http://127.0.0.1:8118
+```
+
+检测:`curl ip.gs`, `curl www.google.com`
+
 ## 编译内核
 
 1. linux内核源码位于`/usr/src`目录下，在linux官网下载内核源码(sudo apt-get source linux-xxx)，放在该目录下
