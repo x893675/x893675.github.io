@@ -1196,4 +1196,4 @@ class LibvirtDriver(driver.ComputeDriver):
 
 ### 创建虚拟机流程图
 
-![创建虚拟机流程主要函数](/img/in-post/post-nova-src/nova-create-instance.png)
+[创建虚拟机流程图](/img/in-post/post-nova-src/nova-create-instance.png)
