@@ -4,7 +4,7 @@ title:      OpenStack
 subtitle:   " \"OpenStack安装部署\""
 date:       2018-02-10 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-6.jpg"
+header-img: "img/spacex-5.jpg"
 catalog: true
 tags:
     - openstack

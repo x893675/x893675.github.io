@@ -9,7 +9,6 @@ catalog: true
 tags:
     - spice
     - 云计算
-    - 虚拟化
 ---
 
 # Qemu Spice视频编码性能优化方案

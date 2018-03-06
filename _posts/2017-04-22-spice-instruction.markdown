@@ -7,10 +7,8 @@ author:     "Hanamichi"
 header-img: "img/post-bg-universe.jpg"
 catalog: true
 tags:
-    - 技术
     - SPICE
     - 云计算
-    - 虚拟化
 ---
 
 ### 1.1 spice基本概念

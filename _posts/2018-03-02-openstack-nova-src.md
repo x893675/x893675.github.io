@@ -4,7 +4,7 @@ title:      "Openstack-Nova"
 subtitle:   " \"Nova源码分析\""
 date:       2018-03-02 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-4.jpg"
+header-img: "img/spacex-3.jpg"
 catalog: true
 tags:
     - openstack

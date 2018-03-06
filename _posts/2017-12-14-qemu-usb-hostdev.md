@@ -4,11 +4,9 @@ title:      "QEMU-usb总结"
 subtitle:   " \" usb重定向和透传 \""
 date:       2017-12-14 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-3.jpg"
+header-img: "img/spacex-2.jpg"
 catalog: true
 tags:
-
-    - 技术
     - 云计算
     - QEMU
 ---

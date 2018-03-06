@@ -4,11 +4,12 @@ title:      "OpenStack Glance"
 subtitle:   " \"Glance 源码分析\""
 date:       2018-02-09 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-5.jpg"
+header-img: "img/spacex-4.jpg"
 catalog: true
 tags:
     - openstack
     - 云计算
+    - glance
 ---
 
 ## 整体概述

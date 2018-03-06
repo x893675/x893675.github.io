@@ -7,7 +7,7 @@ author:     "Hanamichi"
 header-img: "img/post-bg-universe.jpg"
 catalog: true
 tags:
-    - gstreamer
+    - Linux
     - 多媒体
 
 ---

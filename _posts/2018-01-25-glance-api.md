@@ -4,11 +4,12 @@ title:      OpenStack Glance
 subtitle:   " \"Glace API 整理\""
 date:       2018-01-25 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-4.jpg"
+header-img: "img/spacex-3.jpg"
 catalog: true
 tags:
     - openstack
     - 云计算
+    - glance
 
 ---
 

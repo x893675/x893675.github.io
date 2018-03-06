@@ -7,7 +7,6 @@ author:     "Hanamichi"
 header-img: "img/post-bg-universe.jpg"
 catalog: true
 tags:
-    - 技术
     - C++
     - Linux
 ---

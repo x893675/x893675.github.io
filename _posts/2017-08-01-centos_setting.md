@@ -7,8 +7,6 @@ author:     "Hanamichi"
 header-img: "img/post-bg-unix-linux.jpg"
 catalog: true
 tags:
-
-    - 技术
     - Linux
     - Centos
 ---

@@ -7,7 +7,6 @@ author:     "Hanamichi"
 header-img: "img/post-bg-os-metro.jpg"
 catalog: true
 tags:
-    - 技术
     - C++
 ---
 

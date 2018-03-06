@@ -4,7 +4,7 @@ title:      "libvirt-qemu常用配置"
 subtitle:   " \"虚拟机各设备配置\""
 date:       2017-12-05 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-2.jpg"
+header-img: "img/spacex-1.jpg"
 catalog: true
 tags:
     - QEMU
