@@ -515,7 +515,9 @@ SPICE_REPO=http://git.trystack.cn/git/spice/spice-html5.git
    +--------------+----------------------------------+
    ```
 
-9. `vim /etc/glance/glance-api.conf`
+9. `yum install openstack-glance`
+
+10. `vim /etc/glance/glance-api.conf`
 
    ```bash
    [database]
