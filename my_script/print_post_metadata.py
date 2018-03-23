@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
-#code=utf-8
+#!/usr/bin/env python
+# coding=UTF-8
 import os
 from glob import glob
 
-BLOG_URL = 'http://int32bit.me'
+BLOG_URL = 'http://hanamichi.wiki'
 
 
 def get_posts(post_dir="./_posts"):
@@ -14,23 +14,21 @@ def get_posts(post_dir="./_posts"):
 
 
 def extract_post_metadata(path):
-    # demo 2017-08-28-如何阅读OpenStack源码.md
     title = os.path.basename(path)[11:-3]
     date = os.path.basename(path)[:10]
     tags = []
     with open(path, 'r') as f:
-        started = False
-        for line in f:
+        mark_count = 0
+        for line in f.readlines():
             if line.strip() == '---':
-                if started:
+                mark_count += 1
+                if mark_count == 2:
                     break
                 else:
-                    started = True
-            if line.strip().startswith('tags'):
-                # line = 'tags: [Linux, OpenStack]\n'
-                t = line.split(':')[1].strip()[1:-1].split(',')
-                tags = [i.strip() for i in t]
-                break
+                    continue
+            if line.strip().startswith('-'):
+                tag = line.strip().split('-')[-1]
+                tags.append(tag)
     return title, date, tags
 
 
