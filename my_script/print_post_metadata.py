@@ -6,7 +6,7 @@ from glob import glob
 BLOG_URL = 'http://hanamichi.wiki'
 
 
-def get_posts(post_dir="../_posts"):
+def get_posts(post_dir="./_posts"):
     posts = []
     for f in glob(post_dir + "/*.md"):
         posts.append(extract_post_metadata(f))
@@ -61,7 +61,7 @@ def _convert_to_md_row(fields):
 
 
 def main():
-    posts = get_posts(post_dir="../_posts")
+    posts = get_posts(post_dir="./_posts")
     print_as_markdown_table(posts)
 
 
