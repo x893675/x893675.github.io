@@ -12,30 +12,31 @@ Thanks Jekyll and Github Page!
 
 |序号|文章标题|文章类别|发布日期|
 |----|----|----|----|
-|1|[docker](http://hanamichi.wiki/2018/03/21/docker)| docker|2018-03-21|
-|2|[yum-server](http://hanamichi.wiki/2018/03/20/yum-server)| Linux,  Centos|2018-03-20|
-|3|[git](http://hanamichi.wiki/2018/03/07/git)| Linux|2018-03-07|
-|4|[openstack-nova-src](http://hanamichi.wiki/2018/03/02/openstack-nova-src)| openstack,  nova,  云计算|2018-03-02|
-|5|[openstack-depoly](http://hanamichi.wiki/2018/02/10/openstack-depoly)| openstack,  云计算|2018-02-10|
-|6|[glance-source-analaysis](http://hanamichi.wiki/2018/02/09/glance-source-analaysis)| openstack,  云计算,  glance|2018-02-09|
-|7|[glance-api](http://hanamichi.wiki/2018/01/25/glance-api)| openstack,  云计算,  glance|2018-01-25|
-|8|[qemu-usb-hostdev](http://hanamichi.wiki/2017/12/14/qemu-usb-hostdev)| 云计算,  QEMU|2017-12-14|
-|9|[qemu-libvirt](http://hanamichi.wiki/2017/12/05/qemu-libvirt)| QEMU,  spice,  云计算,  libvirt|2017-12-05|
-|10|[linux-bridge-config](http://hanamichi.wiki/2017/12/05/linux-bridge-config)| linux,  网络|2017-12-05|
-|11|[Dec-blog](http://hanamichi.wiki/2017/12/03/Dec-blog)| 扯淡|2017-12-03|
-|12|[nvenc](http://hanamichi.wiki/2017/12/02/nvenc)| Linux,  多媒体|2017-12-02|
-|13|[rpmbuild](http://hanamichi.wiki/2017/12/02/rpmbuild)| Centos,  Linux|2017-12-02|
-|14|[gstreamer](http://hanamichi.wiki/2017/10/31/gstreamer)| Linux,  多媒体|2017-10-31|
-|15|[spice-optimize](http://hanamichi.wiki/2017/10/31/spice-optimize)| spice,  云计算|2017-10-31|
-|16|[spice](http://hanamichi.wiki/2017/10/30/spice)| spice,  云计算|2017-10-30|
-|17|[qemu-usb-redircet](http://hanamichi.wiki/2017/09/01/qemu-usb-redircet)| 云计算,  QEMU|2017-09-01|
-|18|[centos_setting](http://hanamichi.wiki/2017/08/01/centos_setting)| Linux,  Centos|2017-08-01|
-|19|[linux-sysinfo](http://hanamichi.wiki/2017/05/25/linux-sysinfo)| Linux|2017-05-25|
-|20|[spice-h264](http://hanamichi.wiki/2017/04/23/spice-h264)| QEMU,  SPICE,  云计算|2017-04-23|
-|21|[spice-instruction](http://hanamichi.wiki/2017/04/22/spice-instruction)| SPICE,  云计算|2017-04-22|
-|22|[thread-encapsulation](http://hanamichi.wiki/2017/04/21/thread-encapsulation)| C++,  Linux|2017-04-21|
-|23|[singleton](http://hanamichi.wiki/2017/04/20/singleton)| C++|2017-04-20|
-|24|[essay](http://hanamichi.wiki/2017/03/31/essay)| 扯淡|2017-03-31|
-|25|[ubuntu_setting](http://hanamichi.wiki/2017/03/31/ubuntu_setting)| Linux,  Ubuntu|2017-03-31|
-|26|[GNU_Features](http://hanamichi.wiki/2017/03/29/GNU_Features)| C,  Linux|2017-03-29|
-|27|[hello](http://hanamichi.wiki/2017/03/29/hello)| 扯淡|2017-03-29|
+|1|[�](http://hanamichi.wiki/日常记�/�)||日常记�|
+|2|[docker](http://hanamichi.wiki/2018/03/21/docker)| docker|2018-03-21|
+|3|[yum-server](http://hanamichi.wiki/2018/03/20/yum-server)| Linux,  Centos|2018-03-20|
+|4|[git](http://hanamichi.wiki/2018/03/07/git)| Linux|2018-03-07|
+|5|[openstack-nova-src](http://hanamichi.wiki/2018/03/02/openstack-nova-src)| openstack,  nova,  云计算|2018-03-02|
+|6|[openstack-depoly](http://hanamichi.wiki/2018/02/10/openstack-depoly)| openstack,  云计算|2018-02-10|
+|7|[glance-source-analaysis](http://hanamichi.wiki/2018/02/09/glance-source-analaysis)| openstack,  云计算,  glance|2018-02-09|
+|8|[glance-api](http://hanamichi.wiki/2018/01/25/glance-api)| openstack,  云计算,  glance|2018-01-25|
+|9|[qemu-usb-hostdev](http://hanamichi.wiki/2017/12/14/qemu-usb-hostdev)| 云计算,  QEMU|2017-12-14|
+|10|[qemu-libvirt](http://hanamichi.wiki/2017/12/05/qemu-libvirt)| QEMU,  spice,  云计算,  libvirt|2017-12-05|
+|11|[linux-bridge-config](http://hanamichi.wiki/2017/12/05/linux-bridge-config)| linux,  网络|2017-12-05|
+|12|[Dec-blog](http://hanamichi.wiki/2017/12/03/Dec-blog)| 扯淡|2017-12-03|
+|13|[nvenc](http://hanamichi.wiki/2017/12/02/nvenc)| Linux,  多媒体|2017-12-02|
+|14|[rpmbuild](http://hanamichi.wiki/2017/12/02/rpmbuild)| Centos,  Linux|2017-12-02|
+|15|[gstreamer](http://hanamichi.wiki/2017/10/31/gstreamer)| Linux,  多媒体|2017-10-31|
+|16|[spice-optimize](http://hanamichi.wiki/2017/10/31/spice-optimize)| spice,  云计算|2017-10-31|
+|17|[spice](http://hanamichi.wiki/2017/10/30/spice)| spice,  云计算|2017-10-30|
+|18|[qemu-usb-redircet](http://hanamichi.wiki/2017/09/01/qemu-usb-redircet)| 云计算,  QEMU|2017-09-01|
+|19|[centos_setting](http://hanamichi.wiki/2017/08/01/centos_setting)| Linux,  Centos|2017-08-01|
+|20|[linux-sysinfo](http://hanamichi.wiki/2017/05/25/linux-sysinfo)| Linux|2017-05-25|
+|21|[spice-h264](http://hanamichi.wiki/2017/04/23/spice-h264)| QEMU,  SPICE,  云计算|2017-04-23|
+|22|[spice-instruction](http://hanamichi.wiki/2017/04/22/spice-instruction)| SPICE,  云计算|2017-04-22|
+|23|[thread-encapsulation](http://hanamichi.wiki/2017/04/21/thread-encapsulation)| C++,  Linux|2017-04-21|
+|24|[singleton](http://hanamichi.wiki/2017/04/20/singleton)| C++|2017-04-20|
+|25|[essay](http://hanamichi.wiki/2017/03/31/essay)| 扯淡|2017-03-31|
+|26|[ubuntu_setting](http://hanamichi.wiki/2017/03/31/ubuntu_setting)| Linux,  Ubuntu|2017-03-31|
+|27|[GNU_Features](http://hanamichi.wiki/2017/03/29/GNU_Features)| C,  Linux|2017-03-29|
+|28|[hello](http://hanamichi.wiki/2017/03/29/hello)| 扯淡|2017-03-29|
