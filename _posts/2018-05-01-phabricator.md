@@ -73,19 +73,19 @@ phabracator用Herald应用设置各种规则。
 
 下图为在菜单栏添加Herald应用
 
-![菜单栏添加Herald](/img/post-phabricator/phabricator2.png)
+![菜单栏添加Herald](/img/in-post/post-phabricator/phabricator2.png)
 
 **设置规则强制使用code review**：
 
 Heralb   ->   Create   Herald   Rule ->   Commit   Hook:   Commit Content   ->   Global
 
-![](/img/post-phabricator/phabricator3.png)
+![](/img/in-post/post-phabricator/phabricator3.png)
 
 设置这个全局规则后，没有经过代码审查的代码进行push操作都会被服务器拒绝。
 
 #### 添加ssh keys
 
-![](/img/post-phabricator/phabricator4.png)
+![](/img/in-post/post-phabricator/phabricator4.png)
 
 可以上传已有的public key。也可以重新生成。
 
