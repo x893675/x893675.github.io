@@ -1,4 +1,16 @@
-## 使用docker搭建phabracator服务
+---
+layout:     post
+title:      "phabricator"
+subtitle:   " \"Phabricator使用总结\""
+date:       2018-05-01 12:00:00
+author:     "Hanamichi"
+header-img: "img/spacex-2.jpg"
+catalog: true
+tags:
+    - docker
+---
+
+## 使用docker搭建phabricator服务
 
 #### 启动mysql服务
 

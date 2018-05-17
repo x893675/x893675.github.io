@@ -13,7 +13,7 @@ Thanks Jekyll and Github Page!
 |序号|文章标题|文章类别|发布日期|
 |----|----|----|----|
 |1|[�](http://hanamichi.wiki/日常记�/�)||日常记�|
-|2|[phabricator](http://hanamichi.wiki/2018/05/01/phabricator)|name mysql \, e MYSQL_ROOT_PASSWORD=mysql \, e MYSQL_DATABASE=db \, e MYSQL_USER=user \, e MYSQL_PASSWORD=passwd \, p 2222:22 \, env MYSQL_PORT=3306 \, env PHABRICATOR_HOST=172.29.101.81 \, env MYSQL_USER=root \, env MYSQL_PASS=mysql \, env MYSQL_HOST=172.29.101.81 \, env PHABRICATOR_REPOSITORY_PATH=/repos \, v /opt/phabricator/repo:/repos \, env PHABRICATOR_HOST_KEYS_PATH=/hostkeys/persisted \, v ~/.ssh/:/hostkeys/ \, link mysql \, d 172.16.59.153/xwzhu4/phabricator:latest|2018-05-01|
+|2|[phabricator](http://hanamichi.wiki/2018/05/01/phabricator)| docker|2018-05-01|
 |3|[docker](http://hanamichi.wiki/2018/03/21/docker)| docker|2018-03-21|
 |4|[yum-server](http://hanamichi.wiki/2018/03/20/yum-server)| Linux,  Centos|2018-03-20|
 |5|[git](http://hanamichi.wiki/2018/03/07/git)| Linux|2018-03-07|
