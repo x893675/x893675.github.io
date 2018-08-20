@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "python常用技巧"
+title:      "shell常用技巧"
 subtitle:   " \"学习记录\""
 date:       2018-06-30 12:00:00
 author:     "Hanamichi"
