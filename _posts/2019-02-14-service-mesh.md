@@ -4,7 +4,7 @@ title:      "service mesh初了解"
 subtitle:   " \"service mesh envoy等概念记录\""
 date:       2019-02-14 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-01.jpg"
+header-img: "img/spacex-1.jpg"
 catalog: true
 tags:
     - servicemesh

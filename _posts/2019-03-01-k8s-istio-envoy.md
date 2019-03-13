@@ -4,7 +4,7 @@ title:      "service mesh初了解"
 subtitle:   " \"k8s-istio多节点环境搭建验证实践\""
 date:       2019-03-01 12:00:00
 author:     "Hanamichi"
-header-img: "img/spacex-01.jpg"
+header-img: "img/spacex-1.jpg"
 catalog: true
 tags:
     - servicemesh
