@@ -182,6 +182,13 @@ $ grub2-mkconfig -o /boot/grub2/grub.cfg
 
 3 未完待续…
 
+## centos7下使用iptables
+
+1. systemctl stop firewalld && systemctl disable firewalld
+2. iptables-save > /etc/sysconfig/iptables
+3. reboot
+4. iptables -L -n
+
 ## 其他技巧
 
 1 查看网络流量的软件nethogs `yum install nethogs -y`
