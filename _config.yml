@@ -70,7 +70,7 @@ ba_track_id: 1175fbe98dd8a0a089507a904acb5144
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "愿人生不只是寂寞如雪，<br>愿有伊人余生多指教。"
+sidebar-about-description: "犹豫，<br>就会败北。"
 sidebar-avatar: /img/avatar-YINGMU.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
