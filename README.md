@@ -12,43 +12,44 @@ Thanks Jekyll and Github Page!
 
 |序号|文章标题|文章类别|发布日期|
 |----|----|----|----|
-|1|[3scale](http://hanamichi.wiki/2019/07/01/3scale)| openshift,  k8s|2019-07-01|
-|2|[openshift-auth](http://hanamichi.wiki/2019/06/01/openshift-auth)| openshift,  k8s|2019-06-01|
-|3|[openshift-rbac](http://hanamichi.wiki/2019/05/01/openshift-rbac)| openshift,  k8s|2019-05-01|
-|4|[nginx](http://hanamichi.wiki/2019/04/01/nginx)| nginx|2019-04-01|
-|5|[k8s-istio-envoy](http://hanamichi.wiki/2019/03/01/k8s-istio-envoy)| servicemesh,  k8s|2019-03-01|
-|6|[service-mesh](http://hanamichi.wiki/2019/02/14/service-mesh)| servicemesh,  k8s|2019-02-14|
-|7|[network-samples](http://hanamichi.wiki/2018/12/01/network-samples)| network|2018-12-01|
-|8|[nova-wsgi](http://hanamichi.wiki/2018/09/30/nova-wsgi)| 云计算,  openstack|2018-09-30|
-|9|[gitlab-cicd](http://hanamichi.wiki/2018/09/01/gitlab-cicd)| CICD,  devops|2018-09-01|
-|10|[devops](http://hanamichi.wiki/2018/07/30/devops)| openstack,  devops|2018-07-30|
-|11|[shell-skill](http://hanamichi.wiki/2018/06/30/shell-skill)| shell|2018-06-30|
-|12|[python-skill](http://hanamichi.wiki/2018/05/31/python-skill)| python|2018-05-31|
-|13|[phabricator](http://hanamichi.wiki/2018/05/01/phabricator)| docker|2018-05-01|
-|14|[docker](http://hanamichi.wiki/2018/03/21/docker)| docker|2018-03-21|
-|15|[yum-server](http://hanamichi.wiki/2018/03/20/yum-server)| Linux,  Centos|2018-03-20|
-|16|[git](http://hanamichi.wiki/2018/03/07/git)| Linux|2018-03-07|
-|17|[openstack-nova-src](http://hanamichi.wiki/2018/03/02/openstack-nova-src)| openstack,  nova,  云计算|2018-03-02|
-|18|[openstack-depoly](http://hanamichi.wiki/2018/02/10/openstack-depoly)| openstack,  云计算|2018-02-10|
-|19|[glance-source-analaysis](http://hanamichi.wiki/2018/02/09/glance-source-analaysis)| openstack,  云计算,  glance|2018-02-09|
-|20|[glance-api](http://hanamichi.wiki/2018/01/25/glance-api)| openstack,  云计算,  glance|2018-01-25|
-|21|[qemu-usb-hostdev](http://hanamichi.wiki/2017/12/14/qemu-usb-hostdev)| 云计算,  QEMU|2017-12-14|
-|22|[qemu-libvirt](http://hanamichi.wiki/2017/12/05/qemu-libvirt)| QEMU,  spice,  云计算,  libvirt|2017-12-05|
-|23|[linux-bridge-config](http://hanamichi.wiki/2017/12/05/linux-bridge-config)| linux,  网络|2017-12-05|
-|24|[Dec-blog](http://hanamichi.wiki/2017/12/03/Dec-blog)| 扯淡|2017-12-03|
-|25|[nvenc](http://hanamichi.wiki/2017/12/02/nvenc)| Linux,  多媒体|2017-12-02|
-|26|[rpmbuild](http://hanamichi.wiki/2017/12/02/rpmbuild)| Centos,  Linux|2017-12-02|
-|27|[gstreamer](http://hanamichi.wiki/2017/10/31/gstreamer)| Linux,  多媒体|2017-10-31|
-|28|[spice-optimize](http://hanamichi.wiki/2017/10/31/spice-optimize)| spice,  云计算|2017-10-31|
-|29|[spice](http://hanamichi.wiki/2017/10/30/spice)| spice,  云计算|2017-10-30|
-|30|[qemu-usb-redircet](http://hanamichi.wiki/2017/09/01/qemu-usb-redircet)| 云计算,  QEMU|2017-09-01|
-|31|[centos_setting](http://hanamichi.wiki/2017/08/01/centos_setting)| Linux,  Centos|2017-08-01|
-|32|[linux-sysinfo](http://hanamichi.wiki/2017/05/25/linux-sysinfo)| Linux|2017-05-25|
-|33|[spice-h264](http://hanamichi.wiki/2017/04/23/spice-h264)| QEMU,  SPICE,  云计算|2017-04-23|
-|34|[spice-instruction](http://hanamichi.wiki/2017/04/22/spice-instruction)| SPICE,  云计算|2017-04-22|
-|35|[thread-encapsulation](http://hanamichi.wiki/2017/04/21/thread-encapsulation)| C++,  Linux|2017-04-21|
-|36|[singleton](http://hanamichi.wiki/2017/04/20/singleton)| C++|2017-04-20|
-|37|[essay](http://hanamichi.wiki/2017/03/31/essay)| 扯淡|2017-03-31|
-|38|[ubuntu_setting](http://hanamichi.wiki/2017/03/31/ubuntu_setting)| Linux,  Ubuntu|2017-03-31|
-|39|[GNU_Features](http://hanamichi.wiki/2017/03/29/GNU_Features)| C,  Linux|2017-03-29|
-|40|[hello](http://hanamichi.wiki/2017/03/29/hello)| 扯淡|2017-03-29|
+|1|[aliyun-k8s](http://hanamichi.wiki/2019/08/31/aliyun-k8s)| k8s|2019-08-31|
+|2|[3scale](http://hanamichi.wiki/2019/07/01/3scale)| openshift,  k8s|2019-07-01|
+|3|[openshift-auth](http://hanamichi.wiki/2019/06/01/openshift-auth)| openshift,  k8s|2019-06-01|
+|4|[openshift-rbac](http://hanamichi.wiki/2019/05/01/openshift-rbac)| openshift,  k8s|2019-05-01|
+|5|[nginx](http://hanamichi.wiki/2019/04/01/nginx)| nginx|2019-04-01|
+|6|[k8s-istio-envoy](http://hanamichi.wiki/2019/03/01/k8s-istio-envoy)| servicemesh,  k8s|2019-03-01|
+|7|[service-mesh](http://hanamichi.wiki/2019/02/14/service-mesh)| servicemesh,  k8s|2019-02-14|
+|8|[network-samples](http://hanamichi.wiki/2018/12/01/network-samples)| network|2018-12-01|
+|9|[nova-wsgi](http://hanamichi.wiki/2018/09/30/nova-wsgi)| 云计算,  openstack|2018-09-30|
+|10|[gitlab-cicd](http://hanamichi.wiki/2018/09/01/gitlab-cicd)| CICD,  devops|2018-09-01|
+|11|[devops](http://hanamichi.wiki/2018/07/30/devops)| openstack,  devops|2018-07-30|
+|12|[shell-skill](http://hanamichi.wiki/2018/06/30/shell-skill)| shell|2018-06-30|
+|13|[python-skill](http://hanamichi.wiki/2018/05/31/python-skill)| python|2018-05-31|
+|14|[phabricator](http://hanamichi.wiki/2018/05/01/phabricator)| docker|2018-05-01|
+|15|[docker](http://hanamichi.wiki/2018/03/21/docker)| docker|2018-03-21|
+|16|[yum-server](http://hanamichi.wiki/2018/03/20/yum-server)| Linux,  Centos|2018-03-20|
+|17|[git](http://hanamichi.wiki/2018/03/07/git)| Linux|2018-03-07|
+|18|[openstack-nova-src](http://hanamichi.wiki/2018/03/02/openstack-nova-src)| openstack,  nova,  云计算|2018-03-02|
+|19|[openstack-depoly](http://hanamichi.wiki/2018/02/10/openstack-depoly)| openstack,  云计算|2018-02-10|
+|20|[glance-source-analaysis](http://hanamichi.wiki/2018/02/09/glance-source-analaysis)| openstack,  云计算,  glance|2018-02-09|
+|21|[glance-api](http://hanamichi.wiki/2018/01/25/glance-api)| openstack,  云计算,  glance|2018-01-25|
+|22|[qemu-usb-hostdev](http://hanamichi.wiki/2017/12/14/qemu-usb-hostdev)| 云计算,  QEMU|2017-12-14|
+|23|[qemu-libvirt](http://hanamichi.wiki/2017/12/05/qemu-libvirt)| QEMU,  spice,  云计算,  libvirt|2017-12-05|
+|24|[linux-bridge-config](http://hanamichi.wiki/2017/12/05/linux-bridge-config)| linux,  网络|2017-12-05|
+|25|[Dec-blog](http://hanamichi.wiki/2017/12/03/Dec-blog)| 扯淡|2017-12-03|
+|26|[nvenc](http://hanamichi.wiki/2017/12/02/nvenc)| Linux,  多媒体|2017-12-02|
+|27|[rpmbuild](http://hanamichi.wiki/2017/12/02/rpmbuild)| Centos,  Linux|2017-12-02|
+|28|[gstreamer](http://hanamichi.wiki/2017/10/31/gstreamer)| Linux,  多媒体|2017-10-31|
+|29|[spice-optimize](http://hanamichi.wiki/2017/10/31/spice-optimize)| spice,  云计算|2017-10-31|
+|30|[spice](http://hanamichi.wiki/2017/10/30/spice)| spice,  云计算|2017-10-30|
+|31|[qemu-usb-redircet](http://hanamichi.wiki/2017/09/01/qemu-usb-redircet)| 云计算,  QEMU|2017-09-01|
+|32|[centos_setting](http://hanamichi.wiki/2017/08/01/centos_setting)| Linux,  Centos|2017-08-01|
+|33|[linux-sysinfo](http://hanamichi.wiki/2017/05/25/linux-sysinfo)| Linux|2017-05-25|
+|34|[spice-h264](http://hanamichi.wiki/2017/04/23/spice-h264)| QEMU,  SPICE,  云计算|2017-04-23|
+|35|[spice-instruction](http://hanamichi.wiki/2017/04/22/spice-instruction)| SPICE,  云计算|2017-04-22|
+|36|[thread-encapsulation](http://hanamichi.wiki/2017/04/21/thread-encapsulation)| C++,  Linux|2017-04-21|
+|37|[singleton](http://hanamichi.wiki/2017/04/20/singleton)| C++|2017-04-20|
+|38|[essay](http://hanamichi.wiki/2017/03/31/essay)| 扯淡|2017-03-31|
+|39|[ubuntu_setting](http://hanamichi.wiki/2017/03/31/ubuntu_setting)| Linux,  Ubuntu|2017-03-31|
+|40|[GNU_Features](http://hanamichi.wiki/2017/03/29/GNU_Features)| C,  Linux|2017-03-29|
+|41|[hello](http://hanamichi.wiki/2017/03/29/hello)| 扯淡|2017-03-29|
