@@ -33,7 +33,7 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
 | --- | --- |
 | ldap/ldaps | 协议，和 HTTP 类似 |
 | host:port | LDAP 服务器，端口默认为 389 |
-| basedn | 搜索路径，起码是路径树的顶端，比如 dc=sh,dc=99cloud,dc=net |
+| basedn | 搜索路径，起码是路径树的顶端，比如 dc=sh,dc=example,dc=net |
 | attribute | 想要搜索的记录的字段（属性），默认为 uid |
 | scope | 搜索范围，
 | filter | LDAP 搜索过滤器，默认 (objectClass=*) |
@@ -42,24 +42,24 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
 
 **需要提前部署好 LDAP 服务器。**
 
-* basedn（搜索路径）为 sh.99cloud.net/test：
+* basedn（搜索路径）为 sh.example.net/test：
 
     ```bash
-    $ ldapsearch -x -h ldap_host -p 389 -b "ou=test,dc=sh,dc=99cloud,dc=net" -D "cn=admin,dc=sh,dc=99cloud,dc=net" -w password
+    $ ldapsearch -x -h ldap_host -p 389 -b "ou=test,dc=sh,dc=example,dc=net" -D "cn=admin,dc=sh,dc=example,dc=net" -w password
     # extended LDIF
     #
     # LDAPv3
-    # base <ou=test,dc=sh,dc=99cloud,dc=net> with scope subtree
+    # base <ou=test,dc=sh,dc=example,dc=net> with scope subtree
     # filter: (objectclass=*)
     # requesting: ALL
     #
 
-    # test, sh.99cloud.net
-    dn: OU=test,DC=sh,DC=99cloud,DC=net
+    # test, sh.example.net
+    dn: OU=test,DC=sh,DC=example,DC=net
     objectClass: top
     objectClass: organizationalUnit
     ou: test
-    distinguishedName: OU=test,DC=sh,DC=99cloud,DC=net
+    distinguishedName: OU=test,DC=sh,DC=example,DC=net
     instanceType: 4
     whenCreated: 20190801011557.0Z
     whenChanged: 20190801011557.0Z
@@ -72,15 +72,15 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
     dSCorePropagationData: 20190801011557.0Z
     dSCorePropagationData: 16010101000000.0Z
 
-    # tester, test, sh.99cloud.net
-    dn: CN=tester,OU=test,DC=sh,DC=99cloud,DC=net
+    # tester, test, sh.example.net
+    dn: CN=tester,OU=test,DC=sh,DC=example,DC=net
     objectClass: top
     objectClass: person
     objectClass: organizationalPerson
     objectClass: user
     cn: tester
     sn: tester
-    distinguishedName: CN=tester,OU=test,DC=sh,DC=99cloud,DC=net
+    distinguishedName: CN=tester,OU=test,DC=sh,DC=example,DC=net
     instanceType: 4
     whenCreated: 20190801013314.0Z
     whenChanged: 20190801013847.0Z
@@ -103,8 +103,8 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
     logonCount: 0
     sAMAccountName: tester
     sAMAccountType: 805306368
-    userPrincipalName: tester@sh.99cloud.net
-    objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=sh,DC=99cloud,DC=net
+    userPrincipalName: tester@sh.example.net
+    objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=sh,DC=example,DC=net
     dSCorePropagationData: 16010101000000.0Z
     lastLogonTimestamp: 132090971274804687
 
@@ -116,16 +116,16 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
     # numEntries: 2
     ```
 
-* basedn（搜索路径）为 sh.99cloud.net/99cloud/sh
+* basedn（搜索路径）为 sh.example.net/example/sh
 
     ```bash
-    ldapsearch -x -h ldap_host -p 389 -b "ou=sh,ou=99cloud,dc=sh,dc=99cloud,dc=net" -D "cn=admin,dc=sh,dc=99cloud,dc=net" -w password
+    ldapsearch -x -h ldap_host -p 389 -b "ou=sh,ou=example,dc=sh,dc=example,dc=net" -D "cn=admin,dc=sh,dc=example,dc=net" -w password
     ```
 
-* basedn（搜索路径）为 sh.99cloud.net/99cloud/wx
+* basedn（搜索路径）为 sh.example.net/example/wx
 
     ```bash
-    ldapsearch -x -h ldap_host -p 389 -b "ou=wx,ou=99cloud,dc=sh,dc=99cloud,dc=net" -D "cn=admin,dc=sh,dc=99cloud,dc=net" -w password
+    ldapsearch -x -h ldap_host -p 389 -b "ou=wx,ou=example,dc=sh,dc=example,dc=net" -D "cn=admin,dc=sh,dc=example,dc=net" -w password
     ```
 
 #### 对接 OpenShift
@@ -152,14 +152,14 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
             - cn
             preferredUsername:
             - uid
-        bindDN: "cn=admin,dc=sh,dc=99cloud,dc=net"
+        bindDN: "cn=admin,dc=sh,dc=example,dc=net"
         bindPassword: "password"
         ca: ""
         insecure: false
-        url: "ldap://ldap_host:389/dc=sh,dc=99cloud,dc=net?mail"
+        url: "ldap://ldap_host:389/dc=sh,dc=example,dc=net?mail"
     ```
 
-    * 需要 admin 账号 DN （cn=admin,cn=admin,dc=sh,dc=99cloud,dc=net）与密码
+    * 需要 admin 账号 DN （cn=admin,cn=admin,dc=sh,dc=example,dc=net）与密码
     * 如果使用邮箱登录，url 的 attribute 部分使用 `mail`；如果使用姓名（张三）登录，url 的 attribute 部分使用 `cn`。
 1. 重启 master api 和 controllers
 
@@ -171,7 +171,7 @@ LDAP url 语法：`ldap://host:port/basedn?attribute?scope?filter`
 1. 测试登录
 
     ```bash
-    oc login -u foo.bar@99cloud.net -p password
+    oc login -u foo.bar@example.net -p password
     ```
 
 #### 参考文档
