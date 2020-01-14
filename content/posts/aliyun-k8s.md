@@ -1,0 +1,368 @@
+---
+title: 阿里云k8s环境搭建测试
+date: 2019-07-03T14:21:26+08:00
+lastmod: 2019-07-03T14:21:26+08:00
+author: hanamichi
+cover: /img/aliyun-k8s.jpg
+categories: ['瞎折腾']
+tags: ['kubernetes']
+---
+
+为之后在家自建nas，webdav等服务所预先测试
+
+<!--more-->
+
+## 环境说明
+
+* 阿里云2c4g机器
+* all-in-one k8s集群
+* k8s 1.15.3
+* contour作为ingress
+* 域名配置A记录，*.master-node.whataspace.top指向虚拟机公网ip
+
+## 环境安装
+
+1. 更改host
+
+   ```shell
+   hostnamectl set-hostname master-node
+   ```
+
+2. 更改`/etc/hosts`文件
+
+   ```shell
+   yourip  master-node
+   ```
+
+3. 关闭`selinux`
+
+   ```shell
+   sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+   ```
+
+4. 禁用`swap`
+
+   ```shell
+   swapoff -a
+   ```
+
+   编辑`/etc/fstab`,注释`swap`的那条记录
+
+5. 安装docker
+
+   ```shell
+   yum install -y yum-utils device-mapper-persistent-data lvm2
+   
+   yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+   
+   yum install docker-ce -y
+   ```
+
+6. 将docker的`cgroup driver`更改成`systemd`
+
+   ```shell
+   cat <<EOF > /etc/docker/daemon.json
+   {
+     "exec-opts": ["native.cgroupdriver=systemd"],
+     "log-driver": "json-file",
+     "log-opts": {
+       "max-size": "100m"
+     },
+     "storage-driver": "overlay2",
+     "storage-opts": [
+       "overlay2.override_kernel_check=true"
+     ]
+   }
+   EOF
+   ```
+
+7. `systemctl enable --now docker`
+
+8. `reboot`
+
+9. 加载内核模块
+
+   ```shell
+   modprobe br_netfilter
+   ```
+
+10. 安装k8s repo文件
+
+    ```shell
+    cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+    [kubernetes]
+    name=Kubernetes
+    baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled=1
+    gpgcheck=1
+    repo_gpgcheck=1
+    gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    exclude=kube*
+    EOF
+    ```
+
+11. 安装kubeadm等工具
+
+    ```shell
+    yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+    ```
+
+12. 启动集群
+
+    ```shell
+    kubeadm init  --pod-network-cidr=192.168.0.0/16
+    ```
+
+13. 根据提示拷贝kubeconfig文件
+
+14. 安装网络插件
+
+    ```yaml
+    kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
+    ```
+
+15. 使用`kubectl get po --all-namespaces -w`查看pod状态
+
+16. 部署成功后执行`kubectl taint nodes --all node-role.kubernetes.io/master-`使master节点可调度
+
+## ingress安装
+
+ingress选用contour
+
+安装方式见参考链接,在阿里云上使用,envoy的service使用nodeport方式暴露,具体yaml如下:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+ name: envoy
+ namespace: heptio-contour
+spec:
+ ports:
+ - port: 80
+   name: http
+   protocol: TCP
+   nodePort: 30080
+ - port: 443
+   name: https
+   protocol: TCP
+   nodePort: 30443
+ selector:
+   app: envoy
+ type: NodePort
+```
+
+### 参考链接
+
+[使用 Contour 接管 Kubernetes 的南北流量](https://www.yangcs.net/posts/use-envoy-as-a-kubernetes-ingress/)
+
+## 应用部署
+
+### k8s-dashboard
+
+1. 部署k8s-dashboard
+
+   ```shell
+   kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+   ```
+
+2. 定义ingressroute
+
+   ```yaml
+   apiVersion: contour.heptio.com/v1beta1
+   kind: IngressRoute
+   metadata:
+     name: dashboard
+   spec:
+     virtualhost:
+       fqdn: yoursubdomain
+       tls:
+         passthrough: true
+     tcpproxy:
+       services:
+         - name: kubernetes-dashboard
+           port: 443
+     routes:
+       - match: /
+         services:
+           - name: kubernetes-dashboard
+             port: 443
+   ```
+
+   ingressroute资源与dashboard均在kube-system下, 使用`https://yoursubdomain:30443`访问
+   
+3. 创建集群管理员账户,使用以下文件创建sa
+
+   ```yaml
+   apiVersion: v1
+   kind: ServiceAccount
+   metadata:
+     name: zhuxiaowei
+     namespace: kube-system
+
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRoleBinding
+   metadata:
+     name: zhuxiaowei
+   roleRef:
+     apiGroup: rbac.authorization.k8s.io
+     kind: ClusterRole
+     name: cluster-admin
+   subjects:
+   - kind: ServiceAccount
+     name: zhuxiaowei
+     namespace: kube-system
+   ```
+
+4. 获取token登录dashboard
+
+   ```yaml
+   kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep zhuxiaowei | awk '{print $1}')
+   ```
+
+   
+
+### troubleshoot
+
+1. 默认情况下dashboard的https证书是空证书，在windows下使用谷歌浏览器存在无法访问的问题
+
+   1. 使用以下命令创建自签证书:
+
+      ```shell
+      openssl genrsa -out ca.key 2048
+      
+      openssl req -new -x509 -key ca.key -out ca.crt -days 3650 -subj "/C=CN/ST=HB/L=WH/O=DM/OU=YPT/CN=CA"
+      
+      openssl x509 -in ca.crt -noout -text
+      
+      openssl genrsa -out dashboard.key 2048
+      
+      openssl req -new -sha256 -key dashboard.key -out dashboard.csr -subj "/C=CN/ST=HB/L=WH/O=DM/OU=YPT/CN=yourdomain"
+      
+      openssl x509 -req -sha256 -days 3650 -in dashboard.csr -out dashboard.crt -CA ca.crt -CAkey ca.key -CAcreateserial
+      
+      openssl x509 -in dashboard.crt -noout -text
+      ```
+
+   2. 创建`kubernetes-dashboard-certs`
+   
+      ```shell
+      kubectl delete secret kubernetes-dashboard-certs -n kube-system
+      
+      kubectl create secret generic kubernetes-dashboard-certs --from-file="dashboard.crt,dashboard.key"
+      ```
+      
+
+### webdav
+
+1. 创建pv和pvc
+
+   ```yaml
+   apiVersion: v1
+   kind: PersistentVolume
+   metadata:
+     name: pv-volume-001
+     labels:
+       type: local
+   spec:
+     storageClassName: manual
+     capacity:
+       storage: 10Gi
+     accessModes:
+       - ReadWriteOnce
+     hostPath:
+       path: "/mnt/k8s-data"
+
+   apiVersion: v1
+   kind: PersistentVolumeClaim
+   metadata:
+     name: webdav-data-claim
+   spec:
+     storageClassName: manual
+     accessModes:
+       - ReadWriteOnce
+     resources:
+       requests:
+         storage: 10Gi
+   ```
+
+2. 使用以下deployment.yaml部署webdav服务
+
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     labels:
+       app: webdav
+     name: webdav
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: webdav
+     template:
+       metadata:
+         labels:
+           app: webdav
+       spec:
+         containers:
+         - image: twizzel/webdav:latest
+           imagePullPolicy: IfNotPresent
+           name: webdav
+           env:
+           - name: AUTH_TYPE
+             value: Basic
+           - name: USERNAME
+             value: xxxxxxxxx
+           - name: PASSWORD
+             value: xxxxxxxxx
+           - name: SSL_CERT
+             value: selfsigned
+           ports:
+           - containerPort: 443
+             name: https
+             protocol: TCP
+           volumeMounts:
+           - name: webdav-data
+             mountPath: /var/lib/dav
+         volumes:
+         - name: webdav-data
+           persistentVolumeClaim:
+             claimName: webdav-data-claim
+
+   apiVersion: v1
+   kind: Service
+   metadata:
+     labels:
+       app: webdav
+     name: webdav
+   spec:
+     ports:
+     - port: 443
+       protocol: TCP
+       name: https
+       targetPort: 443
+     selector:
+       app: webdav
+     sessionAffinity: None
+     type: ClusterIP
+
+   apiVersion: contour.heptio.com/v1beta1
+   kind: IngressRoute
+   metadata:
+     name: webdav
+   spec:
+     virtualhost:
+       fqdn: yoursubdomain
+       tls:
+         passthrough: true
+     tcpproxy:
+       services:
+         - name: webdav
+           port: 443
+     routes:
+       - match: /
+         services:
+           - name: webdav
+             port: 443
+   ```
