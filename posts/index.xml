@@ -30,5 +30,36 @@
       <description>&lt;p&gt;如果你喜欢我的开源项目或者它们可以给你带来帮助，可以赏一杯咖啡 ☕ 给我。~&lt;/p&gt;</description>
     </item>
     
+    <item>
+      <title>云桌面spice初探</title>
+      <link>https://hanamichi.wiki/posts/spice/</link>
+      <pubDate>Mon, 01 May 2017 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/spice/</guid>
+      <description>&lt;p&gt;spice研究&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;单例模式与线程类思考</title>
+      <link>https://hanamichi.wiki/posts/c-plus-plus-gist/</link>
+      <pubDate>Thu, 20 Apr 2017 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/c-plus-plus-gist/</guid>
+      <description>&lt;p&gt;C++代码片段研究&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;单例模式研究&lt;/li&gt;
+&lt;li&gt;自旋锁&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
+    
+    <item>
+      <title>随便扯扯淡</title>
+      <link>https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/</link>
+      <pubDate>Fri, 31 Mar 2017 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/</guid>
+      <description>&lt;p&gt;2017-03-31随笔，随便扯扯淡。&lt;/p&gt;</description>
+    </item>
+    
   </channel>
 </rss>
