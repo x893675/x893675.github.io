@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-
-
-
-
-
+云桌面spice初探
 </title>
 
     
@@ -18,27 +14,29 @@
 
 
   
-  <meta name="author" content="Hanamichi" />
-  <meta name="description" content="Hanamichi的学习生活记录" />
+  <meta name="author" content="hanamichi" />
+  <meta name="description" content="spice研究
+" />
 
 
 
 <meta name="generator" content="Hugo 0.62.2" />
 
-<link rel="canonical" href="https://hanamichi.wiki/about/" />
+<link rel="canonical" href="https://hanamichi.wiki/posts/spice/" />
 
 
-<meta property="og:title" content="Abouts" />
-<meta property="og:description" content="Hanamichi的学习生活记录" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://hanamichi.wiki/about/" />
-<meta property="og:updated_time" content="2019-11-11T01:30:25+08:00" />
+<meta property="og:title" content="云桌面spice初探" />
+<meta property="og:description" content="spice研究" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/spice/" />
+<meta property="article:published_time" content="2017-05-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2017-05-01T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Abouts"/>
-<meta name="twitter:description" content="Hanamichi的学习生活记录"/>
+<meta name="twitter:title" content="云桌面spice初探"/>
+<meta name="twitter:description" content="spice研究"/>
 
 
 <link rel="stylesheet" href="/css/github-markdown.css" />
@@ -85,7 +83,125 @@
 
           
 <div class="ui centered relaxed grid dream-grid">
-  <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single">
+
+    <section class="ui top attached segment" id="dream-save-post-as-img">
+      <header style="margin-top: 0 !important;">
+        <h2 class="ui header">
+          云桌面spice初探
+          <div class="sub header">@ hanamichi · Monday, May 1, 2017 · 3 分钟阅读 · 更新于 May 1, 2017</div>
+        </h2>
+      </header>
+      <article style="margin-top: 2rem;"><p>spice研究</p>
+<h3 id="11-spice基本概念">1.1 spice基本概念</h3>
+<p>spice是专门为虚拟化环境构建的一套远程桌面系统。spice指整套系统，而不是单个模块或组件。</p>
+<h3 id="12-spice系统组成">1.2 spice系统组成</h3>
+<p><img src="/img/inpost/spice/spice-arch.png" alt="spice系统结构图"></p>
+<ul>
+<li>spice协议</li>
+<li>spice server</li>
+<li>spice client</li>
+</ul>
+<h3 id="13-vd-interface">1.3 VD-Interface</h3>
+<p>VD-Interface是一套接口规范，VDI Back-End与VDI Front-End通过VD-Interface进行交互。</p>
+<h3 id="14-vdi-back-end">1.4 VDI Back-End</h3>
+<p>VDI Back-End其实就是一堆QEMU Virtual Device，但是这些Virtual Device都实现了VD-Interface接口规范。</p>
+<h3 id="15-vdi-front-end">1.5 VDI Front-End</h3>
+<p>VDI Front-End通过调用VDI Back-End提供的VD-Interface接口来实现与VDI Back-End的交互。</p>
+<h3 id="16-spice-server">1.6 spice server</h3>
+<p>spice-server 作为VDI的前端，通过spice协议与spice客户端进行通信。spice-server以库的形式提供给后端。</p>
+<h3 id="21-spice-server">2.1 spice server</h3>
+<p><img src="/img/inpost/spice/spice-server.png" alt="spice server结构图"></p>
+<p>spice server编译成libspice,作为一个动态库给后端（通常是qemu）使用。</p>
+<h3 id="22-公共函数">2.2 公共函数</h3>
+<p>公共函数为可以给外部文件调用的函数（在这里指由qemu调用）</p>
+<ul>
+<li>spice.h:与SpiceServer结构体相关的函数,是qemu调用spice的主要函数</li>
+<li>red_dispatcher.h:与QXL设备相关的函数</li>
+</ul>
+<p>主要公共函数：</p>
+<ul>
+<li><strong>spice_server_init</strong> :负责初始化spice_server</li>
+<li><strong>spice_server_add_interface</strong> :给server注册VDI接口</li>
+<li><strong>spice_server_add_client</strong> :处理qemu接收到的客户端连接消息</li>
+</ul>
+<h3 id="23-主要vdi接口">2.3 主要VDI接口</h3>
+<ul>
+<li>SpiceCoreInterface：    Spice与Qemu内部交互用的接口</li>
+<li>QXLInterface：          显示数据交互接口</li>
+<li>SpiceKbdInstance：      键盘输入交互接口</li>
+<li>SpiceMouseInterface：   鼠标输入交互接口</li>
+<li>SpicePlaybackInterface：音频播放交互接口</li>
+<li>SpiceRecordInterface：  音频录制交互接口</li>
+</ul>
+<h3 id="24-channel">2.4 Channel</h3>
+<p>Channel的主要作用是使用对应的TCP连接传输消息给客户端,保证其传输的可靠性,其本质是通道,不同的Channel传输不同的消息.</p>
+<p>spice中主要有六种Channel:</p>
+<ul>
+<li><strong>MainChannel</strong> :与客户端连接的建立和断开有关</li>
+<li><strong>InputsChannel</strong> :跟鼠标,键盘,触摸板的输入有关</li>
+<li><strong>DisplayChannel</strong> :跟图像传输有关</li>
+<li><strong>CursorChannel</strong> :跟鼠标指针的显示有关</li>
+<li><strong>PlaybackChannel</strong> :跟播放宿主机的声音有关</li>
+<li><strong>RecordChannel</strong> :跟录制客户端的声音有关</li>
+</ul>
+<h3 id="31-usbredirect">3.1 usbredirect</h3>
+<p>usbredirect是spice对USB重定向的支持</p>
+<p><img src="/img/inpost/spice/usb-redirection.png" alt="usb_redirection"></p>
+<ul>
+<li>usb host端，spice client通过libusb与usb外设交互</li>
+<li>spice client通过spice协议在特定通道与spice server交互</li>
+<li>spice server通过VDI接口与qemu(redirect.c)交互</li>
+</ul></article>
+    </section>
+
+    <footer class="ui attached segment dream-tags">
+      
+        
+          <a class="ui label" href="/tags/spice" title="spice">spice</a>
+        
+          <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; background: #1b1c1d !important; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i> Save as image
+      </div>
+    </footer>
+
+    
+      <footer class="ui attached segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+
+    
+      <footer class="ui bottom attached stacked segment post-disqus-area" data-html2canvas-ignore="true">
+        <div id="disqus_thread"></div>
+        <script>
+          
+
+
+          var disqus_config = function () {
+            this.page.url = 'https:\/\/hanamichi.wiki\/posts\/spice\/';  
+            this.page.identifier = '\/posts\/spice\/'; 
+          };
+
+          (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://' + 'x893675' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </footer>
+    
+
+  </div>
+  <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
     <article class="dream-header">
   <section class="ui top attached center aligned segment">
     <div class="ui small circular image">
@@ -227,104 +343,6 @@
 </article>
 
   </div>
-
-  
-    <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
-      
-<article class="ui raised card dream-card">
-
-  <div class="image">
-    
-      <img src="/img/default4.jpg" alt="关于我" />
-    
-  </div>
-
-  <div class="content">
-    <a class="header" style="color: black !important;" href="https://hanamichi.wiki/about/desc/">关于我</a>
-    <div class="meta">
-      <p class="date">Monday, Nov 11, 2019</p>
-      <p class="author">@ Hanamichi</p>
-    </div>
-    <div class="description">
-      关于我
-
-    </div>
-  </div>
-
-  <div class="extra content">
-    <a>
-      <i class="clock icon"></i>
-      1 分钟阅读
-    </a>
-  </div>
-</article>
-
-    </div>
-  
-    <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
-      
-<article class="ui raised card dream-card">
-
-  <div class="image">
-    
-      <img src="/img/default1.jpg" alt="我的一些开源项目" />
-    
-  </div>
-
-  <div class="content">
-    <a class="header" style="color: black !important;" href="https://hanamichi.wiki/about/desc2/">我的一些开源项目</a>
-    <div class="meta">
-      <p class="date">Monday, Nov 11, 2019</p>
-      <p class="author">@ Hanamichi</p>
-    </div>
-    <div class="description">
-      我的一些开源项目
-
-    </div>
-  </div>
-
-  <div class="extra content">
-    <a>
-      <i class="clock icon"></i>
-      1 分钟阅读
-    </a>
-  </div>
-</article>
-
-    </div>
-  
-    <div class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
-      
-<article class="ui raised card dream-card">
-
-  <div class="image">
-    
-      <img src="/img/default4.jpg" alt="其他" />
-    
-  </div>
-
-  <div class="content">
-    <a class="header" style="color: black !important;" href="https://hanamichi.wiki/about/desc3/">其他</a>
-    <div class="meta">
-      <p class="date">Monday, Nov 11, 2019</p>
-      <p class="author">@ Hanamichi</p>
-    </div>
-    <div class="description">
-      其他
-
-    </div>
-  </div>
-
-  <div class="extra content">
-    <a>
-      <i class="clock icon"></i>
-      1 分钟阅读
-    </a>
-  </div>
-</article>
-
-    </div>
-  
 </div>
 
         </section>
@@ -449,30 +467,6 @@
 
   
   
-    <section class="sixteen wide mobile eight wide tablet eight wide computer column dream-column">
-      <footer class="ui segment">
-        <div id="disqus_thread"></div>
-        <script>
-          
-
-
-          var disqus_config = function () {
-            this.page.url = 'https:\/\/hanamichi.wiki\/about\/about';  
-            this.page.identifier = '/about'; 
-          };
-
-          (function() { 
-            var d = document, s = d.createElement('script');
-            s.src = 'https://' + 'x893675' + '.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-          })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-      </footer>
-    </section>
-  
-
 </div>
 
         </section>
