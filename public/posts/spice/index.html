@@ -15,8 +15,7 @@
 
   
   <meta name="author" content="hanamichi" />
-  <meta name="description" content="spice研究
-" />
+  <meta name="description" content="spice初探" />
 
 
 
@@ -26,7 +25,7 @@
 
 
 <meta property="og:title" content="云桌面spice初探" />
-<meta property="og:description" content="spice研究" />
+<meta property="og:description" content="spice初探" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hanamichi.wiki/posts/spice/" />
 <meta property="article:published_time" content="2017-05-01T14:21:26+08:00" />
@@ -36,7 +35,7 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="云桌面spice初探"/>
-<meta name="twitter:description" content="spice研究"/>
+<meta name="twitter:description" content="spice初探"/>
 
 
 <link rel="stylesheet" href="/css/github-markdown.css" />
@@ -89,31 +88,79 @@
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           云桌面spice初探
-          <div class="sub header">@ hanamichi · Monday, May 1, 2017 · 3 分钟阅读 · 更新于 May 1, 2017</div>
+          <div class="sub header">@ hanamichi · Monday, May 1, 2017 · 10 分钟阅读 · 更新于 May 1, 2017</div>
         </h2>
       </header>
-      <article style="margin-top: 2rem;"><p>spice研究</p>
-<h3 id="11-spice基本概念">1.1 spice基本概念</h3>
+      <article style="margin-top: 2rem;"><h1 id="spice初探">spice初探</h1>
+<ul>
+<li><a href="#spice%E5%88%9D%E6%8E%A2">spice初探</a>
+<ul>
+<li><a href="#%E6%A6%82%E5%BF%B5%E7%BB%93%E6%9E%84">概念&amp;结构</a>
+<ul>
+<li><a href="#spice%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">spice基本概念</a></li>
+<li><a href="#spice%E7%B3%BB%E7%BB%9F%E7%BB%84%E6%88%90">spice系统组成</a></li>
+<li><a href="#vd-interface">VD-Interface</a></li>
+<li><a href="#vdi-back-end">VDI Back-End</a></li>
+<li><a href="#vdi-front-end">VDI Front-End</a></li>
+<li><a href="#spice-server">spice server</a></li>
+<li><a href="#spice-server-1">spice server</a></li>
+<li><a href="#%E5%85%AC%E5%85%B1%E5%87%BD%E6%95%B0">公共函数</a></li>
+<li><a href="#%E4%B8%BB%E8%A6%81vdi%E6%8E%A5%E5%8F%A3">主要VDI接口</a></li>
+<li><a href="#channel">Channel</a></li>
+<li><a href="#usbredirect">usbredirect</a></li>
+</ul>
+</li>
+<li><a href="#spice%E5%8D%8F%E8%AE%AE">spice协议</a>
+<ul>
+<li><a href="#spice%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">Spice基本结构</a></li>
+<li><a href="#spice%E5%9B%BE%E5%BD%A2%E5%91%BD%E4%BB%A4%E6%B5%81">Spice图形命令流</a></li>
+<li><a href="#spice%E4%BB%A3%E7%90%86%E5%91%BD%E4%BB%A4%E6%B5%81">Spice代理命令流</a></li>
+<li><a href="#spice-client">Spice  Client</a>
+<ul>
+<li><a href="#spice-client%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><em>Spice Client基本结构</em></a></li>
+<li><a href="#client-%E7%B1%BB%E7%BB%93%E6%9E%84"><em>Client 类结构</em></a></li>
+<li><a href="#channels"><em>Channels</em></a></li>
+<li><a href="#screens-and-windows"><em>Screens and Windows</em></a></li>
+</ul>
+</li>
+<li><a href="#spice-server-2">Spice Server</a>
+<ul>
+<li><a href="#spice-server-%E7%BB%93%E6%9E%84"><em>spice server 结构</em></a></li>
+<li><a href="#red-server-redsc"><em>red server (reds.c)</em></a></li>
+<li><a href="#server-%E5%9B%BE%E5%BD%A2%E5%AD%90%E7%B3%BB%E7%BB%9F"><em>server 图形子系统</em></a></li>
+<li><a href="#red-worker-red_workerc"><em>Red Worker( red_worker.c)</em></a></li>
+<li><a href="#red-dispatcherred_dispatcherc"><em>Red Dispatcher(red_dispatcher.c)</em></a></li>
+</ul>
+</li>
+<li><a href="#spice-protocol">Spice Protocol</a></li>
+<li><a href="#spice%E8%A7%86%E9%A2%91%E6%B5%81%E5%8E%8B%E7%BC%A9">SPICE视频流压缩</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="概念结构">概念&amp;结构</h2>
+<h3 id="spice基本概念">spice基本概念</h3>
 <p>spice是专门为虚拟化环境构建的一套远程桌面系统。spice指整套系统，而不是单个模块或组件。</p>
-<h3 id="12-spice系统组成">1.2 spice系统组成</h3>
+<h3 id="spice系统组成">spice系统组成</h3>
 <p><img src="/img/inpost/spice/spice-arch.png" alt="spice系统结构图"></p>
 <ul>
 <li>spice协议</li>
 <li>spice server</li>
 <li>spice client</li>
 </ul>
-<h3 id="13-vd-interface">1.3 VD-Interface</h3>
+<h3 id="vd-interface">VD-Interface</h3>
 <p>VD-Interface是一套接口规范，VDI Back-End与VDI Front-End通过VD-Interface进行交互。</p>
-<h3 id="14-vdi-back-end">1.4 VDI Back-End</h3>
+<h3 id="vdi-back-end">VDI Back-End</h3>
 <p>VDI Back-End其实就是一堆QEMU Virtual Device，但是这些Virtual Device都实现了VD-Interface接口规范。</p>
-<h3 id="15-vdi-front-end">1.5 VDI Front-End</h3>
+<h3 id="vdi-front-end">VDI Front-End</h3>
 <p>VDI Front-End通过调用VDI Back-End提供的VD-Interface接口来实现与VDI Back-End的交互。</p>
-<h3 id="16-spice-server">1.6 spice server</h3>
+<h3 id="spice-server">spice server</h3>
 <p>spice-server 作为VDI的前端，通过spice协议与spice客户端进行通信。spice-server以库的形式提供给后端。</p>
-<h3 id="21-spice-server">2.1 spice server</h3>
+<h3 id="spice-server-1">spice server</h3>
 <p><img src="/img/inpost/spice/spice-server.png" alt="spice server结构图"></p>
 <p>spice server编译成libspice,作为一个动态库给后端（通常是qemu）使用。</p>
-<h3 id="22-公共函数">2.2 公共函数</h3>
+<h3 id="公共函数">公共函数</h3>
 <p>公共函数为可以给外部文件调用的函数（在这里指由qemu调用）</p>
 <ul>
 <li>spice.h:与SpiceServer结构体相关的函数,是qemu调用spice的主要函数</li>
@@ -125,7 +172,7 @@
 <li><strong>spice_server_add_interface</strong> :给server注册VDI接口</li>
 <li><strong>spice_server_add_client</strong> :处理qemu接收到的客户端连接消息</li>
 </ul>
-<h3 id="23-主要vdi接口">2.3 主要VDI接口</h3>
+<h3 id="主要vdi接口">主要VDI接口</h3>
 <ul>
 <li>SpiceCoreInterface：    Spice与Qemu内部交互用的接口</li>
 <li>QXLInterface：          显示数据交互接口</li>
@@ -134,7 +181,7 @@
 <li>SpicePlaybackInterface：音频播放交互接口</li>
 <li>SpiceRecordInterface：  音频录制交互接口</li>
 </ul>
-<h3 id="24-channel">2.4 Channel</h3>
+<h3 id="channel">Channel</h3>
 <p>Channel的主要作用是使用对应的TCP连接传输消息给客户端,保证其传输的可靠性,其本质是通道,不同的Channel传输不同的消息.</p>
 <p>spice中主要有六种Channel:</p>
 <ul>
@@ -145,14 +192,223 @@
 <li><strong>PlaybackChannel</strong> :跟播放宿主机的声音有关</li>
 <li><strong>RecordChannel</strong> :跟录制客户端的声音有关</li>
 </ul>
-<h3 id="31-usbredirect">3.1 usbredirect</h3>
+<h3 id="usbredirect">usbredirect</h3>
 <p>usbredirect是spice对USB重定向的支持</p>
 <p><img src="/img/inpost/spice/usb-redirection.png" alt="usb_redirection"></p>
 <ul>
 <li>usb host端，spice client通过libusb与usb外设交互</li>
 <li>spice client通过spice协议在特定通道与spice server交互</li>
 <li>spice server通过VDI接口与qemu(redirect.c)交互</li>
-</ul></article>
+</ul>
+<h2 id="spice协议">spice协议</h2>
+<p>SPICE(Simple Protocol for Independent Computing Environment)全称独立计算环境简单协议。</p>
+<p>Spice 是一个开放的远程计算解决方案，使得客户端可以访问远程机器桌面和设备(比如键盘，鼠标，audio 和 USB)。通过 Spice 我们可以像使用本地计算机一样访问远程机器，这样可以把 CPU GPU 密集工作从客户端移交给远程高性能机器。Spice 适用于 LAN 和 WAN。</p>
+<h3 id="spice基本结构">Spice基本结构</h3>
+<p><img src="/img/inpost/spice/spice_schem.png" alt="spice整体结构图"></p>
+<p>spice server和qemu之间实现了vdi的一系列接口，vdi后端就是qemu模拟的各种设备，spice server作为vdi前端。</p>
+<p>Spice可以细分为4部分:</p>
+<ul>
+<li>guest端，qxl driver和SPICE VDAgent</li>
+<li>host端，spice server 以libspice动态库形式供虚拟机监控管理程序(qemu)分享虚拟机</li>
+<li>spice protocol，spice server 与 spice client 交互遵循的协议规范</li>
+<li>client端，终端用户直接交互操作虚拟机(remote-viewer或者spice-gtk)</li>
+</ul>
+<h3 id="spice图形命令流">Spice图形命令流</h3>
+<p><img src="/img/inpost/spice/spice-graphic-flow.png" alt="spice图形命令流"></p>
+<p>上图显示了 Spice 的基本架构，以及 guest 到 client 之间传送的 graphic 命令数据流</p>
+<p>当 Guest OS 上一个用户应用请求 OS 图形引擎执行一个渲染操作。图形引擎传送命令给QXL驱动，QXL驱动会把OS命令转换为QXL命令然后推送到QXL设备的commands RIng缓冲中。commands Ring 是 QXL Device 中的一个队列。Libspice 会从这个 commands Ring取得命令数据，然后加到 graphics 命令树上。显示树上包含一组操作命令，这些命令的执行会产生显示内容。这棵树可以优化掉那些会被覆盖掉的命令，命令树还用来检测 video 数据流。当命令从 libspice 的发送队列发送给客户端时，发送命令被转换为 Spice 协议消息，同时这个命令从发送队列和树上移除。</p>
+<p>当 libspice 不再需要一个命令时，它被推送到 release ring。驱动使用这个队列来释放相应的命令资源</p>
+<p>当客户端从 libspice 接收到一个命令时，客户端使用这个命令来更新显示。</p>
+<h3 id="spice代理命令流">Spice代理命令流</h3>
+<p><img src="/img/inpost/spice/spice-agent-flow.png" alt="spice代理命令流"></p>
+<p>Spice 代理是 guest 中的一个软件模块。Spice server 和 Spice client 使用代理来执行在guest 上下文中的工作，比如配置 guest display 设置。上图显示了 spice client 和 server 通过 VDI Port驱动和VDI Port设备进行通信的过程。Message 包括 client 生成的 guest 显示配置信息，server生成的鼠标移动信息以及代理生成的配置应答信息。驱动使用 Input/Output Rings 和 VDI Port Device 通信。client 和 server 生成的信息都写入到同一个写队列中，然后再写入 VDI Port Device 的 output buffer ring。Message port 决定 message 被 server 处理还是推送给 client 处理。</p>
+<h3 id="spice--client">Spice  Client</h3>
+<p>spice 跨平台(Linux &amp; Windows)客户端是终端用户的接口</p>
+<h4 id="spice-client基本结构"><em>Spice Client基本结构</em></h4>
+<p><img src="/img/inpost/spice/spice-client.png" alt="spice client基本结构"></p>
+<h4 id="client-类结构"><em>Client 类结构</em></h4>
+<p>为了有一个清晰的跨平台结构，Spice 定义了一个通用的接口，而把平台相关的实现放在了一个并行的目录中。这个通用的接口就是 Platform class，定义了许多低级服务，比如 timer 和 cursor 操作。</p>
+<p><strong>Application</strong>是一个主要的类，包含 Clients， monitos 和 screens，这个类实现了通用的应用功能:命令行解析，主循环，时间处理，鼠标事件重定向，全屏切换等等。</p>
+<h4 id="channels"><em>Channels</em></h4>
+<p>client 和 server 通过 channels 进行通信，每一个 channel 类型对应着特定的数据类型。每个 channel 使用专门的 TCP socket，这个socket可以是安全的(使用SSL)或者不安全的。在客户端，每一个 channel 会有一个专门的线程来处理，所以我们可以为每一个 channel 设置单独的优先级来达到不同的 QoS。</p>
+<p><strong>RedClient</strong>是主 channel。它拥有所有其他的实例化通道，并且可以控制他们(创建，连接，断开等)，并且处理控制，配置和迁徙。</p>
+<p>主要的通道有:</p>
+<ul>
+<li>Main : 由RedClient实现</li>
+<li>DisplayChannel : 处理图形化命令，图像和数据流</li>
+<li>InputsChannel : 鼠标和键盘输入</li>
+<li>CursorChannel : 指针设备位置，显示和光标形状</li>
+<li>PlaybackChannel : 从服务器接收音频数据，在client播放</li>
+<li>RecordChannel : 在client端进行录音</li>
+</ul>
+<h4 id="screens-and-windows"><em>Screens and Windows</em></h4>
+<ul>
+<li>Screen layer : 绑定到特定的screen,用来提供矩形区域的操作(设置，清除，更新等)，layer 是z-ordered</li>
+<li>RedScreen : 实现screen的逻辑，控制window，使用screen layer显示其内容</li>
+<li>RedDrawable : 基本 pixmap 的平台特定实现。它支持基本的渲染操作</li>
+<li>RedWindow_p : 平台相关的window数据和方法
+RedWindow : 继承自RedDrawable和RedWindow_p，基本窗口状态和功能(显示，隐藏，设置标题，设置指针设备等)的跨平台的实现</li>
+</ul>
+<h3 id="spice-server-2">Spice Server</h3>
+<p>spice server 是通过 libspice 和 VDI library 实现的。VDI 提供了一个标准的方法来发布虚拟设备的接口。这使得其他的软件部件可以和这些 virtual device 交互。</p>
+<p>一方面，server 使用 Spice 协议和远程 client 通信，另一方面，它和 VDI host 应用(QEMU)进行交互。</p>
+<p>server 为了远程显示的目的，server 维护了一个命令序列和一棵树来管理当前对象的依赖关系和覆盖关系。QXL 命令被处理转换为 Spice 协议，然后发送给客户端。</p>
+<h4 id="spice-server-结构"><em>spice server 结构</em></h4>
+<p><img src="/img/inpost/spice/spice-server.png" alt="spice client基本结构"></p>
+<p>Server 通过 channels 和 client 通信。每一个 channel 类型对应一种特定类型的数据。每一个 channel 使用专用的 TCP socket。服务端的 channel 和 client 的 channel 是对应的，也有Main、 Inputs、Display、Cursor、Playback 和 Record这些管道。</p>
+<p>Main和Input Channel被处理函数控制(实现位于reds.c) ，display和cursor channel被每个display的redwork线程控制，libspice和VDI Host应用程序(QEMU)通过每个功能结构交互(qxl,agent 等)。</p>
+<h4 id="red-server-redsc"><em>red server (reds.c)</em></h4>
+<p>Server自身，用来监听客户端连接请求，接受连接并与客户端通信，主要负责如下工作:</p>
+<ul>
+<li>通道
+<ul>
+<li>管理通道(注册，注销，停止)</li>
+<li>通知client活动的通道，便于client 创建它们</li>
+<li>main和input通道的管理</li>
+<li>连接的建立(main 和其他通道)</li>
+<li>socket操作以及链接管理</li>
+<li>处理SSL和ticketing</li>
+</ul>
+</li>
+<li>VDI接口处理(增加，移除)</li>
+<li>迁移进程协作</li>
+<li>处理用户命令(来自QEMU monitor)</li>
+<li>和guest agent通信</li>
+<li>Statistics 统计？</li>
+</ul>
+<h4 id="server-图形子系统"><em>server 图形子系统</em></h4>
+<p><img src="/img/inpost/spice/spice-server-graphic.png" alt="spice client基本结构"></p>
+<p>不像 Spice 中的其他子系统，graphics 子系统在 server 中通过专有的线程并行运行。这种结构使得图形命令的处理和渲染保持独立，因此消耗很多的 CPU资源。</p>
+<p>上图显示了 Spice server 图形子系统的结构。Red server 实例化一个 dispatcher，并带有 QXL interface。dispatcher 为这个 QXL interface 创建 red worker。worker 处理的命令有三个来源:</p>
+<ol>
+<li>同步的 QXL 设备命令</li>
+<li>red server commands</li>
+<li>异步的 QXL 设备命令</li>
+</ol>
+<p>其中1和2由dispatcher通过socket分发，3由worker从QXL device rings pull</p>
+<h4 id="red-worker-red_workerc"><em>Red Worker( red_worker.c)</em></h4>
+<p>red worker负责:</p>
+<ul>
+<li>处理QXL设备命令(draw, update, cursor等)</li>
+<li>处理接受自dispatcher的消息</li>
+<li>display 和 cursor 通道管理</li>
+<li>图片压缩(使用quic, lz, glz 编码)</li>
+<li>视频流处理(鉴别视频流，编码和创建流)</li>
+<li>Ring操作</li>
+</ul>
+<h4 id="red-dispatcherred_dispatcherc"><em>Red Dispatcher(red_dispatcher.c)</em></h4>
+<ul>
+<li>为每个QXL设备状态调度到具体的处理函数</li>
+<li>创建red worker线程</li>
+<li>&hellip;还未看</li>
+</ul>
+<h3 id="spice-protocol">Spice Protocol</h3>
+<p>spice protocol 用于 client 和 server 间的通信. 比如传输图形对象, 键盘和鼠标事件, 光标
+信息, audio playback 和录音，以及控制命令。</p>
+<h3 id="spice视频流压缩">SPICE视频流压缩</h3>
+<p>spice 处理视频流有两套方案:</p>
+<ul>
+<li>Spice 集成的mjpeg编码</li>
+<li>使用gstreamer框架编码</li>
+</ul>
+<p>其中使用gstreamer框架可以使用的编码格式(spice 目前支持的)有mjpeg, h264, vp8, 均采用CPU编码。</p>
+<p>spice 抽象了一个<code>VideoEncoder</code>结构体，调用统一的接口进行编码的一系列操作，编码方案和编码操作没有耦合在一起，相互透明。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> VideoEncoder VideoEncoder;
+<span style="color:#66d9ef">struct</span> VideoEncoder {
+    <span style="color:#75715e">/* Releases the video encoder&#39;s resources */</span>
+    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>destroy)(VideoEncoder <span style="color:#f92672">*</span>encoder);
+
+    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>encode_frame)(VideoEncoder <span style="color:#f92672">*</span>encoder, uint32_t frame_mm_time,
+                        <span style="color:#66d9ef">const</span> SpiceBitmap <span style="color:#f92672">*</span>bitmap,
+                        <span style="color:#66d9ef">const</span> SpiceRect <span style="color:#f92672">*</span>src, <span style="color:#66d9ef">int</span> top_down,
+                        gpointer bitmap_opaque, VideoBuffer<span style="color:#f92672">*</span><span style="color:#f92672">*</span> outbuf);
+
+    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>client_stream_report)(VideoEncoder <span style="color:#f92672">*</span>encoder,
+                                 uint32_t num_frames, uint32_t num_drops,
+                                 uint32_t start_frame_mm_time,
+                                 uint32_t end_frame_mm_time,
+                                 int32_t end_frame_delay, uint32_t audio_delay);
+
+    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>notify_server_frame_drop)(VideoEncoder <span style="color:#f92672">*</span>encoder);
+
+    uint64_t (<span style="color:#f92672">*</span>get_bit_rate)(VideoEncoder <span style="color:#f92672">*</span>encoder);
+
+    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>get_stats)(VideoEncoder <span style="color:#f92672">*</span>encoder, VideoEncoderStats <span style="color:#f92672">*</span>stats);
+
+    SpiceVideoCodecType codec_type;
+};
+
+<span style="color:#66d9ef">typedef</span> VideoEncoder<span style="color:#f92672">*</span> (<span style="color:#f92672">*</span>new_video_encoder_t)(SpiceVideoCodecType codec_type,
+                                             uint64_t starting_bit_rate,
+                                             VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
+                                             bitmap_ref_t bitmap_ref,
+                                             bitmap_unref_t bitmap_unref);
+
+VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">mjpeg_encoder_new</span>(SpiceVideoCodecType codec_type,
+                                uint64_t starting_bit_rate,
+                                VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
+                                bitmap_ref_t bitmap_ref,
+                                bitmap_unref_t bitmap_unref);
+
+<span style="color:#75715e">#</span><span style="color:#75715e">if defined(HAVE_GSTREAMER_1_0) || defined(HAVE_GSTREAMER_0_10)</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gstreamer_encoder_new</span>(SpiceVideoCodecType codec_type,
+                                    uint64_t starting_bit_rate,
+                                    VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
+                                    bitmap_ref_t bitmap_ref,
+                                    bitmap_unref_t bitmap_unref);
+<span style="color:#75715e">#</span><span style="color:#75715e">endif</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> RedVideoCodec {
+    new_video_encoder_t create;
+    SpiceVideoCodecType type;
+    uint32_t cap;
+} RedVideoCodec;
+</code></pre></div><p>上面的代码段是编码器<code> VideoEncoder</code>的结构体定义和两种编码方案的编码器创建函数声明。在创建编码器函数的实现中会创建相应的编码器实例，填充<code>VideoEncoder</code>结构体，并将编码器实例返回。<strong>编码器只会在满足创建流的条件后被调用创建</strong>。</p>
+<p><img src="/img/inpost/spice/spice1.png" alt="spice video encoder"></p>
+<p>启动虚拟机，即QEMU进程启动时，会分析命令行参数，如果指定了使用spice，则会调用spice的初始化函数进行初始化。此时会将spice server 端支持的视频编码格式加入一个数组中，以便在之后创建编码器的时候使用。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">dcc_create_video_encoder</span>(DisplayChannelClient <span style="color:#f92672">*</span>dcc,
+                                              uint64_t starting_bit_rate,
+                                              VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs)
+{
+    DisplayChannel <span style="color:#f92672">*</span>display <span style="color:#f92672">=</span> DCC_TO_DC(dcc);
+    RedChannelClient <span style="color:#f92672">*</span>rcc <span style="color:#f92672">=</span> RED_CHANNEL_CLIENT(dcc);
+    <span style="color:#66d9ef">int</span> client_has_multi_codec <span style="color:#f92672">=</span> red_channel_client_test_remote_cap(rcc, SPICE_DISPLAY_CAP_MULTI_CODEC);
+    <span style="color:#66d9ef">int</span> i;
+
+    <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> display<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>priv<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>video_codecs<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>len; i<span style="color:#f92672">+</span><span style="color:#f92672">+</span>) {
+        RedVideoCodec<span style="color:#f92672">*</span> video_codec <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>g_array_index (display<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>priv<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>video_codecs, RedVideoCodec, i);
+
+        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>client_has_multi_codec <span style="color:#f92672">&amp;</span><span style="color:#f92672">&amp;</span>
+            video_codec<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>type <span style="color:#f92672">!</span><span style="color:#f92672">=</span> SPICE_VIDEO_CODEC_TYPE_MJPEG) {
+            <span style="color:#75715e">/* Old clients only support MJPEG */</span>
+            <span style="color:#66d9ef">continue</span>;
+        }
+        <span style="color:#66d9ef">if</span> (client_has_multi_codec <span style="color:#f92672">&amp;</span><span style="color:#f92672">&amp;</span>
+            <span style="color:#f92672">!</span>red_channel_client_test_remote_cap(rcc, video_codec<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>cap)) {
+            <span style="color:#75715e">/* The client is recent but does not support this codec */</span>
+            <span style="color:#66d9ef">continue</span>;
+        }
+
+        VideoEncoder<span style="color:#f92672">*</span> video_encoder <span style="color:#f92672">=</span> video_codec<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>create(video_codec<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>type, starting_bit_rate, cbs, bitmap_ref, bitmap_unref);
+        <span style="color:#66d9ef">if</span> (video_encoder) {
+            <span style="color:#66d9ef">return</span> video_encoder;
+        }
+    }
+
+    <span style="color:#75715e">/* Try to use the builtin MJPEG video encoder as a fallback */</span>
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>client_has_multi_codec <span style="color:#f92672">|</span><span style="color:#f92672">|</span> red_channel_client_test_remote_cap(rcc, SPICE_DISPLAY_CAP_CODEC_MJPEG)) {
+        <span style="color:#66d9ef">return</span> mjpeg_encoder_new(SPICE_VIDEO_CODEC_TYPE_MJPEG, starting_bit_rate, cbs, bitmap_ref, bitmap_unref);
+    }
+
+    <span style="color:#66d9ef">return</span> NULL;
+}
+</code></pre></div><p>在创建编码器之前会对询问客户端是否支持多个编码，之后对之前初始化的编码格式数组按顺序进行测试，如果客户端支持，则创建编码器返回。如果数组中的所有格式都不支持，则选用默认的mjpeg格式编码。</p>
+<p><img src="/img/inpost/spice/spice2.png" alt="spice video stream"></p>
+<p>上图是spice中视频命令流的主要函数流程图。其中左图是得到qxl绘图指令后执行各种操作后把视频流发送给客户端。</p>
+<p>中图是处理display命令的具体执行函数，只有<strong>qxl的命令是绘图指令</strong>才会进行之后的绘图区域创建和维护渲染树创建流等操作。</p>
+<p>右图是<code>current_add</code>函数中的具体流程，维护树的同时，将进行是否创建流的判断，条件是<strong>帧率大于20fps，且有4个渐进帧</strong></p>
+<p>spice中关于gstreamer的使用放在gstreamer介绍中作为样例讲解。</p></article>
     </section>
 
     <footer class="ui attached segment dream-tags">
@@ -235,6 +491,8 @@
     
       <a class="ui label" href="/tags/kubernetes" title="kubernetes">kubernetes</a>
     
+      <a class="ui label" href="/tags/linux" title="linux">linux</a>
+    
       <a class="ui label" href="/tags/spice" title="spice">spice</a>
     
       <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
@@ -252,10 +510,32 @@
       
         <div class="title">
           <i class="dropdown icon"></i>
+          <a href="/categories/linux" class="item">linux</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/linux-cmd/" class="item">linux常用命令记录</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
           <a href="/categories/%E5%BA%95%E5%B1%82%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF" class="item">底层虚拟化技术</a>
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice-h264/" class="item">spice图形显示优化</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -268,7 +548,7 @@
       
         <div class="title">
           <i class="dropdown icon"></i>
-          <a href="/categories/%E5%BC%80%E6%BA%90" class="item">开源</a>
+          <a href="/categories/%E7%94%9F%E6%B4%BB-%E9%9A%8F%E7%AC%94-%E6%80%BB%E7%BB%93" class="item">生活-随笔-总结</a>
         </div>
         <div class="content">
           <div class="ui list">
@@ -279,19 +559,15 @@
               </div>
             </div>
           
-          </div>
-        </div>
-      
-        <div class="title">
-          <i class="dropdown icon"></i>
-          <a href="/categories/%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94%E6%80%BB%E7%BB%93" class="item">生活随笔总结</a>
-        </div>
-        <div class="content">
-          <div class="ui list">
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2018/06</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
-                <a href="https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡</a>
+                <a href="https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2017/03</a>
               </div>
             </div>
           

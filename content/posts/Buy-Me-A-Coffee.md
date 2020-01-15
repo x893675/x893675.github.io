@@ -4,7 +4,7 @@ date: 2019-06-03T14:21:26+08:00
 lastmod: 2019-06-03T14:21:26+08:00
 author: hanamichi
 cover: /img/Buy-Me-A-Coffee.jpg
-categories: ['开源']
+categories: ['生活-随笔-总结']
 tags: ['赞赏']
 ---
 
