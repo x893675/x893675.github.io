@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
-    <lastBuildDate>Mon, 01 May 2017 14:21:26 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 01 Jun 2017 14:21:26 +0800</lastBuildDate>
     
 	<atom:link href="https://hanamichi.wiki/tags/%E4%BA%91%E8%AE%A1%E7%AE%97/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>spice图形显示优化</title>
+      <link>https://hanamichi.wiki/posts/spice-h264/</link>
+      <pubDate>Thu, 01 Jun 2017 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/spice-h264/</guid>
+      <description>&lt;h1 id=&#34;spice图形显示优化&#34;&gt;spice图形显示优化&lt;/h1&gt;</description>
+    </item>
     
     <item>
       <title>云桌面spice初探</title>
@@ -18,7 +27,7 @@
       <pubDate>Mon, 01 May 2017 14:21:26 +0800</pubDate>
       
       <guid>https://hanamichi.wiki/posts/spice/</guid>
-      <description>&lt;p&gt;spice研究&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;spice初探&#34;&gt;spice初探&lt;/h1&gt;</description>
     </item>
     
   </channel>

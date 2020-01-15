@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+spice图形显示优化
+</title>
+
+    
+  <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+
+  
+  <meta name="author" content="hanamichi" />
+  <meta name="description" content="spice图形显示优化" />
+
+
+
+<meta name="generator" content="Hugo 0.62.2" />
+
+<link rel="canonical" href="https://hanamichi.wiki/posts/spice-h264/" />
+
+
+<meta property="og:title" content="spice图形显示优化" />
+<meta property="og:description" content="spice图形显示优化" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/spice-h264/" />
+<meta property="article:published_time" content="2017-06-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2017-12-01T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="spice图形显示优化"/>
+<meta name="twitter:description" content="spice图形显示优化"/>
+
+
+<link rel="stylesheet" href="/css/github-markdown.css" />
+<link rel="stylesheet" href="/css/semantic.min.css" />
+<link rel="stylesheet" href="/css/site.css" />
+
+
+<style>
+  a {
+    color: seagreen !important;
+  }
+</style>
+
+
+
+<style>
+  .inverted a {
+     color: darkseagreen !important;
+  }
+</style>
+
+
+  </head>
+
+  
+  <body style="background: #84a4b0;">
+  
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/hanamichi.wiki'"></i>
+  </div>
+  <div class="item">
+    <i id="theme-switch" class="large link icon" onclick="themeSwitch()"></i>
+  </div>
+</nav>
+
+          
+<div class="ui centered relaxed grid dream-grid">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single">
+
+    <section class="ui top attached segment" id="dream-save-post-as-img">
+      <header style="margin-top: 0 !important;">
+        <h2 class="ui header">
+          spice图形显示优化
+          <div class="sub header">@ hanamichi · Thursday, Jun 1, 2017 · 13 分钟阅读 · 更新于 Dec 1, 2017</div>
+        </h2>
+      </header>
+      <article style="margin-top: 2rem;"><h1 id="spice图形显示优化">spice图形显示优化</h1>
+<ul>
+<li><a href="#spice%E5%9B%BE%E5%BD%A2%E6%98%BE%E7%A4%BA%E4%BC%98%E5%8C%96">spice图形显示优化</a>
+<ul>
+<li><a href="#gstreamer%E6%A1%86%E6%9E%B6%E4%BB%8B%E7%BB%8D">Gstreamer框架介绍</a>
+<ul>
+<li><a href="#bin">bin</a></li>
+<li><a href="#pipeline">pipeline</a></li>
+<li><a href="#elements">elements</a></li>
+<li><a href="#%E6%95%B0%E6%8D%AE%E6%B5%81">数据流</a></li>
+<li><a href="#spice%E4%B8%ADgstreamer%E7%9A%84%E4%BD%BF%E7%94%A8">spice中gstreamer的使用</a></li>
+<li><a href="#gstreamer%E7%AE%A1%E9%81%93%E5%88%9B%E5%BB%BA%E6%A0%B7%E4%BE%8B%E7%A8%8B%E5%BA%8F">gstreamer管道创建样例程序</a></li>
+</ul>
+</li>
+<li><a href="#gstream%E7%A1%AC%E4%BB%B6%E7%BC%96%E8%A7%A3%E7%A0%81">gstream硬件编解码</a>
+<ul>
+<li><a href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85nvidia%E9%A9%B1%E5%8A%A8">安装nvidia驱动</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85cuda-80-toolkit">安装cuda 8.0 toolkit</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85video-codec-sdk60">安装video-codec-sdk6.0</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85gstreamer-112">安装gstreamer-1.12</a></li>
+<li><a href="#k1%E5%88%9D%E6%AD%A5%E6%B5%8B%E8%AF%95">k1初步测试</a></li>
+</ul>
+</li>
+<li><a href="#spice%E4%BC%98%E5%8C%96">spice优化</a>
+<ul>
+<li><a href="#spice%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%AE%BE%E7%BD%AE%E4%BD%BF%E7%94%A8h264">spice服务端设置使用h264</a></li>
+<li><a href="#qemu%E6%8C%87%E5%AE%9A%E4%BD%BF%E7%94%A8%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81">qemu指定使用视频编码</a></li>
+<li><a href="#spice%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E8%BD%AF%E8%A7%A3">spice客户端使用软解</a></li>
+<li><a href="#spice%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BD%BF%E7%94%A8%E7%A1%AC%E8%A7%A3">spice客户端使用硬解</a></li>
+</ul>
+</li>
+<li><a href="#qemu-spice%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88">Qemu Spice视频编码性能优化方案</a>
+<ul>
+<li><a href="#rdp%E6%98%BE%E5%8D%A1%E9%80%8F%E4%BC%A0">rdp+显卡透传</a></li>
+<li><a href="#%E6%9B%B4%E6%94%B9spice%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%BC%96%E7%A0%81%E6%96%B9%E6%A1%88">更改spice服务端编码方案</a></li>
+</ul>
+</li>
+<li><a href="#qemu-spice%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A">Qemu Spice视频编码性能测试报告</a>
+<ul>
+<li><a href="#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83">测试环境</a></li>
+<li><a href="#cpu%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">CPU性能测试</a></li>
+<li><a href="#%E7%BD%91%E7%BB%9C%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">网络性能测试</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E7%BB%93%E8%AE%BA">测试结论</a></li>
+<li><a href="#%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE">优化建议</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="gstreamer框架介绍">Gstreamer框架介绍</h2>
+<p>GStreamer是基于管道的多媒体框架。</p>
+<p>Gstreamer是一个libraries和plugins的集合，用于帮助实现各种类型的多媒体应用程序，比如播放器，转码工具，多媒体服务器等</p>
+<p>GStreamer插件可以分为:</p>
+<ul>
+<li>协议处理</li>
+<li>来源：音频和视频（涉及协议插件）</li>
+<li>格式：解析器，格式化器，复用器，分离器，元数据，字幕</li>
+<li>编解码器：编码器和解码器</li>
+<li>过滤器：转换器，混音器，效果器，&hellip;</li>
+<li>接收器：用于音频和视频（涉及协议插件）</li>
+</ul>
+<p>GStreamer包:</p>
+<ul>
+<li>gstreamer: 核心包，包含一些基础元素和基本的应用程序gst-inspect和gst-launch</li>
+<li>gst-plugins-base: 基本示例性元素集</li>
+<li>gst-plugins-good: 此组插件中的元素具有LGPL认证</li>
+<li>gst-plugins-bad: 此组插件接近高品质，但是缺乏认证</li>
+<li>gst-plugins-ugly: 插件可能品质良好，但是会出现部署上的问题</li>
+<li>gst-libav: 使用libav的编解码库(libav是从ffmpeg分出的实现多种音视频编解码及转换的函数库)</li>
+<li>gst-plugins-vaapi: 包含可以使用vaapi的各元素</li>
+</ul>
+<h3 id="bin">bin</h3>
+<p>多个element构成的特殊的element</p>
+<h3 id="pipeline">pipeline</h3>
+<p>是一个特殊的bin,具有全局的时钟，有四种可能的状态，分别是NULL，READY，PAUSED，PLAYING。NULL和READY状态下，element不对数据做任何处理，PLAYING状态对数据进行处理，PAUSE状态介于两者之间，对数据进行preroll。应用程序通过函数调用控制pipeline在不同状态之间进行转换。，应用程序通过控制管道的状态进行数据流的传输。</p>
+<p><img src="/img/inpost/spice/gstreamer.png" alt="pipeline"></p>
+<h3 id="elements">elements</h3>
+<p>element是pipeline的最小组成部分。element提供了多个pads，或者为sink，或者为source。elements的输入叫做sink pads，输出叫做source pads。应用程序通过pad把element连接起来构成pipeline，如下图所示，其中顺着流的方向为downstream，相反方向是upstream</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ gst-inspect-1.0 x264enc
+Factory Details:
+  Rank                     primary <span style="color:#f92672">(</span>256<span style="color:#f92672">)</span>
+  Long-name                x264enc
+  Klass                    Codec/Encoder/Video
+  Description              H264 Encoder
+  Author                   Josef Zlomek &lt;josef.zlomek@itonis.tv&gt;, Mark Nauwelaerts &lt;mnauw@users.sf.net&gt;
+
+Plugin Details:
+  Name                     x264
+  Description              libx264-based H264 plugins
+  Filename                 /usr/lib/x86_64-linux-gnu/gstreamer-1.0/libgstx264.so
+  Version                  1.8.3
+  License                  GPL
+  Source module            gst-plugins-ugly
+  Source release date      2016-08-19
+  Binary package           GStreamer Ugly Plugins <span style="color:#f92672">(</span>Ubuntu<span style="color:#f92672">)</span>
+  Origin URL               https://launchpad.net/distros/ubuntu/+source/gst-plugins-ugly1.0
+
+GObject
+ +----GInitiallyUnowned
+       +----GstObject
+             +----GstElement
+                   +----GstVideoEncoder
+                         +----GstX264Enc
+
+Implemented Interfaces:
+  GstPreset
+
+Pad Templates:
+  SINK template: <span style="color:#e6db74">&#39;sink&#39;</span>
+    Availability: Always
+    Capabilities:
+      video/x-raw
+                 format: <span style="color:#f92672">{</span> I420, YV12, Y42B, Y444, NV12, I420_10LE, I422_10LE, Y444_10LE <span style="color:#f92672">}</span>
+              framerate: <span style="color:#f92672">[</span> 0/1, 2147483647/1 <span style="color:#f92672">]</span>
+                  width: <span style="color:#f92672">[</span> 16, <span style="color:#ae81ff">2147483647</span> <span style="color:#f92672">]</span>
+                 height: <span style="color:#f92672">[</span> 16, <span style="color:#ae81ff">2147483647</span> <span style="color:#f92672">]</span>
+
+  SRC template: <span style="color:#e6db74">&#39;src&#39;</span>
+    Availability: Always
+    Capabilities:
+      video/x-h264
+              framerate: <span style="color:#f92672">[</span> 0/1, 2147483647/1 <span style="color:#f92672">]</span>
+                  width: <span style="color:#f92672">[</span> 1, <span style="color:#ae81ff">2147483647</span> <span style="color:#f92672">]</span>
+                 height: <span style="color:#f92672">[</span> 1, <span style="color:#ae81ff">2147483647</span> <span style="color:#f92672">]</span>
+          stream-format: <span style="color:#f92672">{</span> avc, byte-stream <span style="color:#f92672">}</span>
+              alignment: au
+                profile: <span style="color:#f92672">{</span> high-4:4:4, high-4:2:2, high-10, high, main, baseline, constrained-baseline, high-4:4:4-intra, high-4:2:2-intra, high-10-intra <span style="color:#f92672">}</span>
+
+
+Element Flags:
+  no flags set
+
+Element Implementation:
+  Has change_state<span style="color:#f92672">(</span><span style="color:#f92672">)</span> <span style="color:#66d9ef">function</span>: gst_video_encoder_change_state
+
+Element has no clocking capabilities.
+Element has no URI handling capabilities.
+
+Pads:
+  SINK: <span style="color:#e6db74">&#39;sink&#39;</span>
+    Pad Template: <span style="color:#e6db74">&#39;sink&#39;</span>
+  SRC: <span style="color:#e6db74">&#39;src&#39;</span>
+    Pad Template: <span style="color:#e6db74">&#39;src&#39;</span>
+
+Element Properties:
+  name                : The name of the object
+                        flags: readable, writable
+                        String. Default: <span style="color:#e6db74">&#34;x264enc0&#34;</span>
+  parent              : The parent of the object
+                        flags: readable, writable
+                        Object of type <span style="color:#e6db74">&#34;GstObject&#34;</span>
+  threads             : Number of threads used by the codec <span style="color:#f92672">(</span><span style="color:#ae81ff">0</span> <span style="color:#66d9ef">for</span> automatic<span style="color:#f92672">)</span>
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">2147483647</span> Default: <span style="color:#ae81ff">0</span> 
+  sliced-threads      : Low latency but lower efficiency threading
+                        flags: readable, writable
+                        Boolean. Default: false
+  sync-lookahead      : Number of buffer frames <span style="color:#66d9ef">for</span> threaded lookahead <span style="color:#f92672">(</span>-1 <span style="color:#66d9ef">for</span> automatic<span style="color:#f92672">)</span>
+                        flags: readable, writable
+                        Integer. Range: -1 - <span style="color:#ae81ff">250</span> Default: -1 
+  pass                : Encoding pass/type
+                        flags: readable, writable
+                        Enum <span style="color:#e6db74">&#34;GstX264EncPass&#34;</span> Default: 0, <span style="color:#e6db74">&#34;cbr&#34;</span>
+                           <span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>: cbr              - Constant Bitrate Encoding
+                           <span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>: quant            - Constant Quantizer
+                           <span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>: qual             - Constant Quality
+                           <span style="color:#f92672">(</span>17<span style="color:#f92672">)</span>: pass1            - VBR Encoding - Pass <span style="color:#ae81ff">1</span>
+                           <span style="color:#f92672">(</span>18<span style="color:#f92672">)</span>: pass2            - VBR Encoding - Pass <span style="color:#ae81ff">2</span>
+                           <span style="color:#f92672">(</span>19<span style="color:#f92672">)</span>: pass3            - VBR Encoding - Pass <span style="color:#ae81ff">3</span>
+  quantizer           : Constant quantizer or quality to apply
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">50</span> Default: <span style="color:#ae81ff">21</span> 
+  multipass-cache-file: Filename <span style="color:#66d9ef">for</span> multipass cache file
+                        flags: readable, writable
+                        String. Default: <span style="color:#e6db74">&#34;x264.log&#34;</span>
+  byte-stream         : Generate byte stream format of NALU
+                        flags: readable, writable
+                        Boolean. Default: false
+  bitrate             : Bitrate in kbit/sec
+                        flags: readable, writable, changeable in NULL, READY, PAUSED or PLAYING state
+                        Unsigned Integer. Range: <span style="color:#ae81ff">1</span> - <span style="color:#ae81ff">2048000</span> Default: <span style="color:#ae81ff">2048</span> 
+  intra-refresh       : Use Periodic Intra Refresh instead of IDR frames
+                        flags: readable, writable
+                        Boolean. Default: false
+  vbv-buf-capacity    : Size of the VBV buffer in milliseconds
+                        flags: readable, writable, changeable in NULL, READY, PAUSED or PLAYING state
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">10000</span> Default: <span style="color:#ae81ff">600</span> 
+  me                  : Integer pixel motion estimation method
+                        flags: readable, writable
+                        Enum <span style="color:#e6db74">&#34;GstX264EncMe&#34;</span> Default: 1, <span style="color:#e6db74">&#34;hex&#34;</span>
+                           <span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>: dia              - dia
+                           <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>: hex              - hex
+                           <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>: umh              - umh
+                           <span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>: esa              - esa
+                           <span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>: tesa             - tesa
+  subme               : Subpixel motion estimation and partition decision quality: 1<span style="color:#f92672">=</span>fast, 10<span style="color:#f92672">=</span>best
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">1</span> - <span style="color:#ae81ff">10</span> Default: <span style="color:#ae81ff">1</span> 
+  analyse             : Partitions to consider
+                        flags: readable, writable
+                        Flags <span style="color:#e6db74">&#34;GstX264EncAnalyse&#34;</span> Default: 0x00000000, <span style="color:#e6db74">&#34;(none)&#34;</span>
+                           <span style="color:#f92672">(</span>0x00000001<span style="color:#f92672">)</span>: i4x4             - i4x4
+                           <span style="color:#f92672">(</span>0x00000002<span style="color:#f92672">)</span>: i8x8             - i8x8
+                           <span style="color:#f92672">(</span>0x00000010<span style="color:#f92672">)</span>: p8x8             - p8x8
+                           <span style="color:#f92672">(</span>0x00000020<span style="color:#f92672">)</span>: p4x4             - p4x4
+                           <span style="color:#f92672">(</span>0x00000100<span style="color:#f92672">)</span>: b8x8             - b8x8
+  dct8x8              : Adaptive spatial transform size
+                        flags: readable, writable
+                        Boolean. Default: false
+  ref                 : Number of reference frames
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">1</span> - <span style="color:#ae81ff">12</span> Default: <span style="color:#ae81ff">1</span> 
+  bframes             : Number of B-frames between I and P
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">4</span> Default: <span style="color:#ae81ff">0</span> 
+  b-adapt             : Automatically decide how many B-frames to use
+                        flags: readable, writable
+                        Boolean. Default: true
+  b-pyramid           : Keep some B-frames as references
+                        flags: readable, writable
+                        Boolean. Default: false
+  weightb             : Weighted prediction <span style="color:#66d9ef">for</span> B-frames
+                        flags: readable, writable
+                        Boolean. Default: false
+  sps-id              : SPS and PPS ID number
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">31</span> Default: <span style="color:#ae81ff">0</span> 
+  aud                 : Use AU <span style="color:#f92672">(</span>Access Unit<span style="color:#f92672">)</span> delimiter
+                        flags: readable, writable
+                        Boolean. Default: true
+  trellis             : Enable trellis searched quantization
+                        flags: readable, writable
+                        Boolean. Default: true
+  key-int-max         : Maximal distance between two key-frames <span style="color:#f92672">(</span><span style="color:#ae81ff">0</span> <span style="color:#66d9ef">for</span> automatic<span style="color:#f92672">)</span>
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">2147483647</span> Default: <span style="color:#ae81ff">0</span> 
+  cabac               : Enable CABAC entropy coding
+                        flags: readable, writable
+                        Boolean. Default: true
+  qp-min              : Minimum quantizer
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">51</span> Default: <span style="color:#ae81ff">10</span> 
+  qp-max              : Maximum quantizer
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">51</span> Default: <span style="color:#ae81ff">51</span> 
+  qp-step             : Maximum quantizer difference between frames
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">50</span> Default: <span style="color:#ae81ff">4</span> 
+  ip-factor           : Quantizer factor between I- and P-frames
+                        flags: readable, writable
+                        Float. Range:               <span style="color:#ae81ff">0</span> -               <span style="color:#ae81ff">2</span> Default:             1.4 
+  pb-factor           : Quantizer factor between P- and B-frames
+                        flags: readable, writable
+                        Float. Range:               <span style="color:#ae81ff">0</span> -               <span style="color:#ae81ff">2</span> Default:             1.3 
+  mb-tree             : Macroblock-Tree ratecontrol
+                        flags: readable, writable
+                        Boolean. Default: true
+  rc-lookahead        : Number of frames <span style="color:#66d9ef">for</span> frametype lookahead
+                        flags: readable, writable
+                        Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">250</span> Default: <span style="color:#ae81ff">40</span> 
+  noise-reduction     : Noise reduction strength
+                        flags: readable, writable
+                        Unsigned Integer. Range: <span style="color:#ae81ff">0</span> - <span style="color:#ae81ff">100000</span> Default: <span style="color:#ae81ff">0</span> 
+  interlaced          : Interlaced material
+                        flags: readable, writable
+                        Boolean. Default: false
+  option-string       : String of x264 options <span style="color:#f92672">(</span>overridden by element properties<span style="color:#f92672">)</span>
+                        flags: readable, writable
+                        String. Default: <span style="color:#e6db74">&#34;&#34;</span>
+  speed-preset        : Preset name <span style="color:#66d9ef">for</span> speed/quality tradeoff options <span style="color:#f92672">(</span>can affect decode compatibility - impose restrictions separately <span style="color:#66d9ef">for</span> your target decoder<span style="color:#f92672">)</span>
+                        flags: readable, writable
+                        Enum <span style="color:#e6db74">&#34;GstX264EncPreset&#34;</span> Default: 6, <span style="color:#e6db74">&#34;medium&#34;</span>
+                           <span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>: None             - No preset
+                           <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>: ultrafast        - ultrafast
+                           <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>: superfast        - superfast
+                           <span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>: veryfast         - veryfast
+                           <span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>: faster           - faster
+                           <span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>: fast             - fast
+                           <span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>: medium           - medium
+                           <span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>: slow             - slow
+                           <span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>: slower           - slower
+                           <span style="color:#f92672">(</span>9<span style="color:#f92672">)</span>: veryslow         - veryslow
+                           <span style="color:#f92672">(</span>10<span style="color:#f92672">)</span>: placebo          - placebo
+  psy-tune            : Preset name <span style="color:#66d9ef">for</span> psychovisual tuning options
+                        flags: readable, writable
+                        Enum <span style="color:#e6db74">&#34;GstX264EncPsyTune&#34;</span> Default: 0, <span style="color:#e6db74">&#34;none&#34;</span>
+                           <span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>: none             - No tuning
+                           <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>: film             - Film
+                           <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>: animation        - Animation
+                           <span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>: grain            - Grain
+                           <span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>: psnr             - PSNR
+                           <span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>: ssim             - SSIM
+  tune                : Preset name <span style="color:#66d9ef">for</span> non-psychovisual tuning options
+                        flags: readable, writable
+                        Flags <span style="color:#e6db74">&#34;GstX264EncTune&#34;</span> Default: 0x00000000, <span style="color:#e6db74">&#34;(none)&#34;</span>
+                           <span style="color:#f92672">(</span>0x00000001<span style="color:#f92672">)</span>: stillimage       - Still image
+                           <span style="color:#f92672">(</span>0x00000002<span style="color:#f92672">)</span>: fastdecode       - Fast decode
+                           <span style="color:#f92672">(</span>0x00000004<span style="color:#f92672">)</span>: zerolatency      - Zero latency
+  frame-packing       : Set frame packing mode <span style="color:#66d9ef">for</span> Stereoscopic content
+                        flags: readable, writable
+                        Enum <span style="color:#e6db74">&#34;GstX264EncFramePacking&#34;</span> Default: -1, <span style="color:#e6db74">&#34;auto&#34;</span>
+                           <span style="color:#f92672">(</span>-1<span style="color:#f92672">)</span>: auto             - Automatic <span style="color:#f92672">(</span>use incoming video information<span style="color:#f92672">)</span>
+                           <span style="color:#f92672">(</span>0<span style="color:#f92672">)</span>: checkerboard     - checkerboard - Left and Right pixels alternate in a checkerboard pattern
+                           <span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>: column-interleaved - column interleaved - Alternating pixel columns represent Left and Right views
+                           <span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>: row-interleaved  - row interleaved - Alternating pixel rows represent Left and Right views
+                           <span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>: side-by-side     - side by side - The left half of the frame contains the Left eye view, the right half the Right eye view
+                           <span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>: top-bottom       - top bottom - L is on top, R on bottom
+                           <span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>: frame-interleaved - frame interleaved - Each frame contains either Left or Right view alternately
+
+Presets:
+  <span style="color:#e6db74">&#34;Profile Baseline&#34;</span>
+  <span style="color:#e6db74">&#34;Profile High&#34;</span>
+  <span style="color:#e6db74">&#34;Profile Main&#34;</span>
+  <span style="color:#e6db74">&#34;Quality High&#34;</span>
+  <span style="color:#e6db74">&#34;Quality Low&#34;</span>
+  <span style="color:#e6db74">&#34;Quality Normal&#34;</span>
+</code></pre></div><h3 id="数据流">数据流</h3>
+<p>Gstreamer支持两种类型的数据流，分别是push模式和pull模式。在push模式下，upstream的element通过调用downstream的sink pads的函数实现数据的传送。在pull模式下，downstream的element通过调用upstream的source pads的函数实现对数据的请求。</p>
+<p>在pads之间传送的数据封装在Buffer里，Buffer中有一个指向实际数据的指针以及一些metadata。metadata的内容包括：</p>
+<ul>
+<li>时间戳</li>
+<li>偏移</li>
+<li>媒体类型</li>
+<li>其他</li>
+</ul>
+<h3 id="spice中gstreamer的使用">spice中gstreamer的使用</h3>
+<p><img src="/img/inpost/spice/gstreamer2.png" alt="spice-gstreamer"></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">spice_gst_encoder_encode_frame</span>(VideoEncoder <span style="color:#f92672">*</span>video_encoder,
+                                          uint32_t frame_mm_time,
+                                          <span style="color:#66d9ef">const</span> SpiceBitmap <span style="color:#f92672">*</span>bitmap,
+                                          <span style="color:#66d9ef">const</span> SpiceRect <span style="color:#f92672">*</span>src, <span style="color:#66d9ef">int</span> top_down,
+                                          gpointer bitmap_opaque,
+                                          VideoBuffer <span style="color:#f92672">*</span><span style="color:#f92672">*</span>outbuf)
+{
+	<span style="color:#75715e">//..........
+</span><span style="color:#75715e"></span>  
+ 	<span style="color:#66d9ef">if</span> (rate_control_is_active(encoder) <span style="color:#f92672">&amp;</span><span style="color:#f92672">&amp;</span>
+        (handle_server_drops(encoder, frame_mm_time) <span style="color:#f92672">|</span><span style="color:#f92672">|</span>
+         frame_mm_time <span style="color:#f92672">&lt;</span> encoder<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>next_frame_mm_time)) {
+        <span style="color:#75715e">/* Drop the frame to limit the outgoing bit rate. */</span>
+        <span style="color:#66d9ef">return</span> VIDEO_ENCODER_FRAME_DROP;
+    }
+
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>configure_pipeline(encoder)) {
+        encoder<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>errors<span style="color:#f92672">+</span><span style="color:#f92672">+</span>;
+        <span style="color:#66d9ef">return</span> VIDEO_ENCODER_FRAME_UNSUPPORTED;
+    }
+
+    uint64_t start <span style="color:#f92672">=</span> spice_get_monotonic_time_ns();
+    <span style="color:#66d9ef">int</span> rc <span style="color:#f92672">=</span> push_raw_frame(encoder, bitmap, src, top_down, bitmap_opaque);
+    <span style="color:#66d9ef">if</span> (rc <span style="color:#f92672">=</span><span style="color:#f92672">=</span> VIDEO_ENCODER_FRAME_ENCODE_DONE) {
+        rc <span style="color:#f92672">=</span> pull_compressed_buffer(encoder, outbuf);
+        <span style="color:#66d9ef">if</span> (rc <span style="color:#f92672">!</span><span style="color:#f92672">=</span> VIDEO_ENCODER_FRAME_ENCODE_DONE) {
+            <span style="color:#75715e">/* The input buffer will be stuck in the pipeline, preventing
+</span><span style="color:#75715e">             * later ones from being processed. Furthermore something went
+</span><span style="color:#75715e">             * wrong with this pipeline, so it may be safer to rebuild it
+</span><span style="color:#75715e">             * from scratch.
+</span><span style="color:#75715e">             */</span>
+            free_pipeline(encoder);
+            encoder<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>errors<span style="color:#f92672">+</span><span style="color:#f92672">+</span>;
+        }
+    }
+  
+  <span style="color:#75715e">//...........
+</span><span style="color:#75715e"></span>}
+
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">push_raw_frame</span>(SpiceGstEncoder <span style="color:#f92672">*</span>encoder,
+                          <span style="color:#66d9ef">const</span> SpiceBitmap <span style="color:#f92672">*</span>bitmap,
+                          <span style="color:#66d9ef">const</span> SpiceRect <span style="color:#f92672">*</span>src, <span style="color:#66d9ef">int</span> top_down,
+                          gpointer bitmap_opaque)
+{
+	<span style="color:#75715e">//........对当前帧进行一些处理
+</span><span style="color:#75715e"></span>
+    GstFlowReturn ret <span style="color:#f92672">=</span> gst_app_src_push_buffer(encoder<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>appsrc, buffer);
+    <span style="color:#66d9ef">if</span> (ret <span style="color:#f92672">!</span><span style="color:#f92672">=</span> GST_FLOW_OK) {
+        spice_warning(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">GStreamer error: unable to push source buffer (%d)</span><span style="color:#e6db74">&#34;</span>, ret);
+        <span style="color:#66d9ef">return</span> VIDEO_ENCODER_FRAME_UNSUPPORTED;
+    }
+
+    <span style="color:#66d9ef">return</span> VIDEO_ENCODER_FRAME_ENCODE_DONE;
+}
+</code></pre></div><h3 id="gstreamer管道创建样例程序">gstreamer管道创建样例程序</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">
+<span style="color:#75715e">/*
+</span><span style="color:#75715e">程序运行结果与命令行执行
+</span><span style="color:#75715e">  gst-launch-1.0 filesrc location=/home/x/work/test.mp4 ! qtdemux ! avdec_h264 ! autovideosink
+</span><span style="color:#75715e">的结果相同
+</span><span style="color:#75715e">*/</span>
+
+<span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;stdlib.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;gst/gst.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(<span style="color:#66d9ef">int</span> argc, <span style="color:#66d9ef">char</span><span style="color:#f92672">*</span> argv[])
+{
+	GstElement <span style="color:#f92672">*</span>pipeline;
+	GstElement <span style="color:#f92672">*</span>filesrc;
+	GstMessage <span style="color:#f92672">*</span>msg;
+	GstBus <span style="color:#f92672">*</span>bus;
+	GError <span style="color:#f92672">*</span>error <span style="color:#f92672">=</span> NULL;
+
+	gst_init(<span style="color:#f92672">&amp;</span>argc, <span style="color:#f92672">&amp;</span>argv);
+
+	<span style="color:#66d9ef">if</span>(argc <span style="color:#f92672">!</span><span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>)
+	{
+		g_print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">usage: %s &lt;filename&gt;</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, argv[<span style="color:#ae81ff">0</span>]);
+		<span style="color:#66d9ef">return</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>;
+	}
+
+	pipeline <span style="color:#f92672">=</span> gst_parse_launch(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">filesrc name=my_filesrc ! qtdemux ! avdec_h264 ! autovideosink</span><span style="color:#e6db74">&#34;</span>, <span style="color:#f92672">&amp;</span>error);
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>pipeline)
+	{
+		g_print(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Parse error: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, error<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>message);
+		exit(<span style="color:#ae81ff">1</span>);
+	}
+
+	filesrc <span style="color:#f92672">=</span> gst_bin_get_by_name(GST_BIN(pipeline), <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">my_filesrc</span><span style="color:#e6db74">&#34;</span>);
+	g_object_set(filesrc, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">location</span><span style="color:#e6db74">&#34;</span>, argv[<span style="color:#ae81ff">1</span>], NULL);
+	g_object_unref(filesrc);
+
+	gst_element_set_state(pipeline, GST_STATE_PLAYING);
+
+	bus <span style="color:#f92672">=</span> gst_element_get_bus(pipeline);
+
+	msg <span style="color:#f92672">=</span> gst_bus_poll (bus, GST_MESSAGE_EOS <span style="color:#f92672">|</span> GST_MESSAGE_ERROR, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>);
+
+  <span style="color:#66d9ef">switch</span> (GST_MESSAGE_TYPE (msg)) {
+    <span style="color:#66d9ef">case</span> GST_MESSAGE_EOS: {
+      g_print (<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">EOS</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>);
+      <span style="color:#66d9ef">break</span>;
+    }
+    <span style="color:#66d9ef">case</span> GST_MESSAGE_ERROR: {
+      GError <span style="color:#f92672">*</span>err <span style="color:#f92672">=</span> NULL; <span style="color:#75715e">/* error to show to users                 */</span>
+      gchar <span style="color:#f92672">*</span>dbg <span style="color:#f92672">=</span> NULL;  <span style="color:#75715e">/* additional debug string for developers */</span>
+
+      gst_message_parse_error (msg, <span style="color:#f92672">&amp;</span>err, <span style="color:#f92672">&amp;</span>dbg);
+      <span style="color:#66d9ef">if</span> (err) {
+        g_printerr (<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">ERROR: %s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, err<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>message);
+        g_error_free (err);
+      }
+      <span style="color:#66d9ef">if</span> (dbg) {
+        g_printerr (<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">[Debug details: %s]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>, dbg);
+        g_free (dbg);
+      }
+    }
+    <span style="color:#66d9ef">default</span><span style="color:#f92672">:</span>
+      g_printerr (<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Unexpected message of type %d</span><span style="color:#e6db74">&#34;</span>, GST_MESSAGE_TYPE (msg));
+      <span style="color:#66d9ef">break</span>;
+  }
+  gst_message_unref (msg);
+
+  gst_element_set_state (pipeline, GST_STATE_NULL);
+  gst_object_unref (pipeline);
+  gst_object_unref (bus);
+
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h2 id="gstream硬件编解码">gstream硬件编解码</h2>
+<h3 id="环境搭建">环境搭建</h3>
+<p><strong>特别说明</strong>： 以Nvidia K1显卡为例，gstreamer版本选取1.12</p>
+<p>需要编译安装以下软件：</p>
+<p>Cuda 8.0 toolkit&mdash;-显卡驱动要求367.xx及以上版本，k1显卡只能安装cuda8.0</p>
+<p>Video-codec-sdk6.0&mdash;-nvenc编码sdk</p>
+<p>Gstreamer1.12相应的库&mdash;&ndash;gstreamer1.12版本中加入了cuda8.0的支持，要在gstreamer中使用Nvenc，需要cuda&gt;6.5,nvenc&gt;5.0</p>
+<pre><code>Cuda下载地址：https://developer.nvidia.com/cuda-toolkit-archive
+Video-codec-sdk下载地址：https://developer.nvidia.com/video-codec-sdk-archive
+Gstreamer源码下载地址：https://gstreamer.freedesktop.org/src/
+</code></pre><h3 id="安装nvidia驱动">安装nvidia驱动</h3>
+<ol>
+<li>从官网下载nvidia驱动，版本要求367.xx。</li>
+<li>在内核启动项增加nouveau.modeset=0rd.driver.blacklist=nouveau，然后重启</li>
+<li>运行驱动程序的.run文件</li>
+</ol>
+<h3 id="安装cuda-80-toolkit">安装cuda 8.0 toolkit</h3>
+<ol>
+<li>运行.run文件，除驱动安装选项其余全部选择yes。</li>
+<li>执行vim /etc/profile,在文件末尾加上<code>exportPATH=/usr/local/cuda/bin:$PATH exportLD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH</code></li>
+<li>cd /usr/local/cuda/samples</li>
+<li>make all</li>
+<li>cd bin执行deviceQuery程序，有输出则安装成功</li>
+</ol>
+<h3 id="安装video-codec-sdk60">安装video-codec-sdk6.0</h3>
+<ol>
+<li>解压nvidia_video_sdk_6.0.1.zip</li>
+<li><code>cp -rf nvidia_video_sdk_6.0.1/Samples/common/inc  /usr/local/include/nvenc</code></li>
+</ol>
+<h3 id="安装gstreamer-112">安装gstreamer-1.12</h3>
+<ol>
+<li>先安装gstreamer-1.12.2和gst-plugins-base-1.12.2,编译参数为<code>./configure --prefix=/usr --libdir=/lib64</code></li>
+<li><code>exportPKG_CONFIG_PATH=/usr/local/cuda/pkgconfig/</code></li>
+<li>安装gst-plugins-bad-1.12.2,编译参数为<code>NVENCODE_CFLAGS=&quot;-I/usr/local/include/nvenc&quot;./configure--prefix=/usr --libdir=/lib64 --disable-gtk-doc </code></li>
+</ol>
+<p>安装完成之后执行<code>gst-inspect-1.0 nvenc</code>，如果有输出，则安装正常</p>
+<h3 id="k1初步测试">k1初步测试</h3>
+<p>K1是kepler架构，核心是gk107,有4个gpu核心</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#Gstreamer编码命令</span>
+gst-launch-1.0 -v filesrc location<span style="color:#f92672">=</span>/root/work/1080psrc ! videoparse format<span style="color:#f92672">=</span>i420 width<span style="color:#f92672">=</span><span style="color:#ae81ff">1920</span> height<span style="color:#f92672">=</span><span style="color:#ae81ff">1080</span> framerate<span style="color:#f92672">=</span>24/1 ! autovideoconvert ! nvh264enc  ! fakesink
+<span style="color:#75715e">#1080psrc是30s视频源数据</span>
+</code></pre></div><p>nvidia显卡编码能力图如下:</p>
+<p><img src="/img/inpost/spice/k1-nvenc.png" alt="nvidia显卡编码能力"></p>
+<p>使用1080p 30秒视频源进行编码测试，七进程同时进行24fps h264编码，且运行在k1的一个gpu芯片上，编码完成时间均为30-31s，每个进程的cpu占用率为23%，基本符合图中结论。</p>
+<h2 id="spice优化">spice优化</h2>
+<h3 id="spice服务端设置使用h264">spice服务端设置使用h264</h3>
+<p>spice服务端源码最新版中有一个函数<code>spice_server_set_video_codecs(SpiceServer *s, const char* video_codecs)</code>,该函数可以由QEMU调用，在spice_server初始化时，若QEMU不指定某个特定编码，spice就传入默认编码。</p>
+<p>默认编码是spice:mjpeg,gstreammer:mjpeg,gstreammer:h264,gstreammer:vp8,gstreammer:vp9组成的数组。</p>
+<p>在使用时，默认使用spice内置mjpeg编码。</p>
+<h3 id="qemu指定使用视频编码">qemu指定使用视频编码</h3>
+<p>开发使用的是qemu2.7版本的源码，该版本还不支持在启动时设置视频编码，所以需要自己在代码中加入。</p>
+<p>具体补丁如下(qemu-kvm 2.7版本)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">diff <span style="color:#f92672">-</span>Naur qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span>_old<span style="color:#f92672">/</span>qemu<span style="color:#f92672">-</span>options.hx qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span><span style="color:#f92672">/</span>qemu<span style="color:#f92672">-</span>options.hx
+<span style="color:#f92672">-</span><span style="color:#f92672">-</span><span style="color:#f92672">-</span> qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span>_old<span style="color:#f92672">/</span>qemu<span style="color:#f92672">-</span>options.hx	<span style="color:#ae81ff">2017</span><span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#f92672">-</span><span style="color:#ae81ff">31</span> <span style="color:#ae81ff">11</span><span style="color:#f92672">:</span><span style="color:#ae81ff">32</span><span style="color:#f92672">:</span><span style="color:#ae81ff">40.831770612</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">0800</span>
+<span style="color:#f92672">+</span><span style="color:#f92672">+</span><span style="color:#f92672">+</span> qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span><span style="color:#f92672">/</span>qemu<span style="color:#f92672">-</span>options.hx	<span style="color:#ae81ff">2017</span><span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#f92672">-</span><span style="color:#ae81ff">20</span> <span style="color:#ae81ff">10</span><span style="color:#f92672">:</span><span style="color:#ae81ff">15</span><span style="color:#f92672">:</span><span style="color:#ae81ff">10.000000000</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">0800</span>
+<span style="color:#960050;background-color:#1e0010">@</span><span style="color:#960050;background-color:#1e0010">@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1062</span>,<span style="color:#ae81ff">6</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">1062</span>,<span style="color:#ae81ff">7</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#960050;background-color:#1e0010">@</span>
+     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,jpeg-wan-compression=[auto|never|always]]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,zlib-glz-wan-compression=[auto|never|always]]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,streaming-video=[off|all|filter]][,disable-copy-paste]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">+</span>    <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,video-codecs=&lt;encoder1&gt;:&lt;codec1&gt;[;&lt;encoder2&gt;:&lt;codec2&gt;]]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,disable-agent-file-xfer][,agent-mouse=[on|off]]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,playback-compression=[on|off]][,seamless-migration=[on|off]]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">       [,gl=[on|off]]</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>
+diff <span style="color:#f92672">-</span>Naur qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span>_old<span style="color:#f92672">/</span>ui<span style="color:#f92672">/</span>spice<span style="color:#f92672">-</span>core.c qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span><span style="color:#f92672">/</span>ui<span style="color:#f92672">/</span>spice<span style="color:#f92672">-</span>core.c
+<span style="color:#f92672">-</span><span style="color:#f92672">-</span><span style="color:#f92672">-</span> qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span>_old<span style="color:#f92672">/</span>ui<span style="color:#f92672">/</span>spice<span style="color:#f92672">-</span>core.c	<span style="color:#ae81ff">2017</span><span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#f92672">-</span><span style="color:#ae81ff">31</span> <span style="color:#ae81ff">11</span><span style="color:#f92672">:</span><span style="color:#ae81ff">35</span><span style="color:#f92672">:</span><span style="color:#ae81ff">48.713154167</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">0800</span>
+<span style="color:#f92672">+</span><span style="color:#f92672">+</span><span style="color:#f92672">+</span> qemu<span style="color:#f92672">-</span>kvm<span style="color:#f92672">-</span><span style="color:#ae81ff">2.7</span><span style="color:#ae81ff">.0</span><span style="color:#f92672">/</span>ui<span style="color:#f92672">/</span>spice<span style="color:#f92672">-</span>core.c	<span style="color:#ae81ff">2017</span><span style="color:#f92672">-</span><span style="color:#ae81ff">03</span><span style="color:#f92672">-</span><span style="color:#ae81ff">21</span> <span style="color:#ae81ff">14</span><span style="color:#f92672">:</span><span style="color:#ae81ff">53</span><span style="color:#f92672">:</span><span style="color:#ae81ff">48.000000000</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">0800</span>
+<span style="color:#960050;background-color:#1e0010">@</span><span style="color:#960050;background-color:#1e0010">@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">489</span>,<span style="color:#ae81ff">6</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">489</span>,<span style="color:#ae81ff">9</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#960050;background-color:#1e0010">@</span>
+             .name <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">streaming-video</span><span style="color:#e6db74">&#34;</span>,
+             .type <span style="color:#f92672">=</span> QEMU_OPT_STRING,
+         },{
+<span style="color:#f92672">+</span>            .name <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">video-codecs</span><span style="color:#e6db74">&#34;</span>,
+<span style="color:#f92672">+</span>            .type <span style="color:#f92672">=</span> QEMU_OPT_STRING, 
+<span style="color:#f92672">+</span>        },{
+             .name <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">agent-mouse</span><span style="color:#e6db74">&#34;</span>,
+             .type <span style="color:#f92672">=</span> QEMU_OPT_BOOL,
+         },{
+<span style="color:#960050;background-color:#1e0010">@</span><span style="color:#960050;background-color:#1e0010">@</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">787</span>,<span style="color:#ae81ff">6</span> <span style="color:#f92672">+</span><span style="color:#ae81ff">790</span>,<span style="color:#ae81ff">23</span> <span style="color:#960050;background-color:#1e0010">@</span><span style="color:#960050;background-color:#1e0010">@</span>
+     } <span style="color:#66d9ef">else</span> {
+         spice_server_set_streaming_video(spice_server, SPICE_STREAM_VIDEO_OFF);
+     }
+<span style="color:#f92672">+</span>    <span style="color:#75715e">//qemu patch for add video-codecs begin
+</span><span style="color:#75715e"></span><span style="color:#f92672">+</span>    str <span style="color:#f92672">=</span> qemu_opt_get(opts, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">video-codecs</span><span style="color:#e6db74">&#34;</span>);
+<span style="color:#f92672">+</span>    <span style="color:#66d9ef">if</span> (str){
+<span style="color:#f92672">+</span>    <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#66d9ef">if</span> SPICE_SERVER_VERSION <span style="color:#f92672">&gt;</span><span style="color:#f92672">=</span> <span style="color:#ae81ff">0x000c06</span>
+<span style="color:#f92672">+</span>    <span style="color:#75715e">//#if 1
+</span><span style="color:#75715e"></span><span style="color:#f92672">+</span>        <span style="color:#66d9ef">if</span>(spice_server_set_video_codecs(spice_server, str)){
+<span style="color:#f92672">+</span>            error_report(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Invalid video codecs.</span><span style="color:#e6db74">&#34;</span>);
+<span style="color:#f92672">+</span>            exit(<span style="color:#ae81ff">1</span>);
+<span style="color:#f92672">+</span>        }
+<span style="color:#f92672">+</span>    <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#66d9ef">else</span>
+<span style="color:#f92672">+</span>        printf(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%x</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,SPICE_SERVER_VERSION);
+<span style="color:#f92672">+</span>        error_report(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">this qemu build does not support the </span><span style="color:#e6db74">&#34;</span>
+<span style="color:#f92672">+</span>                     <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74">video-codecs</span><span style="color:#ae81ff">\&#34;</span><span style="color:#e6db74"> option</span><span style="color:#e6db74">&#34;</span>);
+<span style="color:#f92672">+</span>        exit(<span style="color:#ae81ff">1</span>);
+<span style="color:#f92672">+</span>    <span style="color:#960050;background-color:#1e0010">#</span>endif
+<span style="color:#f92672">+</span>    }
+<span style="color:#f92672">+</span>    <span style="color:#75715e">//qemu patch for add video-codecs end
+</span><span style="color:#75715e"></span>     spice_server_set_agent_mouse
+         (spice_server, qemu_opt_get_bool(opts, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">agent-mouse</span><span style="color:#e6db74">&#34;</span>, <span style="color:#ae81ff">1</span>));
+     spice_server_set_playback_compression
+
+</code></pre></div><p>使用该补丁后，可以通过命令行在-spice之后使用video-codecs=gstreamer:h264指定spice使用264编码。</p>
+<p>通过libvirt定义xml文件生成虚拟机时，无法指定该参数。原因是libvirt的xml域没有定义该选项，所以只能在虚拟机xml文件中用以下形式定义</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;domain</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;&#39;</span> <span style="color:#a6e22e">xmlns:qemu=</span><span style="color:#e6db74">&#39;http://libvirt.org/schemas/domain/qemu/1.0&#39;</span><span style="color:#f92672">&gt;</span>
+.......
+
+  <span style="color:#f92672">&lt;qemu:commandline</span><span style="color:#f92672">&gt;</span>
+    <span style="color:#f92672">&lt;qemu:arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;-spice&#39;</span><span style="color:#f92672">/&gt;</span>
+    <span style="color:#f92672">&lt;qemu:arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;&#39;</span><span style="color:#a6e22e">port=</span><span style="color:#e6db74">5901,addr=0.0.0.0,agent-mouse=on,disable-ticketing,image-compression=auto_glz,streaming-video=filter,seamless-migration=on,video-codecs=gstreamer:h264&#39;&#39;/</span><span style="color:#f92672">&gt;</span>
+   <span style="color:#960050;background-color:#1e0010">&lt;</span>/qemu:commandline
+ <span style="color:#f92672">&lt;/domain&gt;</span>
+</code></pre></div><p>注意：</p>
+<ul>
+<li>一旦用<code>qemu:commandline</code>这个节点来定义qemu的命令行参数，若某个选项需要指定多个参数，则所有的参数都只能通过这种方法指定。例如代码中的<code>-spice</code>选项，后面的参数有端口，地址等等，需要将xml中的这些定义删除，和<code>video-codecs=gstreamer:h264</code>写在一起</li>
+<li>运行qemu的服务器上必须要安装gstreamer1.0的相关库，特别是h264需要有<code>gstreamer1-plugins-ugly</code>这个库。检测是否支持h264的方法是命令行运行<code>gst-inspect-1.0 x264enc</code>，如果命令有输出，则表示当前环境支持264编码</li>
+</ul>
+<h3 id="spice客户端使用软解">spice客户端使用软解</h3>
+<p>spice-gtk源码编译安装后会产生spice-client的相关动态库和spicy二进制程序。盒子使用的就是spicy二进制程序和相关的动态库。而remote-viewer只使用了spice-client相关的动态库文件。所以在与spice server交互的时候两者没有太大差别。</p>
+<p>spice客户端要使用软解，则运行环境也必须安装<code>gstreamer1.0</code>相关的库。</p>
+<h3 id="spice客户端使用硬解">spice客户端使用硬解</h3>
+<p>spice客户端使用硬解主要有以下两种情况</p>
+<ol>
+<li>spice客户端没有识别出视频流的编码</li>
+<li>在运行环境中设置<code>SPICE_GSTVIDEO_AUTO</code>的值，无论值是多少，只要该环境变量被设置即可</li>
+</ol>
+<p>本机环境下使用硬解打印信息如下：</p>
+<p><img src="/img/inpost/spice/vaapi_normol.png" alt="硬解打印信息"></p>
+<h2 id="qemu-spice视频编码性能优化方案">Qemu Spice视频编码性能优化方案</h2>
+<h3 id="rdp显卡透传">rdp+显卡透传</h3>
+<p>使用k1显卡在win10系统中测试可行。去掉qxl显卡，只保留透传显卡，视频和3d软件都可以使用硬件加速。win7系统有问题(nvidia 显卡透传后安装驱动失败，error code 43)，目前还没有找到解决方法。</p>
+<p>但是使用此种方案有一个问题是，更改显卡的时机(在虚拟机配置中去掉qxl，增加透传显卡)，因为vnc和spice配置后会自动添加qxl-vga设备，虚拟机装系统的界面目前只有通过vnc和spice可以看见。</p>
+<h3 id="更改spice服务端编码方案">更改spice服务端编码方案</h3>
+<p>spice使用gstreamer可以进行视频流的多种编码方案。</p>
+<p>gstreamer插件中vaapi适用intel核显，vdpau只有解码器插件，最终选择了nvidia nvenc方案。在环境中配置cuda , video_codec_sdk后gstreamer-bad库才能编译nvenc元素</p>
+<h2 id="qemu-spice视频编码性能测试报告">Qemu Spice视频编码性能测试报告</h2>
+<h3 id="测试环境">测试环境</h3>
+<ul>
+<li>
+<p>CPU        ： Intel i3-4150 3.5GHz</p>
+</li>
+<li>
+<p>内存       ： 8G DDR 4</p>
+</li>
+<li>
+<p>显卡       ： Nvidia K1 (Driver 367.57， CUDA 8.0， Video Codec SDK 6.0)</p>
+</li>
+<li>
+<p>系统       ： CentOS 7.2.1511 X64</p>
+</li>
+<li>
+<p>虚拟机     ： Qemu 2.7 (Spice 0.13.3, GStreamer 1.12.2)，</p>
+</li>
+<li>
+<p>虚拟机参数 ： 4 Cores(2 Cores, 2 Threads), Windowd 7/10 X64</p>
+</li>
+<li>
+<p>测试视频   ： 1080P 三原色； 720P 分歧者</p>
+</li>
+<li>
+<p>测试工具   ： PotPlayer、top、nethogs</p>
+</li>
+</ul>
+<h3 id="cpu性能测试">CPU性能测试</h3>
+<pre><code>操作系统       编码器       编码格式   QXL  硬解   宿主机    客户机     客户端
+Windows 7     SPICE       MJPEG     是    否    135%      16%       40%
+Windows 7     GStreamer   MJPEG     是    否    180%      18%       46%
+Windows 7     GStreamer   H.264     是    否    210%      18%       50%
+Windows 7     GStreamer   VP8       是    否    184%      22%       36%
+Windows 7     GStreamer   H.264     是    是    160%      18%       50%
+</code></pre><h3 id="网络性能测试">网络性能测试</h3>
+<pre><code>操作系统       编码器       编码格式   QXL  硬解   宿主机    客户机     1080P       720P
+Windows 7     SPICE       MJPEG     是    否    123%      25%       7MB/s       3MB/s
+Windows 7     SPICE       MJPEG     否    否    187%      29%      10MB/s      12MB/s
+Windows 10    SPICE       MJPEG     否    否    300%      90%                  14MB/s
+
+Windows 7     GStreamer   MJPEG     是    否                         7MB/s       4MB/s
+Windows 7     GStreamer   H.264     是    否                       1.0MB/s     0.8MB/s
+Windows 7     GStreamer   H.264     是    是                       1.0MB/s     0.8MB/s
+
+</code></pre><h3 id="测试结论">测试结论</h3>
+<ul>
+<li>
+<p>Windows 10中目前QXL驱动无法正常工作，只能使用VGA模式，CPU占用高，连720P视频都无法正常播放；</p>
+</li>
+<li>
+<p>只有QXL驱动能正确运行时，Spice才能生成视频流，否则只是产生图片，CPU和网络性能都很差，且视频十分卡顿；</p>
+</li>
+<li>
+<p>相比于SPICE编码器，使用GStreamer编码器的CPU消耗稍微偏高，但是网络带宽占用降低明显，视频无卡顿，且效果较好；</p>
+</li>
+<li>
+<p>使用NVENC进行硬件编码加速对性能的提升并不明显，只有25%左右，且对编码格式和参数有要求，存在兼容性问题，还需更多具体测试；</p>
+</li>
+<li>
+<p>使用GStreamer编码器的H.264编码格式的压缩率最高，带宽占用最小，但是CPU消耗较多；</p>
+</li>
+<li>
+<p>使用SPICE或GStreamer编码器的MJPEG编码格式的压缩率最低，带宽占用最高，但是CPU消耗较少。</p>
+</li>
+</ul>
+<h3 id="优化建议">优化建议</h3>
+<ul>
+<li>
+<p>要想视频流畅播放，必须保证QXL驱动能正常工作（初步分析，QXL驱动会通过IO端口协调Spice创建视频流，VGA模式则无法进行）；</p>
+</li>
+<li>
+<p>想要CPU占用率低，就使用SPICE编码器的MJPEG编码格式；</p>
+</li>
+<li>
+<p>想要网络带宽低，就使用GStreamer编码器的H.264编码格式。</p>
+</li>
+</ul></article>
+    </section>
+
+    <footer class="ui attached segment dream-tags">
+      
+        
+          <a class="ui label" href="/tags/spice" title="spice">spice</a>
+        
+          <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; background: #1b1c1d !important; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i> Save as image
+      </div>
+    </footer>
+
+    
+      <footer class="ui attached segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+
+    
+      <footer class="ui bottom attached stacked segment post-disqus-area" data-html2canvas-ignore="true">
+        <div id="disqus_thread"></div>
+        <script>
+          
+
+
+          var disqus_config = function () {
+            this.page.url = 'https:\/\/hanamichi.wiki\/posts\/spice-h264\/';  
+            this.page.identifier = '\/posts\/spice-h264\/'; 
+          };
+
+          (function() { 
+            var d = document, s = d.createElement('script');
+            s.src = 'https://' + 'x893675' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </footer>
+    
+
+  </div>
+  <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
+    <article class="dream-header">
+  <section class="ui top attached center aligned segment">
+    <div class="ui small circular image">
+      
+        <img src="/me/hanamichi.jpg">
+      
+    </div>
+
+    <h3 class="ui header">Hanamichi的博客<div class="sub header" style="margin-top: 0.5rem;">勤练带来力量！</div>
+    </h3>
+
+    <div class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+    </div>
+  </section>
+
+  
+  <section class="ui attached center aligned segment dream-tags">
+    
+      <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
+    
+      <a class="ui label" href="/tags/kubernetes" title="kubernetes">kubernetes</a>
+    
+      <a class="ui label" href="/tags/linux" title="linux">linux</a>
+    
+      <a class="ui label" href="/tags/spice" title="spice">spice</a>
+    
+      <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
+    
+      <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB" title="生活">生活</a>
+    
+      <a class="ui label" href="/tags/%E8%B5%9E%E8%B5%8F" title="赞赏">赞赏</a>
+    
+  </section>
+  
+
+  
+  <section class="ui attached segment dream-categories">
+    <div class="ui accordion">
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/linux" class="item">linux</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/linux-cmd/" class="item">linux常用命令记录</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E5%BA%95%E5%B1%82%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF" class="item">底层虚拟化技术</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice-h264/" class="item">spice图形显示优化</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice/" class="item">云桌面spice初探</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%94%9F%E6%B4%BB-%E9%9A%8F%E7%AC%94-%E6%80%BB%E7%BB%93" class="item">生活-随笔-总结</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/buy-me-a-coffee/" class="item">Buy Me A Coffee</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2018/06</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2017/03</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%9E%8E%E6%8A%98%E8%85%BE" class="item">瞎折腾</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/aliyun-k8s/" class="item">阿里云k8s环境搭建测试</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0" class="item">编程语言学习</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/c-plus-plus-gist/" class="item">C&#43;&#43;单例模式与线程类思考</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+    </div>
+  </section>
+  
+
+  <section class="ui bottom attached center aligned segment">
+      
+      <p>© 2017 - 2020 Hanamichi的博客</p>
+      
+      <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+  </section>
+</article>
+
+  </div>
+</div>
+
+        </section>
+        <section class="back">
+          
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/hanamichi.wiki'"></i>
+  </div>
+  <div class="item">
+    <i id="theme-switch" class="large link icon" onclick="themeSwitch()"></i>
+  </div>
+</nav>
+
+          <div class="ui centered relaxed grid dream-grid dream-back">
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">关于我</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>关于我</p>
+<p>Hanamichi 的❤博客</p>
+<p>记录一些🌈生活上，技术上的事</p>
+<p>职业是后端工程师</p>
+<p>正在努力学习</p>
+<p>对云原生微服务感兴趣</p>
+<p>主要的技术栈是：</p>
+<ul>
+<li>golang</li>
+<li>kubernetes</li>
+<li>python</li>
+</ul>
+<p>学习中：</p>
+<ul>
+<li>Rust</li>
+<li>C/C++</li>
+<li>JavaScript</li>
+</ul>
+<p>目前在 <a href="http://www.99cloud.net">99cloud</a> 工作</p>
+<p>&ndash; 2019 年 12 月 31 日更新</p>
+        </div>
+      </article>
+    </section>
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">我的一些开源项目</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>我的一些开源项目</p>
+<ul>
+<li><a href="https://github.com/x893675/note">学习笔记</a> ➡ 使用github issue和wiki记录笔记</li>
+<li><a href="https://github.com/x893675/hal9000">hal9000</a> ➡ golang微服务开发学习</li>
+</ul>
+        </div>
+      </article>
+    </section>
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">其他</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>其他</p>
+<p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
+<p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
+<p>我的<strong>微信赞赏码</strong>：</p>
+<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+        </div>
+      </article>
+    </section>
+  
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article>
+      <div class="ui top attached segment">
+        <h3 class="ui header">社交链接</h3>
+      </div>
+      <div class="ui attached segment">
+        <nav class="ui secondary menu dream-menu">
+          
+            <div class="item">
+              <a href="mailto:x893675@gmail.com">
+                <i class="large mail icon" title="email"></i>
+              </a>
+            </div>
+          
+
+          
+            <div class="item">
+              <a href="https://github.com/x893675" target="_blank">
+                <i class="large github icon" title="github"></i>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+        </nav>
+      </div>
+    </article>
+  </section>
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+      <footer class="ui segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+  </section>
+
+  
+  
+</div>
+
+        </section>
+      </div>
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+<script src="/js/semantic.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/html2canvas.min.js"></script>
+
+
+  
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-156166070-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+  </body>
+</html>

@@ -31,12 +31,39 @@
     </item>
     
     <item>
+      <title>随便扯扯淡-2018/06</title>
+      <link>https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/</link>
+      <pubDate>Fri, 01 Jun 2018 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/</guid>
+      <description>&lt;p&gt;2018-06-01随笔，随便扯扯淡。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>linux常用命令记录</title>
+      <link>https://hanamichi.wiki/posts/linux-cmd/</link>
+      <pubDate>Fri, 01 Sep 2017 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/linux-cmd/</guid>
+      <description>&lt;p&gt;记录一些linux的命令及使用&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>spice图形显示优化</title>
+      <link>https://hanamichi.wiki/posts/spice-h264/</link>
+      <pubDate>Thu, 01 Jun 2017 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/spice-h264/</guid>
+      <description>&lt;h1 id=&#34;spice图形显示优化&#34;&gt;spice图形显示优化&lt;/h1&gt;</description>
+    </item>
+    
+    <item>
       <title>云桌面spice初探</title>
       <link>https://hanamichi.wiki/posts/spice/</link>
       <pubDate>Mon, 01 May 2017 14:21:26 +0800</pubDate>
       
       <guid>https://hanamichi.wiki/posts/spice/</guid>
-      <description>&lt;p&gt;spice研究&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;spice初探&#34;&gt;spice初探&lt;/h1&gt;</description>
     </item>
     
     <item>
@@ -53,7 +80,7 @@
     </item>
     
     <item>
-      <title>随便扯扯淡</title>
+      <title>随便扯扯淡-2017/03</title>
       <link>https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/</link>
       <pubDate>Fri, 31 Mar 2017 14:21:26 +0800</pubDate>
       
