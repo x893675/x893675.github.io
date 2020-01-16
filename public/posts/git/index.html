@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+git常用命令记录
+</title>
+
+    
+  <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+
+  
+  <meta name="author" content="hanamichi" />
+  <meta name="description" content="记录一些git的命令及使用
+" />
+
+
+
+<meta name="generator" content="Hugo 0.62.2" />
+
+<link rel="canonical" href="https://hanamichi.wiki/posts/git/" />
+
+
+<meta property="og:title" content="git常用命令记录" />
+<meta property="og:description" content="记录一些git的命令及使用" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/git/" />
+<meta property="article:published_time" content="2018-03-07T14:21:26+08:00" />
+<meta property="article:modified_time" content="2018-03-07T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="git常用命令记录"/>
+<meta name="twitter:description" content="记录一些git的命令及使用"/>
+
+
+<link rel="stylesheet" href="/css/github-markdown.css" />
+<link rel="stylesheet" href="/css/semantic.min.css" />
+<link rel="stylesheet" href="/css/site.css" />
+
+
+<style>
+  a {
+    color: seagreen !important;
+  }
+</style>
+
+
+
+<style>
+  .inverted a {
+     color: darkseagreen !important;
+  }
+</style>
+
+
+  </head>
+
+  
+  <body style="background: #84a4b0;">
+  
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/hanamichi.wiki'"></i>
+  </div>
+  <div class="item">
+    <i id="theme-switch" class="large link icon" onclick="themeSwitch()"></i>
+  </div>
+</nav>
+
+          
+<div class="ui centered relaxed grid dream-grid">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single">
+
+    <section class="ui top attached segment" id="dream-save-post-as-img">
+      <header style="margin-top: 0 !important;">
+        <h2 class="ui header">
+          git常用命令记录
+          <div class="sub header">@ hanamichi · Wednesday, Mar 7, 2018 · 2 分钟阅读 · 更新于 Mar 7, 2018</div>
+        </h2>
+      </header>
+      <article style="margin-top: 2rem;"><p>记录一些git的命令及使用</p>
+<ul>
+<li><a href="#git%E8%AE%BE%E7%BD%AE">Git设置</a>
+<ul>
+<li><a href="#git%E4%BD%BF%E7%94%A8socks5%E4%BB%A3%E7%90%86">Git使用socks5代理</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E5%AD%98%E5%82%A8http%E5%AF%86%E7%A0%81">设置存储http密码</a></li>
+</ul>
+</li>
+<li><a href="#git%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">Git常用命令</a>
+<ul>
+<li><a href="#%E5%88%86%E6%94%AF%E6%93%8D%E4%BD%9C">分支操作</a></li>
+<li><a href="#tag%E6%93%8D%E4%BD%9C">Tag操作</a></li>
+<li><a href="#%E6%92%A4%E9%94%80%E6%9C%AC%E5%9C%B0%E4%BF%AE%E6%94%B9">撤销本地修改</a></li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E5%88%86%E6%94%AF%E7%9A%84%E5%90%88%E5%B9%B6%E6%83%85%E5%86%B5">查看分支的合并情况</a></li>
+<li><a href="#git-rebase">git rebase</a></li>
+<li><a href="#git-revert">git revert</a></li>
+<li><a href="#%E6%9A%82%E5%AD%98">暂存</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83">代码提交规范</a>
+<ul>
+<li><a href="#git-commit%E6%97%A5%E5%BF%97%E5%9F%BA%E6%9C%AC%E8%A7%84%E8%8C%83">Git commit日志基本规范</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="git设置">Git设置</h2>
+<h3 id="git使用socks5代理">Git使用socks5代理</h3>
+<p><code>git config --global http.proxy 'socks5://127.0.0.1:1080' </code></p>
+<p><code>git config --global https.proxy 'socks5://127.0.0.1:1080' </code></p>
+<h3 id="设置存储http密码">设置存储http密码</h3>
+<ol>
+<li>使用文件存储，密码为明文<code>git config credential.helper store</code></li>
+<li>使用内存存储<code>git config credential.helper cache</code></li>
+<li>对于mac os，默认开启osxkeychain存储密码</li>
+</ol>
+<h2 id="git常用命令">Git常用命令</h2>
+<h3 id="分支操作">分支操作</h3>
+<ol>
+<li>创建分支: <code>git checkout -b branch_name</code></li>
+<li>查看全部分支: <code>git branch -av</code></li>
+<li>合并分支: <code>git merge --no-ff branch_name</code></li>
+<li>删除本地分支:<code>git branch -d branch_name</code></li>
+<li>删除远程分支:<code>git branch -r -d branch_name</code>，<code>git push origin :branch_name</code></li>
+<li>查看代码库上流:<code>git remote -v</code></li>
+<li>根据commit id获取分支名:<code>git branch --contains commit-id</code></li>
+<li>为当前分支设置跟踪分支:<code>git branch -u branch_name</code></li>
+</ol>
+<h3 id="tag操作">Tag操作</h3>
+<ol>
+<li>
+<p>列出所有tag: <code>git tag</code></p>
+</li>
+<li>
+<p>创建标签</p>
+<ol>
+<li>创建轻量标签: <code>git tag tag_name</code></li>
+<li>创建附注标签: <code>git tag -a tag_name</code></li>
+</ol>
+<p>git标签分为两种类型：轻量标签和附注标签。轻量标签是指向提交对象的引用，附注标签则是仓库中的一个独立对象。建议使用附注标签。</p>
+</li>
+<li>
+<p>切换到标签: <code>git checkout tag_name</code></p>
+</li>
+<li>
+<p>查看标签版本信息: <code>git show tag_name</code></p>
+</li>
+<li>
+<p>删除标签: <code>git tag -d tag_name</code></p>
+</li>
+<li>
+<p>删除远程标签: <code>git push origin :refs/tags/tag_name</code></p>
+</li>
+<li>
+<p>发布标签</p>
+<ol>
+<li>发布指定标签: <code>git push origin tag_name</code></li>
+<li>发布所有标签: <code>git push origin --tag</code></li>
+</ol>
+</li>
+</ol>
+<h3 id="撤销本地修改">撤销本地修改</h3>
+<p><code>git reset --hard HEAD</code></p>
+<p><code>git checkout .</code></p>
+<h3 id="查看分支的合并情况">查看分支的合并情况</h3>
+<p><code>git log --graph --pretty=oneline --abbrev-commit</code></p>
+<h3 id="git-rebase">git rebase</h3>
+<p><code>git rebase -i branch/commit_id</code></p>
+<h3 id="git-revert">git revert</h3>
+<p>该命令可以撤销某一次的提交并生成一次新的提交</p>
+<p><code>git revert commit-id</code></p>
+<h3 id="暂存">暂存</h3>
+<p>使用<code>git stash</code>可以使当前修改暂存</p>
+<p><code>git stash list</code> 查看仓库所有暂存的提交</p>
+<p><code>git stash pop xx</code> 应用某个暂存的提交</p>
+<h2 id="代码提交规范">代码提交规范</h2>
+<h3 id="git-commit日志基本规范"><em>Git commit日志基本规范</em></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">&lt;type&gt;<span style="color:#f92672">(</span>&lt;scope&gt;<span style="color:#f92672">)</span>: &lt;subject&gt;
+&lt;BLANK LINE&gt;
+&lt;body&gt;
+&lt;BLANK LINE&gt;
+&lt;footer&gt;
+</code></pre></div></article>
+    </section>
+
+    <footer class="ui attached segment dream-tags">
+      
+        
+          <a class="ui label" href="/tags/linux" title="linux">linux</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; background: #1b1c1d !important; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i> Save as image
+      </div>
+    </footer>
+
+    
+      <footer class="ui attached segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+
+    
+
+  </div>
+  <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
+    <article class="dream-header">
+  <section class="ui top attached center aligned segment">
+    <div class="ui small circular image">
+      
+        <img src="/me/hanamichi.jpg">
+      
+    </div>
+
+    <h3 class="ui header">Hanamichi的博客<div class="sub header" style="margin-top: 0.5rem;">勤练带来力量！</div>
+    </h3>
+
+    <div class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+    </div>
+  </section>
+
+  
+  <section class="ui attached center aligned segment dream-tags">
+    
+      <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
+    
+      <a class="ui label" href="/tags/docker" title="docker">docker</a>
+    
+      <a class="ui label" href="/tags/golang" title="golang">golang</a>
+    
+      <a class="ui label" href="/tags/kubernetes" title="kubernetes">kubernetes</a>
+    
+      <a class="ui label" href="/tags/linux" title="linux">linux</a>
+    
+      <a class="ui label" href="/tags/python" title="python">python</a>
+    
+      <a class="ui label" href="/tags/qemu" title="qemu">qemu</a>
+    
+      <a class="ui label" href="/tags/reading" title="reading">reading</a>
+    
+      <a class="ui label" href="/tags/rust" title="rust">rust</a>
+    
+      <a class="ui label" href="/tags/service-mesh" title="service-mesh">service-mesh</a>
+    
+      <a class="ui label" href="/tags/spice" title="spice">spice</a>
+    
+      <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
+    
+      <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1" title="微服务">微服务</a>
+    
+      <a class="ui label" href="/tags/%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F" title="游戏人生">游戏人生</a>
+    
+      <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB" title="生活">生活</a>
+    
+      <a class="ui label" href="/tags/%E7%BC%96%E7%A8%8B%E6%A6%82%E5%BF%B5" title="编程概念">编程概念</a>
+    
+      <a class="ui label" href="/tags/%E8%B5%9E%E8%B5%8F" title="赞赏">赞赏</a>
+    
+  </section>
+  
+
+  
+  <section class="ui attached segment dream-categories">
+    <div class="ui accordion">
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/linux" class="item">linux</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/git/" class="item">git常用命令记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/linux-cmd/" class="item">linux常用命令记录</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F" class="item">云原生</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/go-micro-istio/" class="item">微服务使用istio分布式追踪</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/k8s-ciro/" class="item">k8s crio 测试环境搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/service-mesh/" class="item">service mesh 初探</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E5%AE%B9%E5%99%A8" class="item">容器</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/k8s-ciro/" class="item">k8s crio 测试环境搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E5%BA%95%E5%B1%82%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF" class="item">底层虚拟化技术</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/qemu/" class="item">关于Qemu的记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice-h264/" class="item">spice图形显示优化</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice/" class="item">云桌面spice初探</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%94%9F%E6%B4%BB-%E9%9A%8F%E7%AC%94-%E6%80%BB%E7%BB%93" class="item">生活-随笔-总结</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/buy-me-a-coffee/" class="item">Buy Me A Coffee</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2018/06</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2017/03</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%9E%8E%E6%8A%98%E8%85%BE" class="item">瞎折腾</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/openwrt/" class="item">openwrt软路由搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/game-bb/" class="item">血源诅咒记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/aliyun-k8s/" class="item">阿里云k8s环境搭建测试</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0" class="item">编程语言学习</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/rust/" class="item">rust学习笔记</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/golang/" class="item">golang学习笔记</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/python/" class="item">python code gist</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/closure/" class="item">闭包的理解</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/c-plus-plus-gist/" class="item">C&#43;&#43;单例模式与线程类思考</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E9%98%85%E8%AF%BB" class="item">阅读</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%BF%AE%E7%82%BC%E4%B9%8B%E9%81%93/" class="item">程序员修炼之道-阅读摘抄</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+    </div>
+  </section>
+  
+
+  <section class="ui bottom attached center aligned segment">
+      
+      <p>© 2017 - 2020 Hanamichi的博客</p>
+      
+      <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+  </section>
+</article>
+
+  </div>
+</div>
+
+        </section>
+        <section class="back">
+          
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/hanamichi.wiki'"></i>
+  </div>
+  <div class="item">
+    <i id="theme-switch" class="large link icon" onclick="themeSwitch()"></i>
+  </div>
+</nav>
+
+          <div class="ui centered relaxed grid dream-grid dream-back">
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">关于我</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>关于我</p>
+<p>Hanamichi 的❤博客</p>
+<p>记录一些🌈生活上，技术上的事</p>
+<p>全平台玩家(pc-steam, ps4, switch), 不碰手游不碰国内垃圾网游</p>
+<p>职业是后端工程师</p>
+<p>正在努力学习</p>
+<p>对云原生微服务感兴趣</p>
+<p>主要的技术栈是：</p>
+<ul>
+<li>golang</li>
+<li>kubernetes</li>
+<li>微服务架构</li>
+</ul>
+<p>略懂一二:</p>
+<ul>
+<li>python</li>
+<li>C/C++</li>
+</ul>
+<p>学习中：</p>
+<ul>
+<li>Rust</li>
+<li>JavaScript</li>
+</ul>
+<p>目前在 <a href="http://www.99cloud.net">99cloud</a> 工作</p>
+<p>&ndash; 2019 年 12 月 31 日更新</p>
+        </div>
+      </article>
+    </section>
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">2020年的计划</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>2020年的计划</p>
+<ul>
+<li>以<a href="https://github.com/x893675/note">github issue和wiki</a>记录平时的一些想法，坚持整理然后写入博客</li>
+<li>加深golang微服务的理解, 写一个便于重复利用的微服务项目</li>
+<li>等多关注云原声CNCF开源社区动态，争取做些贡献</li>
+<li>完成两本书的阅读和笔记记录(程序猿修炼之道，代码整洁之道)</li>
+<li>日本旅游</li>
+</ul>
+        </div>
+      </article>
+    </section>
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">其他</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>其他</p>
+<p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
+<p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
+<p>我的<strong>微信赞赏码</strong>：</p>
+<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+        </div>
+      </article>
+    </section>
+  
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article>
+      <div class="ui top attached segment">
+        <h3 class="ui header">社交链接</h3>
+      </div>
+      <div class="ui attached segment">
+        <nav class="ui secondary menu dream-menu">
+          
+            <div class="item">
+              <a href="mailto:x893675@gmail.com">
+                <i class="large mail icon" title="email"></i>
+              </a>
+            </div>
+          
+
+          
+            <div class="item">
+              <a href="https://github.com/x893675" target="_blank">
+                <i class="large github icon" title="github"></i>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+        </nav>
+      </div>
+    </article>
+  </section>
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+      <footer class="ui segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+  </section>
+
+  
+  
+</div>
+
+        </section>
+      </div>
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+<script src="/js/semantic.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/html2canvas.min.js"></script>
+
+
+
+  </body>
+</html>

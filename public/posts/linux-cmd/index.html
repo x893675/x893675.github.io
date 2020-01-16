@@ -89,10 +89,286 @@ linux常用命令记录
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           linux常用命令记录
-          <div class="sub header">@ hanamichi · Friday, Sep 1, 2017 · 1 分钟阅读 · 更新于 Sep 1, 2017</div>
+          <div class="sub header">@ hanamichi · Friday, Sep 1, 2017 · 6 分钟阅读 · 更新于 Sep 1, 2017</div>
         </h2>
       </header>
-      <article style="margin-top: 2rem;"><p>记录一些linux的命令及使用</p></article>
+      <article style="margin-top: 2rem;"><p>记录一些linux的命令及使用</p>
+<ul>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E7%A1%AC%E4%BB%B6%E4%BF%A1%E6%81%AF">查看硬件信息</a>
+<ul>
+<li><a href="#dmidecode%E5%91%BD%E4%BB%A4">dmidecode命令</a></li>
+</ul>
+</li>
+<li><a href="#centos%E7%9B%B8%E5%85%B3">centos相关</a>
+<ul>
+<li><a href="#yum-%E7%9B%B8%E5%85%B3">yum 相关</a></li>
+<li><a href="#rpm%E5%91%BD%E4%BB%A4">rpm命令</a></li>
+<li><a href="#rpmbuild%E5%8F%8Aspec%E6%96%87%E4%BB%B6%E8%AF%A6%E8%A7%A3">rpmbuild及SPEC文件详解</a></li>
+<li><a href="#%E5%8D%87%E7%BA%A7%E5%86%85%E6%A0%B8">升级内核</a></li>
+<li><a href="#%E9%9D%99%E6%80%81ip%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">静态ip配置文件</a></li>
+<li><a href="#%E7%BD%91%E6%A1%A5%E9%85%8D%E7%BD%AE">网桥配置</a></li>
+<li><a href="#docker%E9%85%8D%E7%BD%AE">docker配置</a></li>
+<li><a href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">参考链接</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="查看硬件信息">查看硬件信息</h2>
+<h3 id="dmidecode命令">dmidecode命令</h3>
+<pre><code>sudo dmidecode -t processor      (CPU核芯)
+sudo dmidecode -t memory         (内存)
+sudo dmidecode -t cache          (缓存)
+sudo dmidecode -t system         (电脑型号、产商)
+sudo dmidecode -t slot           (插卡槽)
+sudo dmidecode -t baseboard      (主板)
+sudo dmidecode -t connector      (连接设备)
+sudo dmidecode -t chassis        (机箱)
+sudo dmidecode -t bios           (BIOS) 
+</code></pre><p><strong>其他设备编号：</strong></p>
+<pre><code>1	System
+2	Base Board
+3	Chassis
+4	Processor
+5	Memory Controller
+6	Memory Module
+7	Cache
+8	Port Connector
+9	System Slots
+10	On Board Devices
+11	OEM Strings
+12	System Configuration Options
+13	BIOS Language
+14	Group Associations
+15	System Event Log
+16	Physical Memory Array
+17	Memory Device
+18	32-bit Memory Error
+19	Memory Array Mapped Address
+20	Memory Device Mapped Address
+21	Built-in Pointing Device
+22	Portable Battery
+23	System Reset
+24	Hardware Security
+25	System Power Controls
+26	Voltage Probe
+27	Cooling Device
+28	Temperature Probe
+29	Electrical Current Probe
+30	Out-of-band Remote Access
+31	Boot Integrity Services
+32	System Boot
+33	64-bit Memory Error
+34	Management Device
+35	Management Device Component
+36	Management Device Threshold Data
+37	Memory Channel
+38	IPMI Device
+39	Power Supply
+40	Additional Information
+41	Onboard Device
+</code></pre><h2 id="centos相关">centos相关</h2>
+<h3 id="yum-相关">yum 相关</h3>
+<p>1 <strong>语法</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum <span style="color:#f92672">(</span>选项<span style="color:#f92672">)</span><span style="color:#f92672">(</span>参数<span style="color:#f92672">)</span>
+</code></pre></div><p>2 <strong>选项</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-h：显示帮助信息； 
+-y：对所有的提问都回答“yes”；
+-c：指定配置文件； 
+-q：安静模式； 
+-v：详细模式； 
+-d：设置调试等级（0-10）； 
+-e：设置错误等级（0-10）； 
+-R：设置yum处理一个命令的最大等待时间； 
+-C：完全从缓存中运行，而不去下载或者更新任何头文件。
+</code></pre></div><p>3 <strong>参数</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">install：安装rpm软件包； 
+update：更新rpm软件包； 
+check-update：检查是否有可用的更新rpm软件包； 
+remove：删除指定的rpm软件包； 
+list：显示软件包的信息； 
+search：检查软件包的信息； 
+info：显示指定的rpm软件包的描述信息和概要信息； 
+clean：清理yum过期的缓存； 
+shell：进入yum的shell提示符； 
+resolvedep：显示rpm软件包的依赖关系； 
+localinstall：安装本地的rpm软件包； 
+localupdate：显示本地rpm软件包进行更新； 
+deplist：显示rpm软件包的所有依赖关系;
+whatprovides:查找软件所在的包和仓库
+</code></pre></div><p>4 <strong>实例</strong></p>
+<ul>
+<li>自动搜索最快镜像插件<code>yum install yum-fastestmirror</code></li>
+<li>安装yum图形窗口插件<code>yum install yumex</code></li>
+<li>查看可能批量安装的列表<code>yum grouplist</code></li>
+</ul>
+<p>5 <strong>清除缓存</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum clean packages <span style="color:#75715e">#清除缓存目录下的软件包</span> 
+yum clean headers <span style="color:#75715e">#清除缓存目录下的 headers</span> 
+yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 headers</span>
+</code></pre></div><h3 id="rpm命令">rpm命令</h3>
+<p>1 <strong>语法</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm <span style="color:#f92672">(</span>选项<span style="color:#f92672">)</span><span style="color:#f92672">(</span>参数<span style="color:#f92672">)</span>
+</code></pre></div><p>2 <strong>选项</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-a：查询所有套件；
+-b&lt;完成阶段&gt;&lt;套件档&gt;+或-t &lt;完成阶段&gt;&lt;套件档&gt;+：设置包装套件的完成阶段，并指定套件档的文件名称； 
+-c：只列出组态配置文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
+-d：只列出文本文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
+-e&lt;套件档&gt;或--erase&lt;套件档&gt;：删除指定的套件； 
+-f&lt;文件&gt;+：查询拥有指定文件的套件； 
+-h或--hash：套件安装时列出标记； 
+-i：显示套件的相关信息；
+-i&lt;套件档&gt;或--install&lt;套件档&gt;：安装指定的套件档； 
+-l：显示套件的文件列表； 
+-p&lt;套件档&gt;+：查询指定的RPM套件档； 
+-q：使用询问模式，当遇到任何问题时，rpm指令会先询问用户； 
+-R：显示套件的关联性信息； 
+-s：显示文件状态，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
+-U&lt;套件档&gt;或--upgrade&lt;套件档&gt;：升级指定的套件档； 
+-v：显示指令执行过程； 
+-vv：详细显示指令执行过程，便于排错。
+</code></pre></div><p>3 <strong>参数</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">软件包：指定要操纵的rpm软件包。
+</code></pre></div><p>4 <strong>实例</strong></p>
+<ul>
+<li>安装rpm包:<code>rpm -ivh your-package.rpm</code></li>
+<li>强制安装rpm包:<code>rpm -ivh --force your-pachage.rpm</code></li>
+<li>忽略所有依赖和文件关系安装:<code>rpm -ivh --force --nodeps your-pachage.rpm</code></li>
+<li>安装src.rpm包:<code>rpm -i your-package.src.rpm</code>,源码在<code>/usr/src</code>目录下</li>
+<li>卸载rpm包:<code>rpm -e 包名</code>包名含版本号等信息，不能有rpm后缀，使用<code>--nodeps</code>强制卸载</li>
+</ul>
+<p>5 <strong>不安装提取rpm包文件</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm2cpio xxx.rpm | cpio -vi 
+rpm2cpio xxx.rpm | cpio -idmv 
+rpm2cpio xxx.rpm | cpio --extract --make-directories
+
+//参数i和extract相同，表示提取文件。v表示指示执行进程，d和make-directory相同，表示根据包中文件原来的路径建立目录，m表示保持文件的更新时间
+</code></pre></div><p>6 <strong>查看rpm包中有哪些文件</strong></p>
+<ul>
+<li>一个没有安装过的软件包，使用<code>rpm -qlp xxxx.rpm</code></li>
+<li>一个已经安装过的软件包，还可以使用<code>rpm -ql xxxxx.rpm</code></li>
+</ul>
+<p>7 <strong>获取软件包的版本描述等信息</strong></p>
+<ul>
+<li>一个没有安装过的软件包，使用<code>rpm -qip xxxxx.rpm</code>，查看包等Changelog信息<code>rpm -qip xxx.rpm --changelog</code></li>
+<li>一个已经安装过的软件包，还可以使用<code>rpm -qi xxxxxx.rpm</code></li>
+</ul>
+<p>8 <strong>查看某个程序所在的包</strong></p>
+<pre><code>返回软件包的全名: rpm -qf `which 程序名`
+返回软件包的有关信息: rpm -qif `which 程序名`
+返回软件包的文件列表: rpm -qlf `which 程序名`
+</code></pre><h3 id="rpmbuild及spec文件详解">rpmbuild及SPEC文件详解</h3>
+<p><a href="http://hanamichi.wiki/2017/12/02/rpmbuild/">rpmbuild和spec文件详解</a></p>
+<p><a href="http://vault.centos.org/">centos官方rpm包</a></p>
+<p><a href="http://mirrors.aliyun.com/">阿里云官方镜像站</a></p>
+<p><a href="http://elixir.free-electrons.com/linux/latest/source">linux各版本源码快速查询比较</a></p>
+<p><a href="https://github.com/x893675/myApp/raw/master/atiflash-4.26.0.1.tar.gz" download target="_blank">Click here to download</a></p>
+<h3 id="升级内核">升级内核</h3>
+<p>centos系统可以使用<strong>elrepo</strong>来升级内核</p>
+<ol>
+<li>
+<p>导入key</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+</code></pre></div></li>
+<li>
+<p>安装repo</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+</code></pre></div></li>
+<li>
+<p>查看可用的内核包(lt为稳定版，ml为最新版)</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*&#34;</span> --enablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;elrepo-kernel&#34;</span> list available
+</code></pre></div></li>
+<li>
+<p>安装最新版内核</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#ae81ff">\*</span> --enablerepo<span style="color:#f92672">=</span>elrepo-kernel install  kernel-ml.x86_64
+</code></pre></div></li>
+<li>
+<p>查看系统可用内核</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">awk -F<span style="color:#ae81ff">\&#39;</span> <span style="color:#e6db74">&#39;$1==&#34;menuentry &#34; {print i++ &#34; : &#34; $2}&#39;</span> /etc/grub2.cfg
+<span style="color:#75715e">#output..</span>
+<span style="color:#75715e">#0 : CentOS Linux (5.4.3-1.el7.elrepo.x86_64) 7 (Core)</span>
+<span style="color:#75715e">#1 : CentOS Linux (0-rescue-9871dd427bb842f8ae4396c60d6abed4) 7 (Core)</span>
+</code></pre></div></li>
+<li>
+<p>设置最新的内核为默认版本</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub2-set-default <span style="color:#ae81ff">0</span>
+<span style="color:#75715e"># 0 为上一条命令输出的相应序号</span>
+</code></pre></div></li>
+</ol>
+<p>参考链接</p>
+<ul>
+<li><a href="https://www.cnblogs.com/xzkzzz/p/9627658.html">https://www.cnblogs.com/xzkzzz/p/9627658.html</a></li>
+<li><a href="http://elrepo.org/tiki/tiki-index.php">http://elrepo.org/tiki/tiki-index.php</a></li>
+</ul>
+<h3 id="静态ip配置文件">静态ip配置文件</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost docker<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/sysconfig/network-scripts/ifcfg-ens33</span> 
+TYPE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Ethernet&#34;</span>
+PROXY_METHOD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>
+BROWSER_ONLY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
+BOOTPROTO<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;static&#34;</span>
+DEFROUTE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+IPV4_FAILURE_FATAL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
+IPV6INIT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+IPV6_AUTOCONF<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+IPV6_DEFROUTE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+IPV6_FAILURE_FATAL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
+IPV6_ADDR_GEN_MODE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stable-privacy&#34;</span>
+NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ens33&#34;</span>
+UUID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;eab6b1ea-2bc3-4832-8186-c8b8805a2ece&#34;</span>
+DEVICE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ens33&#34;</span>
+ONBOOT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+IPADDR<span style="color:#f92672">=</span>192.168.200.100
+NETMASK<span style="color:#f92672">=</span>255.255.255.0
+GATEWAY<span style="color:#f92672">=</span>192.168.200.1
+DNS1<span style="color:#f92672">=</span>8.8.8.8
+</code></pre></div><h3 id="网桥配置">网桥配置</h3>
+<p>假定物理网卡为<strong>eth0</strong>，网桥为<strong>br0</strong></p>
+<p><code>vim /etc/sysconfig/network-scripts/ifcfg-eht0</code></p>
+<p>更改文件中的以下条目：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># NAME,DEVICE,UUID写成自己环境中的值</span>
+TYPE<span style="color:#f92672">=</span>Ethernet
+BOOTPROTO<span style="color:#f92672">=</span>none
+NAME<span style="color:#f92672">=</span>eth0
+UUID<span style="color:#f92672">=</span>XXXXXXXXXXX
+DEVICE<span style="color:#f92672">=</span>eth0
+ONBOOT<span style="color:#f92672">=</span>yes
+BRIDGE<span style="color:#f92672">=</span>br0
+</code></pre></div><p><code>vim /etc/sysconfig/network-scripts/ifcfg-br0 </code></p>
+<p>文件内容如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 更改相应ip，也可用dhcp</span>
+TYPE<span style="color:#f92672">=</span>Bridge
+DEVICE<span style="color:#f92672">=</span>br0
+BOOTPROTO<span style="color:#f92672">=</span>static
+ONBOOT<span style="color:#f92672">=</span>yes
+IPADDR<span style="color:#f92672">=</span>172.16.73.201
+NETMASK<span style="color:#f92672">=</span>255.255.0.0
+GATEWAY<span style="color:#f92672">=</span>172.16.0.1
+DNS1<span style="color:#f92672">=</span>202.103.24.68
+</code></pre></div><p><code>service network restart</code></p>
+<p>禁用网络过滤</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#增加以下条目</span>
+net.bridge.bridge-nf-call-ip6tables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+net.bridge.bridge-nf-call-iptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</code></pre></div><p><code>sysctl -p /etc/sysctl.conf</code></p>
+<p><strong>注意</strong>：更改网络接口文件前可先备份</p>
+<h3 id="docker配置">docker配置</h3>
+<p>在较新的docker版本中，有两种方式可以更改dockerd的配置:</p>
+<ul>
+<li>创建<code>/etc/docker/daemon.json</code>，写入配置项</li>
+<li>使用dockerd的flag(使用<code>dockerd --help</code>查看dockerd的flag), 在dockerd的启动文件中加入(dockerd使用systemd托管时，使用systemctl cat docker查看服务文件)</li>
+</ul>
+<p>⚠️： 以上两种方式不兼容，同一个配置在两种方式中都有定义，dockerd会启动报错</p>
+<p>daemon.json文件的样例:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;exec-opts&#34;</span>: [<span style="color:#e6db74">&#34;native.cgroupdriver=systemd&#34;</span>],
+    <span style="color:#f92672">&#34;log-driver&#34;</span>: <span style="color:#e6db74">&#34;json-file&#34;</span>,
+    <span style="color:#f92672">&#34;log-opts&#34;</span>: { <span style="color:#f92672">&#34;max-size&#34;</span>: <span style="color:#e6db74">&#34;100m&#34;</span> },
+    <span style="color:#f92672">&#34;storage-driver&#34;</span>: <span style="color:#e6db74">&#34;overlay2&#34;</span>,
+    <span style="color:#f92672">&#34;storage-opts&#34;</span>: [ <span style="color:#e6db74">&#34;overlay2.override_kernel_check=true&#34;</span> ]
+}
+</code></pre></div><h3 id="参考链接">参考链接</h3>
+<ul>
+<li><a href="https://docs.docker.com/config/daemon/">Configure and trOubleshoot the docker daemon</a></li>
+</ul></article>
     </section>
 
     <footer class="ui attached segment dream-tags">
@@ -115,27 +391,6 @@ linux常用命令记录
       </footer>
     
 
-    
-      <footer class="ui bottom attached stacked segment post-disqus-area" data-html2canvas-ignore="true">
-        <div id="disqus_thread"></div>
-        <script>
-          
-
-
-          var disqus_config = function () {
-            this.page.url = 'https:\/\/hanamichi.wiki\/posts\/linux-cmd\/';  
-            this.page.identifier = '\/posts\/linux-cmd\/'; 
-          };
-
-          (function() { 
-            var d = document, s = d.createElement('script');
-            s.src = 'https://' + 'x893675' + '.disqus.com/embed.js';
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-          })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-      </footer>
     
 
   </div>
@@ -171,15 +426,35 @@ linux常用命令记录
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/docker" title="docker">docker</a>
+    
+      <a class="ui label" href="/tags/golang" title="golang">golang</a>
+    
       <a class="ui label" href="/tags/kubernetes" title="kubernetes">kubernetes</a>
     
       <a class="ui label" href="/tags/linux" title="linux">linux</a>
+    
+      <a class="ui label" href="/tags/python" title="python">python</a>
+    
+      <a class="ui label" href="/tags/qemu" title="qemu">qemu</a>
+    
+      <a class="ui label" href="/tags/reading" title="reading">reading</a>
+    
+      <a class="ui label" href="/tags/rust" title="rust">rust</a>
+    
+      <a class="ui label" href="/tags/service-mesh" title="service-mesh">service-mesh</a>
     
       <a class="ui label" href="/tags/spice" title="spice">spice</a>
     
       <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
     
+      <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1" title="微服务">微服务</a>
+    
+      <a class="ui label" href="/tags/%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F" title="游戏人生">游戏人生</a>
+    
       <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB" title="生活">生活</a>
+    
+      <a class="ui label" href="/tags/%E7%BC%96%E7%A8%8B%E6%A6%82%E5%BF%B5" title="编程概念">编程概念</a>
     
       <a class="ui label" href="/tags/%E8%B5%9E%E8%B5%8F" title="赞赏">赞赏</a>
     
@@ -199,7 +474,63 @@ linux常用命令记录
           
             <div class="item">
               <div class="content">
+                <a href="https://hanamichi.wiki/posts/git/" class="item">git常用命令记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
                 <a href="https://hanamichi.wiki/posts/linux-cmd/" class="item">linux常用命令记录</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F" class="item">云原生</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/go-micro-istio/" class="item">微服务使用istio分布式追踪</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/k8s-ciro/" class="item">k8s crio 测试环境搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/service-mesh/" class="item">service mesh 初探</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E5%AE%B9%E5%99%A8" class="item">容器</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/k8s-ciro/" class="item">k8s crio 测试环境搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker/" class="item">常用容器服务构建</a>
               </div>
             </div>
           
@@ -212,6 +543,12 @@ linux常用命令记录
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/qemu/" class="item">关于Qemu的记录</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -265,6 +602,18 @@ linux常用命令记录
           
             <div class="item">
               <div class="content">
+                <a href="https://hanamichi.wiki/posts/openwrt/" class="item">openwrt软路由搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/game-bb/" class="item">血源诅咒记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
                 <a href="https://hanamichi.wiki/posts/aliyun-k8s/" class="item">阿里云k8s环境搭建测试</a>
               </div>
             </div>
@@ -281,7 +630,47 @@ linux常用命令记录
           
             <div class="item">
               <div class="content">
+                <a href="https://hanamichi.wiki/posts/rust/" class="item">rust学习笔记</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/golang/" class="item">golang学习笔记</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/python/" class="item">python code gist</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/closure/" class="item">闭包的理解</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
                 <a href="https://hanamichi.wiki/posts/c-plus-plus-gist/" class="item">C&#43;&#43;单例模式与线程类思考</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E9%98%85%E8%AF%BB" class="item">阅读</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%BF%AE%E7%82%BC%E4%B9%8B%E9%81%93/" class="item">程序员修炼之道-阅读摘抄</a>
               </div>
             </div>
           
@@ -330,6 +719,7 @@ linux常用命令记录
           <p>关于我</p>
 <p>Hanamichi 的❤博客</p>
 <p>记录一些🌈生活上，技术上的事</p>
+<p>全平台玩家(pc-steam, ps4, switch), 不碰手游不碰国内垃圾网游</p>
 <p>职业是后端工程师</p>
 <p>正在努力学习</p>
 <p>对云原生微服务感兴趣</p>
@@ -337,12 +727,16 @@ linux常用命令记录
 <ul>
 <li>golang</li>
 <li>kubernetes</li>
+<li>微服务架构</li>
+</ul>
+<p>略懂一二:</p>
+<ul>
 <li>python</li>
+<li>C/C++</li>
 </ul>
 <p>学习中：</p>
 <ul>
 <li>Rust</li>
-<li>C/C++</li>
 <li>JavaScript</li>
 </ul>
 <p>目前在 <a href="http://www.99cloud.net">99cloud</a> 工作</p>
@@ -354,13 +748,16 @@ linux常用命令记录
     <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
       <article>
         <div class="ui top attached segment">
-          <h3 class="ui header">我的一些开源项目</h3>
+          <h3 class="ui header">2020年的计划</h3>
         </div>
         <div class="ui attached segment markdown-body">
-          <p>我的一些开源项目</p>
+          <p>2020年的计划</p>
 <ul>
-<li><a href="https://github.com/x893675/note">学习笔记</a> ➡ 使用github issue和wiki记录笔记</li>
-<li><a href="https://github.com/x893675/hal9000">hal9000</a> ➡ golang微服务开发学习</li>
+<li>以<a href="https://github.com/x893675/note">github issue和wiki</a>记录平时的一些想法，坚持整理然后写入博客</li>
+<li>加深golang微服务的理解, 写一个便于重复利用的微服务项目</li>
+<li>等多关注云原声CNCF开源社区动态，争取做些贡献</li>
+<li>完成两本书的阅读和笔记记录(程序猿修炼之道，代码整洁之道)</li>
+<li>日本旅游</li>
 </ul>
         </div>
       </article>
@@ -440,19 +837,6 @@ linux常用命令记录
 <script src="/js/main.js"></script>
 <script src="/js/theme.js"></script>
 <script src="/js/html2canvas.min.js"></script>
-
-
-  
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-156166070-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
 
 
 

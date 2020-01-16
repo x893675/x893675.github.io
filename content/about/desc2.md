@@ -1,13 +1,17 @@
 ---
-title: 我的一些开源项目
+title: 2020年的计划
 date: 2019-11-11T01:30:24+08:00
-lastmod: 2019-12-31T01:30:24+08:00
+lastmod: 2020-01-16T01:30:24+08:00
 ---
 
-我的一些开源项目
+2020年的计划
 
 <!--more-->
 
-- [学习笔记](https://github.com/x893675/note) :arrow_right: 使用github issue和wiki记录笔记 
-- [hal9000](https://github.com/x893675/hal9000) :arrow_right: golang微服务开发学习 
 
+
+* 以[github issue和wiki](https://github.com/x893675/note)记录平时的一些想法，坚持整理然后写入博客
+* 加深golang微服务的理解, 写一个便于重复利用的微服务项目
+* 等多关注云原声CNCF开源社区动态，争取做些贡献
+* 完成两本书的阅读和笔记记录(程序猿修炼之道，代码整洁之道)
+* 日本旅游

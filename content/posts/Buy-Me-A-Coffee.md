@@ -1,14 +1,14 @@
 ---
 title: Buy Me A Coffee
-date: 2019-06-03T14:21:26+08:00
-lastmod: 2019-06-03T14:21:26+08:00
+date: 2020-01-15T14:21:26+08:00
+lastmod: 2020-01-15T14:21:26+08:00
 author: hanamichi
 cover: /img/Buy-Me-A-Coffee.jpg
 categories: ['生活-随笔-总结']
 tags: ['赞赏']
 ---
 
-如果你喜欢我的开源项目或者它们可以给你带来帮助，可以赏一杯咖啡 ☕ 给我。~
+如果你喜欢我的博客或github项目或者它们可以给你带来帮助，可以赏一杯咖啡 ☕ 给我。~
 
 <!--more-->
 

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>
+微服务使用istio分布式追踪
+</title>
+
+    
+  <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+
+  
+  <meta name="author" content="hanamichi" />
+  <meta name="description" content="golang微服务对接k8s及使用istio的分布式追踪
+" />
+
+
+
+<meta name="generator" content="Hugo 0.62.2" />
+
+<link rel="canonical" href="https://hanamichi.wiki/posts/go-micro-istio/" />
+
+
+<meta property="og:title" content="微服务使用istio分布式追踪" />
+<meta property="og:description" content="golang微服务对接k8s及使用istio的分布式追踪" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/go-micro-istio/" />
+<meta property="article:published_time" content="2020-01-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2020-01-01T14:21:26+08:00" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="微服务使用istio分布式追踪"/>
+<meta name="twitter:description" content="golang微服务对接k8s及使用istio的分布式追踪"/>
+
+
+<link rel="stylesheet" href="/css/github-markdown.css" />
+<link rel="stylesheet" href="/css/semantic.min.css" />
+<link rel="stylesheet" href="/css/site.css" />
+
+
+<style>
+  a {
+    color: seagreen !important;
+  }
+</style>
+
+
+
+<style>
+  .inverted a {
+     color: darkseagreen !important;
+  }
+</style>
+
+
+  </head>
+
+  
+  <body style="background: #84a4b0;">
+  
+    <div class="flip-container">
+      <div class="flipper">
+        <section class="front">
+          
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/hanamichi.wiki'"></i>
+  </div>
+  <div class="item">
+    <i id="theme-switch" class="large link icon" onclick="themeSwitch()"></i>
+  </div>
+</nav>
+
+          
+<div class="ui centered relaxed grid dream-grid">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single">
+
+    <section class="ui top attached segment" id="dream-save-post-as-img">
+      <header style="margin-top: 0 !important;">
+        <h2 class="ui header">
+          微服务使用istio分布式追踪
+          <div class="sub header">@ hanamichi · Wednesday, Jan 1, 2020 · 5 分钟阅读 · 更新于 Jan 1, 2020</div>
+        </h2>
+      </header>
+      <article style="margin-top: 2rem;"><p>golang微服务对接k8s及使用istio的分布式追踪</p>
+<ul>
+<li><a href="#%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AF%B9%E6%8E%A5istio%E8%B0%83%E7%94%A8%E9%93%BE">微服务对接istio调用链</a>
+<ul>
+<li><a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E8%BF%BD%E8%B8%AA">分布式追踪</a></li>
+<li><a href="#istio-trace">istio-trace</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B%E5%88%86%E6%9E%90">代码示例分析</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="微服务对接istio调用链">微服务对接istio调用链</h2>
+<h3 id="分布式追踪">分布式追踪</h3>
+<p>分布式追踪中的主要概念:</p>
+<ul>
+<li>Trace: 一次完整的分布式调用跟踪链路</li>
+<li>Span: 跨服务的一次调用;多个Span组合成一次Trace追踪记录</li>
+</ul>
+<p>一个完整的调用链跟踪系统，包括调用链埋点，调用链数据收集，调用链数据存储和处理，调用链数据检索（除了提供检索的 APIServer，一般还要包含一个非常酷炫的调用链前端）等若干重要组件。<strong>istio现在默认使用的是jaeger作为trace系统，可以选择使用jaeger和zipkin的trace格式。</strong></p>
+<h3 id="istio-trace">istio-trace</h3>
+<p>istio官方的介绍为:</p>
+<blockquote>
+<p>Istio makes it easy to create a network of deployed services with load balancing, service-to-service authentication, monitoring, and more, <em>without any changes</em> in service code.</p>
+</blockquote>
+<p>istio在使用时，不对代码做任何处理即可进行服务治理，但是实际使用过程中，不修改服务代码，istio的调用链总是断开的。</p>
+<p>在 Istio 中，所有的治理逻辑的执行体都是和业务容器一起部署的 Envoy 这个 Sidecar，不管是负载均衡、熔断、流量路由还是安全、可观察性的数据生成都是在 Envoy 上。Sidecar 拦截了所有的流入和流出业务程序的流量，根据收到的规则执行执行各种动作。实际使用中一般是基于 K8S 提供的 InitContainer 机制，用于在 Pod 中执行一些初始化任务. InitContainer 中执行了一段 Iptables 的脚本。正是通过这些 Iptables 规则拦截 pod 中流量，并发送到 Envoy 上。Envoy 拦截到 Inbound 和 Outbound 的流量会分别作不同操作，执行上面配置的操作，另外再把请求往下发，对于 Outbound 就是根据服务发现找到对应的目标服务后端上；对于 Inbound 流量则直接发到本地的服务实例上。</p>
+<p>Envoy的埋点规则为:</p>
+<ul>
+<li>Inbound 流量：对于经过 Sidecar 流入应用程序的流量，如果经过 Sidecar 时 Header 中没有任何跟踪相关的信息，则会在创建一个根 Span，TraceId 就是这个 SpanId，然后再将请求传递给业务容器的服务；如果请求中包含 Trace 相关的信息，则 Sidecar 从中提取 Trace 的上下文信息并发给应用程序。</li>
+<li>Outbound 流量：对于经过 Sidecar 流出的流量，如果经过 Sidecar 时 Header 中没有任何跟踪相关的信息，则会创建根 Span，并将该跟 Span 相关上下文信息放在请求头中传递给下一个调用的服务；当存在 Trace 信息时，Sidecar 从 Header 中提取 Span 相关信息，并基于这个 Span 创建子 Span，并将新的 Span 信息加在请求头中传递。</li>
+</ul>
+<p>根据这个规则，对于一个api-&gt;A-这个简单调用，我们有如下分析:</p>
+<ul>
+<li>当一个请求进入api时，该请求头中没有任何trace相关的信息,对于这个inbound流量，istio会创建一个根span，并向请求头注入span信息。</li>
+<li>当api向A创建并发送rpc或http请求时，这个请求对于api的envoy来说时outbound流量，如果请求头中没有trace信息，会创建根span信息填入请求头</li>
+<li>这种情况下，在istio的jaeger页面上我们可以看到两段断裂的trace记录</li>
+</ul>
+<p><strong>结论</strong>：<strong>埋点逻辑是在 Sidecar 代理中完成，应用程序不用处理复杂的埋点逻辑，但应用程序需要配合在请求头上传递生成的 Trace 相关信息</strong>。</p>
+<p>istio使用jaeger作为trace系统，格式为zipkin format。在请求头中有如下headers:</p>
+<ul>
+<li><code>x-request-id</code></li>
+<li><code>x-b3-traceid</code></li>
+<li><code>x-b3-spanid</code></li>
+<li><code>x-b3-parentspanid</code></li>
+<li><code>x-b3-sampled</code></li>
+<li><code>x-b3-flags</code></li>
+<li><code>x-ot-span-context</code></li>
+</ul>
+<p>注意: 在http请求中，比如使用gin框架时，这些header中的key应是首字母大写的，例如:<code>X-Request-Id</code></p>
+<h3 id="代码示例分析">代码示例分析</h3>
+<p>以下代码段使用的是gin作为http框架，AuthSvc是rpc客户端，使用go-micro框架</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">import</span>(
+	<span style="color:#e6db74">&#34;github.com/uber/jaeger-client-go&#34;</span>
+	<span style="color:#a6e22e">ot</span> <span style="color:#e6db74">&#34;github.com/opentracing/opentracing-go&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/micro/go-micro/metadata&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/gin-gonic/gin&#34;</span>
+)
+
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">LoginController</span>) <span style="color:#a6e22e">Login</span>(<span style="color:#a6e22e">c</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">gin</span>.<span style="color:#a6e22e">Context</span>) {
+	<span style="color:#75715e">//从http头中获得根span，使用istio时，该根span由envoy注入,记为root span
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">inBoundSpanCtx</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">GlobalTracer</span>().<span style="color:#a6e22e">Extract</span>(<span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">HTTPHeaders</span>, <span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">HTTPHeadersCarrier</span>(<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Request</span>.<span style="color:#a6e22e">Header</span>))
+	<span style="color:#75715e">//由根span创建一个子span,改span为span2
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">span</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">StartSpan</span>(<span style="color:#e6db74">&#34;controller.(*LoginController).Login&#34;</span>, 
+		<span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">ChildOf</span>(<span style="color:#a6e22e">inBoundSpanCtx</span>),
+		<span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">Tags</span>{
+			<span style="color:#e6db74">&#34;kind&#34;</span>: <span style="color:#e6db74">&#34;function&#34;</span>,
+		})
+	<span style="color:#75715e">//将span2与当前context绑定
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">ContextWithSpan</span>(<span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>(), <span style="color:#a6e22e">span</span>)
+	<span style="color:#75715e">//在testtrace中再创建一个子span3
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">testTrace</span>(<span style="color:#a6e22e">ctx</span>)
+
+    <span style="color:#75715e">//从当前context中得到rpc调用的metadata,因为当前调用入口为http调用，所以ok永远为false
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">md</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">metadata</span>.<span style="color:#a6e22e">FromContext</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;metadata from context is ok&#34;</span>)
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">k</span>, <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">md</span>{
+			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">k</span>,<span style="color:#a6e22e">v</span>)
+		}
+	}<span style="color:#66d9ef">else</span>{
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;metadata from context is not ok&#34;</span>)
+		<span style="color:#a6e22e">md</span> = make(<span style="color:#66d9ef">map</span>[<span style="color:#66d9ef">string</span>]<span style="color:#66d9ef">string</span>)
+        <span style="color:#75715e">//从span2的spancontext中获取trace信息，因为istio使用的是jaeger，所以将opentracing的接口进行类型断言转换为jaeger的spancontext,将span2的trance信息填入metadata
+</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">sc</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">span</span>.<span style="color:#a6e22e">Context</span>().(<span style="color:#a6e22e">jaeger</span>.<span style="color:#a6e22e">SpanContext</span>); <span style="color:#a6e22e">ok</span> {
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-request-id&#34;</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetHeader</span>(<span style="color:#e6db74">&#34;X-Request-Id&#34;</span>)
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-b3-traceid&#34;</span>] = <span style="color:#a6e22e">sc</span>.<span style="color:#a6e22e">TraceID</span>().<span style="color:#a6e22e">String</span>()
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-b3-spanid&#34;</span>] = <span style="color:#a6e22e">sc</span>.<span style="color:#a6e22e">SpanID</span>().<span style="color:#a6e22e">String</span>()
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-b3-sampled&#34;</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetHeader</span>(<span style="color:#e6db74">&#34;X-B3-Sampled&#34;</span>)
+		}<span style="color:#66d9ef">else</span>{
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-request-id&#34;</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetHeader</span>(<span style="color:#e6db74">&#34;X-Request-Id&#34;</span>)
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-b3-traceid&#34;</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetHeader</span>(<span style="color:#e6db74">&#34;X-B3-Traceid&#34;</span>)
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-b3-spanid&#34;</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetHeader</span>(<span style="color:#e6db74">&#34;X-B3-Spanid&#34;</span>)
+			<span style="color:#a6e22e">md</span>[<span style="color:#e6db74">&#34;x-b3-sampled&#34;</span>] = <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">GetHeader</span>(<span style="color:#e6db74">&#34;X-B3-Sampled&#34;</span>)
+		}
+        <span style="color:#75715e">//从创建好的metadata中创建一个新的context
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">ctx</span> = <span style="color:#a6e22e">metadata</span>.<span style="color:#a6e22e">NewContext</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">md</span>)
+	}
+
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">item</span> <span style="color:#a6e22e">schema</span>.<span style="color:#a6e22e">LoginParam</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ginplus</span>.<span style="color:#a6e22e">ParseJSON</span>(<span style="color:#a6e22e">c</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">item</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">ginplus</span>.<span style="color:#a6e22e">ResError</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+    <span style="color:#75715e">//发送rpc请求时，使用新创建的携带了rpc metadata的context,该请求经过envoy时，envoy看到该outbound流量中的trace信息，会创建一个子span,传递给下一个服务，标记该span为span4
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">response</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">AuthSvc</span>.<span style="color:#a6e22e">Verify</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">LoginRequest</span>{
+		<span style="color:#a6e22e">Username</span>: <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">UserName</span>,
+		<span style="color:#a6e22e">Password</span>: <span style="color:#a6e22e">item</span>.<span style="color:#a6e22e">Password</span>,
+	})
+
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">ginplus</span>.<span style="color:#a6e22e">ResError</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">err</span>)
+		<span style="color:#66d9ef">return</span>
+	}
+    <span style="color:#75715e">//结束span2
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">span</span>.<span style="color:#a6e22e">Finish</span>()
+	<span style="color:#a6e22e">ginplus</span>.<span style="color:#a6e22e">ResSuccess</span>(<span style="color:#a6e22e">c</span>, <span style="color:#a6e22e">response</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">testTrace</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>){
+    <span style="color:#75715e">//传入的ctx已经与span2绑定，再创建一个子span，标记为span3
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">span</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">StartSpanFromContext</span>(<span style="color:#a6e22e">ctx</span>,
+		<span style="color:#e6db74">&#34;testTrace&#34;</span>,
+		<span style="color:#a6e22e">ot</span>.<span style="color:#a6e22e">Tags</span>{
+		string(<span style="color:#a6e22e">ext</span>.<span style="color:#a6e22e">SpanKind</span>): <span style="color:#e6db74">&#34;function&#34;</span>,
+	})
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;in test Trace function...&#34;</span>)
+	<span style="color:#75715e">//span结束上报jaeger
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">span</span>.<span style="color:#a6e22e">Finish</span>()
+}
+</code></pre></div><p>由上图的注释分析得到下列span关系:</p>
+<pre><code>root span --&gt; span2 -- span3
+                    -- span4
+</code></pre><p>在istio中就把之前分裂的两个trace记录合并为一个了。</p>
+<p>结论:</p>
+<ul>
+<li>使用istio时，我们只需要对服务间调用的header信息进行透传</li>
+<li>如果想把服务内的调用关系与istio生成的trace合并，只需以istio生成的span作为父span，生成子span即可</li>
+<li>透传header的代码大都一致，可以做成一个通用的函数调用，减少服务代码的修改</li>
+</ul></article>
+    </section>
+
+    <footer class="ui attached segment dream-tags">
+      
+        
+          <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1" title="微服务">微服务</a>
+        
+          <a class="ui label" href="/tags/golang" title="golang">golang</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; background: #1b1c1d !important; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i> Save as image
+      </div>
+    </footer>
+
+    
+      <footer class="ui attached segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+
+    
+
+  </div>
+  <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
+    <article class="dream-header">
+  <section class="ui top attached center aligned segment">
+    <div class="ui small circular image">
+      
+        <img src="/me/hanamichi.jpg">
+      
+    </div>
+
+    <h3 class="ui header">Hanamichi的博客<div class="sub header" style="margin-top: 0.5rem;">勤练带来力量！</div>
+    </h3>
+
+    <div class="ui horizontal list">
+      
+      <a class="item" href="/posts">
+        <i class="archive icon" title="归档"></i>
+      </a>
+      
+      <a class="item" href="/tags">
+        <i class="tags icon" title="所有标签"></i>
+      </a>
+      <a class="item" href="/categories">
+        <i class="th list icon" title="所有分类"></i>
+      </a>
+    </div>
+  </section>
+
+  
+  <section class="ui attached center aligned segment dream-tags">
+    
+      <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
+    
+      <a class="ui label" href="/tags/docker" title="docker">docker</a>
+    
+      <a class="ui label" href="/tags/golang" title="golang">golang</a>
+    
+      <a class="ui label" href="/tags/kubernetes" title="kubernetes">kubernetes</a>
+    
+      <a class="ui label" href="/tags/linux" title="linux">linux</a>
+    
+      <a class="ui label" href="/tags/python" title="python">python</a>
+    
+      <a class="ui label" href="/tags/qemu" title="qemu">qemu</a>
+    
+      <a class="ui label" href="/tags/reading" title="reading">reading</a>
+    
+      <a class="ui label" href="/tags/rust" title="rust">rust</a>
+    
+      <a class="ui label" href="/tags/service-mesh" title="service-mesh">service-mesh</a>
+    
+      <a class="ui label" href="/tags/spice" title="spice">spice</a>
+    
+      <a class="ui label" href="/tags/%E4%BA%91%E8%AE%A1%E7%AE%97" title="云计算">云计算</a>
+    
+      <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1" title="微服务">微服务</a>
+    
+      <a class="ui label" href="/tags/%E6%B8%B8%E6%88%8F%E4%BA%BA%E7%94%9F" title="游戏人生">游戏人生</a>
+    
+      <a class="ui label" href="/tags/%E7%94%9F%E6%B4%BB" title="生活">生活</a>
+    
+      <a class="ui label" href="/tags/%E7%BC%96%E7%A8%8B%E6%A6%82%E5%BF%B5" title="编程概念">编程概念</a>
+    
+      <a class="ui label" href="/tags/%E8%B5%9E%E8%B5%8F" title="赞赏">赞赏</a>
+    
+  </section>
+  
+
+  
+  <section class="ui attached segment dream-categories">
+    <div class="ui accordion">
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/linux" class="item">linux</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/git/" class="item">git常用命令记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/linux-cmd/" class="item">linux常用命令记录</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F" class="item">云原生</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/go-micro-istio/" class="item">微服务使用istio分布式追踪</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/k8s-ciro/" class="item">k8s crio 测试环境搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/service-mesh/" class="item">service mesh 初探</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E5%AE%B9%E5%99%A8" class="item">容器</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/k8s-ciro/" class="item">k8s crio 测试环境搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E5%BA%95%E5%B1%82%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF" class="item">底层虚拟化技术</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/qemu/" class="item">关于Qemu的记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice-h264/" class="item">spice图形显示优化</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/spice/" class="item">云桌面spice初探</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%94%9F%E6%B4%BB-%E9%9A%8F%E7%AC%94-%E6%80%BB%E7%BB%93" class="item">生活-随笔-总结</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/buy-me-a-coffee/" class="item">Buy Me A Coffee</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2018/06</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/" class="item">随便扯扯淡-2017/03</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%9E%8E%E6%8A%98%E8%85%BE" class="item">瞎折腾</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/openwrt/" class="item">openwrt软路由搭建</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/game-bb/" class="item">血源诅咒记录</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/aliyun-k8s/" class="item">阿里云k8s环境搭建测试</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0" class="item">编程语言学习</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/rust/" class="item">rust学习笔记</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/golang/" class="item">golang学习笔记</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/python/" class="item">python code gist</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/closure/" class="item">闭包的理解</a>
+              </div>
+            </div>
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/c-plus-plus-gist/" class="item">C&#43;&#43;单例模式与线程类思考</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+        <div class="title">
+          <i class="dropdown icon"></i>
+          <a href="/categories/%E9%98%85%E8%AF%BB" class="item">阅读</a>
+        </div>
+        <div class="content">
+          <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%BF%AE%E7%82%BC%E4%B9%8B%E9%81%93/" class="item">程序员修炼之道-阅读摘抄</a>
+              </div>
+            </div>
+          
+          </div>
+        </div>
+      
+    </div>
+  </section>
+  
+
+  <section class="ui bottom attached center aligned segment">
+      
+      <p>© 2017 - 2020 Hanamichi的博客</p>
+      
+      <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
+  </section>
+</article>
+
+  </div>
+</div>
+
+        </section>
+        <section class="back">
+          
+<nav class="ui secondary inverted menu dream-menu">
+
+  <div class="item">
+    <i class="large link bullseye icon dream-flip-toggle" title="翻转！"></i>
+  </div>
+  <div class="item">
+    <i class="large link home icon" title="首页" onclick="window.location.href = 'https:\/\/hanamichi.wiki'"></i>
+  </div>
+  <div class="item">
+    <i id="theme-switch" class="large link icon" onclick="themeSwitch()"></i>
+  </div>
+</nav>
+
+          <div class="ui centered relaxed grid dream-grid dream-back">
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">关于我</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>关于我</p>
+<p>Hanamichi 的❤博客</p>
+<p>记录一些🌈生活上，技术上的事</p>
+<p>全平台玩家(pc-steam, ps4, switch), 不碰手游不碰国内垃圾网游</p>
+<p>职业是后端工程师</p>
+<p>正在努力学习</p>
+<p>对云原生微服务感兴趣</p>
+<p>主要的技术栈是：</p>
+<ul>
+<li>golang</li>
+<li>kubernetes</li>
+<li>微服务架构</li>
+</ul>
+<p>略懂一二:</p>
+<ul>
+<li>python</li>
+<li>C/C++</li>
+</ul>
+<p>学习中：</p>
+<ul>
+<li>Rust</li>
+<li>JavaScript</li>
+</ul>
+<p>目前在 <a href="http://www.99cloud.net">99cloud</a> 工作</p>
+<p>&ndash; 2019 年 12 月 31 日更新</p>
+        </div>
+      </article>
+    </section>
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">2020年的计划</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>2020年的计划</p>
+<ul>
+<li>以<a href="https://github.com/x893675/note">github issue和wiki</a>记录平时的一些想法，坚持整理然后写入博客</li>
+<li>加深golang微服务的理解, 写一个便于重复利用的微服务项目</li>
+<li>等多关注云原声CNCF开源社区动态，争取做些贡献</li>
+<li>完成两本书的阅读和笔记记录(程序猿修炼之道，代码整洁之道)</li>
+<li>日本旅游</li>
+</ul>
+        </div>
+      </article>
+    </section>
+  
+    <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+      <article>
+        <div class="ui top attached segment">
+          <h3 class="ui header">其他</h3>
+        </div>
+        <div class="ui attached segment markdown-body">
+          <p>其他</p>
+<p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
+<p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
+<p>我的<strong>微信赞赏码</strong>：</p>
+<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+        </div>
+      </article>
+    </section>
+  
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    <article>
+      <div class="ui top attached segment">
+        <h3 class="ui header">社交链接</h3>
+      </div>
+      <div class="ui attached segment">
+        <nav class="ui secondary menu dream-menu">
+          
+            <div class="item">
+              <a href="mailto:x893675@gmail.com">
+                <i class="large mail icon" title="email"></i>
+              </a>
+            </div>
+          
+
+          
+            <div class="item">
+              <a href="https://github.com/x893675" target="_blank">
+                <i class="large github icon" title="github"></i>
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+        </nav>
+      </div>
+    </article>
+  </section>
+
+  <section class="sixteen wide mobile eight wide tablet four wide computer column dream-column">
+    
+      <footer class="ui segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+  </section>
+
+  
+  
+</div>
+
+        </section>
+      </div>
+    </div>
+
+    <script src="/js/jquery.min.js"></script>
+<script src="/js/semantic.min.js"></script>
+<script src="/js/imagesloaded.pkgd.min.js"></script>
+<script src="/js/masonry.pkgd.min.js"></script>
+<script src="/js/nav.js"></script>
+<script src="/js/header.js"></script>
+<script src="/js/main.js"></script>
+<script src="/js/theme.js"></script>
+<script src="/js/html2canvas.min.js"></script>
+
+
+
+  </body>
+</html>
