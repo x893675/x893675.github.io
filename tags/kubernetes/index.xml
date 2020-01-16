@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
-    <lastBuildDate>Wed, 03 Jul 2019 14:21:26 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 01 Nov 2019 14:21:26 +0800</lastBuildDate>
     
 	<atom:link href="https://hanamichi.wiki/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>k8s crio 测试环境搭建</title>
+      <link>https://hanamichi.wiki/posts/k8s-ciro/</link>
+      <pubDate>Fri, 01 Nov 2019 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/k8s-ciro/</guid>
+      <description>&lt;p&gt;k8s+crio+ipvs测试环境搭建记录&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>阿里云k8s环境搭建测试</title>
@@ -19,6 +28,15 @@
       
       <guid>https://hanamichi.wiki/posts/aliyun-k8s/</guid>
       <description>&lt;p&gt;为之后在家自建nas，webdav等服务所预先测试&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>service mesh 初探</title>
+      <link>https://hanamichi.wiki/posts/service-mesh/</link>
+      <pubDate>Thu, 14 Feb 2019 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/service-mesh/</guid>
+      <description>&lt;p&gt;service mesh 的概念理解&lt;/p&gt;</description>
     </item>
     
   </channel>
