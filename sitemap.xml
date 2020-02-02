@@ -3,27 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://hanamichi.wiki/posts/buy-me-a-coffee/</loc>
-    <lastmod>2020-01-15T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hanamichi.wiki/categories/</loc>
-    <lastmod>2020-01-15T14:21:26+08:00</lastmod>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://hanamichi.wiki/</loc>
-    <lastmod>2020-01-16T01:30:24+08:00</lastmod>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/posts/soa-microservice/</loc>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://hanamichi.wiki/tags/</loc>
-    <lastmod>2020-01-15T14:21:26+08:00</lastmod>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://hanamichi.wiki/posts/</loc>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
+    <lastmod>2020-02-01T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/posts/buy-me-a-coffee/</loc>
     <lastmod>2020-01-15T14:21:26+08:00</lastmod>
   </url>
   
@@ -39,16 +54,6 @@
   
   <url>
     <loc>https://hanamichi.wiki/tags/golang/</loc>
-    <lastmod>2020-01-01T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2020-01-01T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/</loc>
     <lastmod>2020-01-01T14:21:26+08:00</lastmod>
   </url>
   
