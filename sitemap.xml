@@ -4,12 +4,37 @@
   
   <url>
     <loc>https://hanamichi.wiki/categories/</loc>
-    <lastmod>2020-02-04T14:21:26+08:00</lastmod>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/posts/client-go/</loc>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
   </url>
   
   <url>
     <loc>https://hanamichi.wiki/</loc>
-    <lastmod>2020-02-04T14:21:26+08:00</lastmod>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/tags/kubernetes/</loc>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/tags/</loc>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/posts/</loc>
+    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
   </url>
   
   <url>
@@ -19,21 +44,6 @@
   
   <url>
     <loc>https://hanamichi.wiki/posts/serverless/</loc>
-    <lastmod>2020-02-04T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/tags/</loc>
-    <lastmod>2020-02-04T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2020-02-04T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/posts/</loc>
     <lastmod>2020-02-04T14:21:26+08:00</lastmod>
   </url>
   
@@ -124,11 +134,6 @@
   
   <url>
     <loc>https://hanamichi.wiki/posts/k8s-ciro/</loc>
-    <lastmod>2019-11-01T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/tags/kubernetes/</loc>
     <lastmod>2019-11-01T14:21:26+08:00</lastmod>
   </url>
   

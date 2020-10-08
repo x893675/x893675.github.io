@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-SOA及微服务概念
+client-go详解
 </title>
 
     
@@ -15,28 +15,28 @@ SOA及微服务概念
 
   
   <meta name="author" content="hanamichi" />
-  <meta name="description" content="云原生&amp;amp;软件设计架构的一些概念理解
+  <meta name="description" content="client-go中informer list&amp;amp;watch机制
 " />
 
 
 
 <meta name="generator" content="Hugo 0.62.2" />
 
-<link rel="canonical" href="https://hanamichi.wiki/posts/soa-microservice/" />
+<link rel="canonical" href="https://hanamichi.wiki/posts/client-go/" />
 
 
-<meta property="og:title" content="SOA及微服务概念" />
-<meta property="og:description" content="云原生&amp;软件设计架构的一些概念理解" />
+<meta property="og:title" content="client-go详解" />
+<meta property="og:description" content="client-go中informer list&amp;watch机制" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/soa-microservice/" />
-<meta property="article:published_time" content="2020-02-01T14:21:26+08:00" />
-<meta property="article:modified_time" content="2020-02-04T14:21:26+08:00" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/client-go/" />
+<meta property="article:published_time" content="2020-10-07T14:21:26+08:00" />
+<meta property="article:modified_time" content="2020-10-07T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="SOA及微服务概念"/>
-<meta name="twitter:description" content="云原生&amp;软件设计架构的一些概念理解"/>
+<meta name="twitter:title" content="client-go详解"/>
+<meta name="twitter:description" content="client-go中informer list&amp;watch机制"/>
 
 
 <link rel="stylesheet" href="/css/github-markdown.css" />
@@ -88,88 +88,63 @@ SOA及微服务概念
     <section class="ui top attached segment" id="dream-save-post-as-img">
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
-          SOA及微服务概念
-          <div class="sub header">@ hanamichi · Saturday, Feb 1, 2020 · 4 分钟阅读 · 更新于 Feb 4, 2020</div>
+          client-go详解
+          <div class="sub header">@ hanamichi · Wednesday, Oct 7, 2020 · 3 分钟阅读 · 更新于 Oct 7, 2020</div>
         </h2>
       </header>
-      <article style="margin-top: 2rem;"><p>云原生&amp;软件设计架构的一些概念理解</p>
-<h2 id="云原生">云原生</h2>
-<blockquote>
-<p>cloud-native的关键词就是微服务</p>
-</blockquote>
-<p>原生云cloud-native应用的定义是：</p>
+      <article style="margin-top: 2rem;"><p>client-go中informer list&amp;watch机制</p>
 <ul>
-<li>应用系统应该与底层物理基础设施解耦。
-应用程序应该与操作系统等基础设施分离，不应该依赖Linux或Windows等底层平台，或依赖某个云平台。也就是说，应用从开始就设计为运行在云中，无论私有云或公有云；</li>
-<li>应用必须能满足扩展性需求
-垂直扩展（向上和向下）或水平扩展（跨节点服务器）。</li>
+<li><a href="#clien-go%E7%BB%93%E6%9E%84%E5%8E%9F%E7%90%86%E5%9B%BE%E7%A4%BA">clien-go结构原理图示</a></li>
+<li><a href="#informer">informer</a>
+<ul>
+<li><a href="#informer%E7%BB%84%E4%BB%B6">informer组件</a></li>
+<li><a href="#%E6%B5%81%E7%A8%8B%E5%AE%9E%E4%BE%8B">流程实例</a></li>
 </ul>
-<h2 id="soa面向服务架构">SOA面向服务架构</h2>
-<blockquote>
-<p>SOA是一种思想，它是一个架构理念，强调服务共享和重用</p>
-<p>微服务也指一种种松耦合的、有一定的边界上下文的面向服务架构</p>
-</blockquote>
-<p>SOA是一种面向服务的单体架构，SOA是一种思想，它是一个架构理念，强调服务共享和重用</p>
-<blockquote>
-<p>例1 （来自真实世界） ：你去餐馆订餐，您的订单首先进入到柜台，然后在厨房进行食物准备，最后服务员提供的食物。因此，为了实现一个餐厅订购服务，您需要三个逻辑部门/服务协同工作（计帐，厨房和服务员）。在软件世界同样的方法称为业务服务。</p>
-</blockquote>
-<blockquote>
-<p>例2 （软件世界） ：你去亚马逊订购了一本书，有不同的服务，如支付网关，库存系统，货运系统等共同完成一本书的订购。</p>
-</blockquote>
-<p>所有的服务是自包含的，合乎逻辑。他们就像黑盒子。总之，我们并不需要了解业务服务的内部工作细节。对于外部世界，它只是一个能够使用消息交互的黑盒子。例如在“支付网关”业务服务获得消息“检查信贷”后会给出输出：这个客户的信贷有或没有。对于“订单系统”，“支付网关”的服务是一个黑盒子。</p>
-<p>SOA服务特点:</p>
-<ul>
-<li>
-<p>SOA组件是松耦合的。当我们说松耦合，这意味着每一个服务是自包含单独存在的逻辑。举例来说，我们采取了“支付网关”的服务，并将它附加到不同的系统。</p>
-</li>
-<li>
-<p>SOA服务是黑匣子。在SOA中，服务隐藏有内在的复杂性。他们只使用交互消息，服务接受和发送消息。通过虚拟化一个服务为黑盒子，服务变得更松散的耦合。</p>
-</li>
-<li>
-<p>SOA服务应该是自定义： SOA服务应该能够自己定义。</p>
-</li>
-<li>
-<p>SOA服务维持在一个列表中： SOA服务保持在一个中央存储库。应用程序可以在中央存储库中搜索服务，并调用相应服务。</p>
-</li>
-<li>
-<p>SOA服务可以编排和链接实现一个特定功能： SOA服务可以使用了即插即用的方式。例如，“业务流程”中有两个服务“安全服务”和“订单处理服务” 。从它的业务流程可以实现两种类型：一，您可以先检查用户，然后处理订单，或反之亦然。是的，你猜对了，使用SOA可以松散耦合的方式管理服务之间的工作流。</p>
 </li>
 </ul>
-<h2 id="微服务架构">微服务架构</h2>
-<p>经过多年的SOA实践探索，人们已经发现服务的解耦性必须高于服务的复用共享性，因此催生了微服务架构。</p>
-<p>微服务是指开发一个单个 小型的但有业务功能的服务，每个服务都有自己的处理和轻量通讯机制，可以部署在单个或多个服务器上。</p>
-<p>微服务也指一种种松耦合的、有一定的边界上下文的面向服务架构。也就是说，如果每个服务都要同时修改，那么它们就不是微服务，因为它们紧耦合在一起；</p>
-<h3 id="微服务优点">微服务优点</h3>
+<h2 id="clien-go结构原理图示">clien-go结构原理图示</h2>
+<p><img src="/img/inpost/client-go/client-go-1.png" alt=""></p>
+<p><img src="/img/inpost/client-go/client-go-2.jepg" alt=""></p>
+<p>kubernetes里面的apiserver的只负责数据的CRUD接口实现，并不负责业务逻辑的处理，所以k8s中就通过外挂controller通过对应资源的控制器来负责事件的处理。而controller和apiserver之前的桥梁就是 informer</p>
+<p>apiserver本质上就是一个http的rest接口实现，watch机制则也是基于http协议，不过不同于一般的get其通过chunk机制，来实现消息的通知。</p>
+<p><img src="/img/inpost/client-go/client-go-3.png" alt=""></p>
+<p><img src="/img/inpost/client-go/client-go-4.png" alt=""></p>
+<h2 id="informer">informer</h2>
+<p>Informer模块是Kubernetes中的基础组件，负责各组件与Apiserver的资源与事件同步。</p>
+<p>List/Watch机制是Kubernetes中实现集群控制模块最核心的设计之一，它采用统一的异步消息处理机制，保证了消息的实时性、可靠性、顺序性和性能等，为声明式风格的API奠定了良好的基础。</p>
+<p>Informer依赖Kubernetes的List/Watch API。 通过Lister()对象来List/Get对象时，Informer不会去请求Kubernetes API，而是直接查询本地缓存，减少对Kubernetes API的直接调用。</p>
+<p>Informer 只会调用 Kubernetes List 和 Watch 两种类型的 API。Informer 在初始化的时，先调用 Kubernetes List API 获得某种 resource 的全部 Object，缓存在内存中; 然后，调用 Watch API 去 watch 这种 resource，去维护这份缓存; 最后，Informer 就不再调用 Kubernetes 的任何 API。</p>
+<h3 id="informer组件">informer组件</h3>
 <ul>
-<li>每个微服务都很小，这样能聚焦一个指定的业务功能或业务需求。</li>
-<li>微服务能够被小团队单独开发，这个小团队是2到5人的开发人员组成。</li>
-<li>微服务是松耦合的，是有功能意义的服务，无论是在开发阶段或部署阶段都是独立的。</li>
-<li>微服务能使用不同的语言开发。</li>
-<li>微服务允许容易且灵活的方式集成自动部署，通过持续集成工具，如Jenkins, Hudson, bamboo 。</li>
-<li>一个团队的新成员能够更快投入生产。</li>
-<li>微服务易于被一个开发人员理解，修改和维护，这样小团队能够更关注自己的工作成果。无需通过合作才能体现价值。</li>
-<li>微服务允许你利用融合最新技术。</li>
-<li>微服务只是业务逻辑的代码，不会和HTML,CSS 或其他界面组件混合。</li>
-<li>微服务能够即时被要求扩展。</li>
-<li>微服务能部署中低端配置的服务器上。</li>
-<li>易于和第三方集成。</li>
-<li>每个微服务都有自己的存储能力，可以有自己的数据库。也可以有统一数据库。</li>
+<li>Controller:  并不是 Kubernetes Controller，这两个 Controller 并没有任何联系</li>
+<li>Reflector：通过Kubernetes Watch API监听resource下的所有事件</li>
+<li>Lister：用来被调用List/Get方法</li>
+<li>Processor：记录并触发回调函数, Processor 中记录了所有的回调函数实例(即 ResourceEventHandler 实例)</li>
+<li>DeltaFIFO: DeltaFIFO 和 LocalStore 是 Informer 的两级缓存, 用来存储Watch API返回的各种事件</li>
+<li>LocalStore: DeltaFIFO 和 LocalStore 是 Informer 的两级缓存, Lister的List/Get方法访问</li>
 </ul>
-<h3 id="微服务缺点">微服务缺点</h3>
-<ul>
-<li>微服务架构可能带来过多的操作。</li>
-<li>需要DevOps技巧 (<a href="http://en.wikipedia.org/wiki/DevOps)">http://en.wikipedia.org/wiki/DevOps)</a>.</li>
-<li>可能双倍的努力。</li>
-<li>分布式系统可能复杂难以管理。</li>
-<li>因为分布部署跟踪问题难。</li>
-<li>当服务数量增加，管理复杂性增加</li>
-</ul></article>
+<p>在k8s中一些控制器可能会关注多种资源，比如Deployment可能会关注Pod和replicaset，replicaSet可能还会关注Pod，为了避免每个控制器都独立的去与apiserver建立链接，k8s中抽象了sharedInformer的概念，即共享的informer, 针对同一资源只建立一个链接</p>
+<p>因为彼此共用informer,但是每个组件的处理逻辑可能各不相同，在informer中通过观察者模式，各个组件可以注册一个EventHandler来实现业务逻辑的注入</p>
+<p><img src="/img/inpost/client-go/client-go-5.png" alt=""></p>
+<h3 id="流程实例">流程实例</h3>
+<p>以 Pod 为例，详细说明一下 Informer 的关键逻辑：</p>
+<ol>
+<li>Informer 在初始化时，Reflector 会先 List API 获得所有的 Pod</li>
+<li>Reflect 拿到全部 Pod 后，会将全部 Pod 放到 Store 中</li>
+<li>如果有人调用 Lister 的 List/Get 方法获取 Pod， 那么 Lister 会直接从 Store 中拿数据</li>
+<li>Informer 初始化完成之后，Reflector 开始 Watch Pod，监听 Pod 相关 的所有事件;如果此时 pod_1 被删除，那么 Reflector 会监听到这个事件</li>
+<li>Reflector 将 pod_1 被删除 的这个事件发送到 DeltaFIFO</li>
+<li>DeltaFIFO 首先会将这个事件存储在自己的数据结构中(实际上是一个 queue)，然后会直接操作 Store 中的数据，删除 Store 中的 pod_1</li>
+<li>DeltaFIFO 再 Pop 这个事件到 Controller 中</li>
+<li>Controller 收到这个事件，会触发 Processor 的回调函数</li>
+</ol>
+<p><img src="/img/inpost/client-go/client-go-6.png" alt=""></p></article>
     </section>
 
     <footer class="ui attached segment dream-tags">
       
         
-          <a class="ui label" href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1" title="微服务">微服务</a>
+          <a class="ui label" href="/tags/kubernetes" title="kubernetes">kubernetes</a>
         
       
       <div
