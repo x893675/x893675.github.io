@@ -21,7 +21,7 @@ client-go中informer list&watch机制
 
 ![](/img/inpost/client-go/client-go-1.png)
 
-![](/img/inpost/client-go/client-go-2.jepg)
+![](/img/inpost/client-go/client-go-2.jpeg)
 
 kubernetes里面的apiserver的只负责数据的CRUD接口实现，并不负责业务逻辑的处理，所以k8s中就通过外挂controller通过对应资源的控制器来负责事件的处理。而controller和apiserver之前的桥梁就是 informer
 

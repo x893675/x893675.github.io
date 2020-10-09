@@ -104,7 +104,7 @@ client-go详解
 </ul>
 <h2 id="clien-go结构原理图示">clien-go结构原理图示</h2>
 <p><img src="/img/inpost/client-go/client-go-1.png" alt=""></p>
-<p><img src="/img/inpost/client-go/client-go-2.jepg" alt=""></p>
+<p><img src="/img/inpost/client-go/client-go-2.jpeg" alt=""></p>
 <p>kubernetes里面的apiserver的只负责数据的CRUD接口实现，并不负责业务逻辑的处理，所以k8s中就通过外挂controller通过对应资源的控制器来负责事件的处理。而controller和apiserver之前的桥梁就是 informer</p>
 <p>apiserver本质上就是一个http的rest接口实现，watch机制则也是基于http协议，不过不同于一般的get其通过chunk机制，来实现消息的通知。</p>
 <p><img src="/img/inpost/client-go/client-go-3.png" alt=""></p>
