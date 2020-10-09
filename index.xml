@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
-    <lastBuildDate>Wed, 07 Oct 2020 14:21:26 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 08 Oct 2020 14:21:26 +0800</lastBuildDate>
     
 	<atom:link href="https://hanamichi.wiki/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>docker详解</title>
+      <link>https://hanamichi.wiki/posts/docker/</link>
+      <pubDate>Thu, 08 Oct 2020 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/docker/</guid>
+      <description>&lt;p&gt;docker相关总结&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>client-go详解</title>
@@ -185,10 +194,10 @@
     
     <item>
       <title>常用容器服务构建</title>
-      <link>https://hanamichi.wiki/posts/docker/</link>
+      <link>https://hanamichi.wiki/posts/container/</link>
       <pubDate>Tue, 20 Mar 2018 14:21:26 +0800</pubDate>
       
-      <guid>https://hanamichi.wiki/posts/docker/</guid>
+      <guid>https://hanamichi.wiki/posts/container/</guid>
       <description>&lt;p&gt;记录一些容器镜像的构建或服务部署&lt;/p&gt;</description>
     </item>
     
