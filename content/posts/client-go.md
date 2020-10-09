@@ -16,6 +16,10 @@ client-go中informer list&watch机制
 - [informer](#informer)
   - [informer组件](#informer组件)
   - [流程实例](#流程实例)
+- [controller工作流程](#controller工作流程)
+- [kubernetes API 约定](#kubernetes-api-约定)
+  - [Spec and Status](#spec-and-status)
+  - [**Primitive types**](#primitive-types)
 
 ## clien-go结构原理图示
 
@@ -70,3 +74,44 @@ Informer 只会调用 Kubernetes List 和 Watch 两种类型的 API。Informer �
 8. Controller 收到这个事件，会触发 Processor 的回调函数
 
 ![](/img/inpost/client-go/client-go-6.png)
+
+## controller工作流程
+
+1. 创建一个控制器
+   * 为控制器创建 workqueue
+   * 创建 informer, 为 informer 添加 callback 函数，创建 lister
+2. 启动控制器
+   * 启动 informer
+   * 等待本地 cache sync 完成后， 启动 workers
+3. 当收到变更事件后，执行 callback 
+   * 等待事件触发
+   * 从事件中获取变更的 Object
+   * 做一些必要的检查
+   * 生成 object key，一般是 namespace/name 的形式
+   * 将 key 放入 workqueue 中
+4. worker loop
+   * 等待从 workqueue 中获取到 item，一般为 object key
+   * 用 object key 通过 lister 从本地 cache 中获取到真正的 object 对象
+   * 做一些检查
+   * 执行真正的业务逻辑
+   * 处理下一个 item
+
+## kubernetes API 约定
+
+### Spec and Status
+
+- Spec 表示系统希望到达的状态，Status 表示系统目前观测到的状态。
+- PUT 和 POST 的请求中应该把 Status 段的数据忽略掉，Status 只能由系统组件来修改。
+- 有一些对象可能跟 Spec 和 Status 模型相去甚远，可以吧 Spec 改成更加适合的名字。
+- 如果对象符合 Spec 和 Status 的标准的话，那么除了 type，object metadata 之外不应该有其他顶级的字段。
+- Status 中 phase 已经是 deprecated。因为 pahse 本质上是状态机的枚举类型，它不太符合 Kubernetes 系统设计原则， 并且阻碍系统发展，因为每当你需要往里面加一个新的 pahse 的时候你总是很难做到向后兼容性，建议使用 Condition 来代替。
+
+### **Primitive types**
+
+- 避免使用浮点数，永远不要在 Spec 中使用它们，浮点数不好规范化，在不同的语言和计算机体系结构中有 不同的精度和表示。
+- 在 JavaScript 和其他的一部分语言中，所有的数字都会被转换成 float，所以数字超过了一定的大小最好使 用 string。
+- 不要使用 unsigned integers，因为不同的语言和库对它的支持不一样。
+- 不要使用枚举类型，建立一个 string 的别名类型。
+- API 中所有的 integer 都必须明确使用 Go（int32, int64）, 不要使用 int，在32位和64位的操作系统中他们的位数不一样。
+- 谨慎地使用 bool 类型的字段，很多时候刚开始做 API 的时候是 true or false，但是随着系统的扩张，它可能 有多个可选值，多为未来打算。
+- 对于可选的字段，使用指针来表示，比如 *string *int32 , 这样就可以用 nil 来判断这个值是否设置了， 因为 Go 语言中string int 这些类型都有零值，你无法判断他们是没被设置还是被设置了零值。

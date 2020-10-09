@@ -3,7 +3,7 @@ title: serverless理解
 date: 2020-02-04T14:21:26+08:00
 lastmod: 2020-02-04T14:21:26+08:00
 author: hanamichi
-cover: /img/soa-microservice.jpg
+cover: /img/serverless.jpg
 categories: ['云原生']
 tags: ['serverless']
 ---
