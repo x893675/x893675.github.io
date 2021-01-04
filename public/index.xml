@@ -7,10 +7,19 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-Hans</language>
     <copyright>&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;&lt;img alt=&#34;知识共享许可协议&#34; style=&#34;border-width:0&#34; src=&#34;https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png&#34; /&gt;&lt;/a&gt;&lt;br /&gt;本作品采用&lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-nc-sa/4.0/&#34;&gt;知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议&lt;/a&gt;进行许可。</copyright>
-    <lastBuildDate>Thu, 08 Oct 2020 14:21:26 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 03 Jan 2021 14:21:26 +0800</lastBuildDate>
     
 	<atom:link href="https://hanamichi.wiki/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>ServiceMesh探究PPT记录</title>
+      <link>https://hanamichi.wiki/posts/service-mesh2/</link>
+      <pubDate>Sun, 03 Jan 2021 14:21:26 +0800</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/service-mesh2/</guid>
+      <description>&lt;p&gt;ServiceMesh PPT&lt;/p&gt;</description>
+    </item>
     
     <item>
       <title>docker详解</title>
@@ -99,7 +108,7 @@
       <pubDate>Mon, 11 Nov 2019 01:30:24 +0800</pubDate>
       
       <guid>https://hanamichi.wiki/about/desc2/</guid>
-      <description>&lt;p&gt;2020年的计划&lt;/p&gt;</description>
+      <description>&lt;p&gt;2021年的计划&lt;/p&gt;</description>
     </item>
     
     <item>
@@ -266,6 +275,21 @@
       
       <guid>https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/</guid>
       <description>&lt;p&gt;2017-03-31随笔，随便扯扯淡。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hanamichi.wiki/posts/mesh/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hanamichi.wiki/posts/mesh/</guid>
+      <description>目录
+ 云原生定义 service mesh定义  service mesh与api gateway的比较   istio  功能 安装部署 使用例子   传统微服务框架治理的迁移  云原生 关键词: 微服务，高度分布式，不断变化
+ 应用系统应该与底层物理基础设施解耦。 应用程序应该与操作系统等基础设施分离，不应该依赖Linux或Windows等底层平台，或依赖某个云平台。也就是说，应用从开始就设计为运行在云中，无论私有云或公有云； 应用必须能满足扩展性需求 垂直扩展（向上和向下）或水平扩展（跨节点服务器）。  简单总结:
+ 云原生是一种行为方式和设计理念，凡是能够提高云上资源利用率和应用交付效率的行为和方式都是云原生的 云原生应用: 将系统资源，底层基础设施和应用编排交给云平台管理，应用只关注业务逻辑  service mesh what&#39;s service mesh 微服务的网络通信基础设施，负责(系统内部的)服务间的通信
+Service Mesh 实际是处于 TCP/IP 之上的抽象层。
+ Service Mesh 对服务节点间请求的路由机制进行了抽象 (TCP 对网络端点间传输字节的机制进行了抽象)  不关心消息体，不关心消息编码 将某些东西从A传到B, 并处理传送过程中的出现的故障   为应用运行时提供统一的、应用层面的可见性和可控性  将服务间通信从底层基础设施中分离，让其可被监控、托管和控制    feature list:
+ 流量控制  服务发现 请求路由 负载均衡 灰度发布(蓝绿部署) A/B Test 错误重试 断路器 故障注入   可观察性  遥测数据 调用追踪 服务拓扑   通信安全  服务身份认证 访问鉴权 通信加密    why need Service Mesh 应用架构的发展:</description>
     </item>
     
   </channel>

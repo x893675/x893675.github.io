@@ -1,7 +1,7 @@
 ---
 title: 关于我
 date: 2019-11-11T01:30:25+08:00
-lastmod: 2019-12-31T01:30:25+08:00
+lastmod: 2021-1-3T012:30:00+08:00
 ---
 
 关于我
@@ -12,7 +12,7 @@ Hanamichi 的:heart:博客
 
 记录一些:rainbow:生活上，技术上的事
 
-全平台玩家(pc-steam, ps4, switch), 不碰手游不碰国内垃圾网游
+全平台玩家(pc-steam, ps4, switch)
 
 职业是后端工程师
 
@@ -30,6 +30,7 @@ Hanamichi 的:heart:博客
 
 - python
 - C/C++
+- java
 
 学习中：
 
@@ -38,4 +39,4 @@ Hanamichi 的:heart:博客
 
 目前在 [99cloud](http://www.99cloud.net) 工作
 
--- 2019 年 12 月 31 日更新
+-- 2020 年 1 月 4 日更新
