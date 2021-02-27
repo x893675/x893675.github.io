@@ -33,7 +33,8 @@ cgroups(Control Groups) 是 linux 内核提供的一种机制，**这种机制�
 ## 重点概念
 
 * **Task(任务)**：在 linux 系统中，内核本身的调度和管理并不对进程和线程进行区分，只是根据 clone 时传入的参数的不同来从概念上区分进程和线程。这里使用 task 来表示系统的一个进程或线程。将一个 pid 写入到 tasks 中，只有这个 pid 对应的线程，以及由它产生的其他进程、线程会属于这个控制组
-* **cgroups.procs **：pid 写入 cgroups.procs，操作系统则会把找到其所属进程的所有线程，把它们统统加入到当前控制组。
+
+* **cgroups.procs**：pid 写入 cgroups.procs，操作系统则会把找到其所属进程的所有线程，把它们统统加入到当前控制组。
 
 使用 `mount | cgroup` 查看系统挂载的 cgroup 子系统
 

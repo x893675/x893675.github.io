@@ -116,8 +116,12 @@ CGroup理解
 <p>本质上来说，cgroups 是内核附加在程序上的一系列钩子(hook)，通过程序运行时对资源的调度触发相应的钩子以达到资源追踪和限制的目的。</p>
 <h2 id="重点概念">重点概念</h2>
 <ul>
-<li><strong>Task(任务)</strong>：在 linux 系统中，内核本身的调度和管理并不对进程和线程进行区分，只是根据 clone 时传入的参数的不同来从概念上区分进程和线程。这里使用 task 来表示系统的一个进程或线程。将一个 pid 写入到 tasks 中，只有这个 pid 对应的线程，以及由它产生的其他进程、线程会属于这个控制组</li>
-<li>**cgroups.procs **：pid 写入 cgroups.procs，操作系统则会把找到其所属进程的所有线程，把它们统统加入到当前控制组。</li>
+<li>
+<p><strong>Task(任务)</strong>：在 linux 系统中，内核本身的调度和管理并不对进程和线程进行区分，只是根据 clone 时传入的参数的不同来从概念上区分进程和线程。这里使用 task 来表示系统的一个进程或线程。将一个 pid 写入到 tasks 中，只有这个 pid 对应的线程，以及由它产生的其他进程、线程会属于这个控制组</p>
+</li>
+<li>
+<p><strong>cgroups.procs</strong>：pid 写入 cgroups.procs，操作系统则会把找到其所属进程的所有线程，把它们统统加入到当前控制组。</p>
+</li>
 </ul>
 <p>使用 <code>mount | cgroup</code> 查看系统挂载的 cgroup 子系统</p>
 <p>主要有以下几种:</p>
