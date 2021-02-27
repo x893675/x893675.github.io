@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-所有分类
+CGroup理解
 </title>
 
     
@@ -14,27 +14,29 @@
 
 
   
-  <meta name="author" content="Hanamichi" />
-  <meta name="description" content="Hanamichi的学习生活记录" />
+  <meta name="author" content="hanamichi" />
+  <meta name="description" content="ServiceMesh PPT
+" />
 
 
 
 <meta name="generator" content="Hugo 0.62.2" />
 
-<link rel="canonical" href="https://hanamichi.wiki/categories/" />
+<link rel="canonical" href="https://hanamichi.wiki/posts/cgroup/" />
 
 
-<meta property="og:title" content="Categories" />
-<meta property="og:description" content="Hanamichi的学习生活记录" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://hanamichi.wiki/categories/" />
-<meta property="og:updated_time" content="2021-02-01T14:21:26+08:00" />
+<meta property="og:title" content="CGroup理解" />
+<meta property="og:description" content="ServiceMesh PPT" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/cgroup/" />
+<meta property="article:published_time" content="2021-02-01T14:21:26+08:00" />
+<meta property="article:modified_time" content="2021-02-13T14:21:26+08:00" />
 
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Categories"/>
-<meta name="twitter:description" content="Hanamichi的学习生活记录"/>
+<meta name="twitter:title" content="CGroup理解"/>
+<meta name="twitter:description" content="ServiceMesh PPT"/>
 
 
 <link rel="stylesheet" href="/css/github-markdown.css" />
@@ -81,6 +83,273 @@
 
           
 <div class="ui centered relaxed grid dream-grid">
+  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column markdown-body dream-single">
+
+    <section class="ui top attached segment" id="dream-save-post-as-img">
+      <header style="margin-top: 0 !important;">
+        <h2 class="ui header">
+          CGroup理解
+          <div class="sub header">@ hanamichi · Monday, Feb 1, 2021 · 4 分钟阅读 · 更新于 Feb 13, 2021</div>
+        </h2>
+      </header>
+      <article style="margin-top: 2rem;"><p>ServiceMesh PPT</p>
+<ul>
+<li><a href="#cgroup">CGroup</a></li>
+<li><a href="#%E9%87%8D%E7%82%B9%E6%A6%82%E5%BF%B5">重点概念</a>
+<ul>
+<li><a href="#cpu%E9%99%90%E5%88%B6">cpu限制</a></li>
+</ul>
+</li>
+<li><a href="#envprechecks">Env&amp;Prechecks</a></li>
+<li><a href="#cgroup-cpu-demo">cgroup cpu demo</a>
+<ul>
+<li><a href="#demo-script">demo script</a></li>
+<li><a href="#create-test-cgroup">create test cgroup</a></li>
+<li><a href="#test">test</a></li>
+</ul>
+</li>
+<li><a href="#mem-demo">mem demo</a></li>
+</ul>
+<h2 id="cgroup">CGroup</h2>
+<p>cgroups(Control Groups) 是 linux 内核提供的一种机制，<strong>这种机制可以根据需求把一系列系统任务及其子任务整合(或分隔)到按资源划分等级的不同组内，从而为系统资源管理提供一个统一的框架</strong>。</p>
+<p>简单说，cgroups 可以限制、记录任务组所使用的物理资源。</p>
+<p>本质上来说，cgroups 是内核附加在程序上的一系列钩子(hook)，通过程序运行时对资源的调度触发相应的钩子以达到资源追踪和限制的目的。</p>
+<h2 id="重点概念">重点概念</h2>
+<ul>
+<li><strong>Task(任务)</strong>：在 linux 系统中，内核本身的调度和管理并不对进程和线程进行区分，只是根据 clone 时传入的参数的不同来从概念上区分进程和线程。这里使用 task 来表示系统的一个进程或线程。将一个 pid 写入到 tasks 中，只有这个 pid 对应的线程，以及由它产生的其他进程、线程会属于这个控制组</li>
+<li>**cgroups.procs **：pid 写入 cgroups.procs，操作系统则会把找到其所属进程的所有线程，把它们统统加入到当前控制组。</li>
+</ul>
+<p>使用 <code>mount | cgroup</code> 查看系统挂载的 cgroup 子系统</p>
+<p>主要有以下几种:</p>
+<table>
+<thead>
+<tr>
+<th align="center">子系统</th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">blkio</td>
+<td align="left">对块设备的 IO 进行限制</td>
+</tr>
+<tr>
+<td align="center">cpu</td>
+<td align="left">限制 CPU 时间片的分配，与 cpuacct 挂载在同一目录</td>
+</tr>
+<tr>
+<td align="center">cpuacct</td>
+<td align="left">生成 cgroup 中的任务占用 CPU 资源的报告，与 cpu 挂载在同一目录</td>
+</tr>
+<tr>
+<td align="center">cpuset</td>
+<td align="left">给 cgroup 中的任务分配独立的 CPU(多处理器系统) 和内存节点</td>
+</tr>
+<tr>
+<td align="center">devices</td>
+<td align="left">允许或禁止 cgroup 中的任务访问设备</td>
+</tr>
+<tr>
+<td align="center">freezer</td>
+<td align="left">暂停/恢复 cgroup 中的任务</td>
+</tr>
+<tr>
+<td align="center">hugetlb</td>
+<td align="left">限制使用的内存页数量</td>
+</tr>
+<tr>
+<td align="center">memory</td>
+<td align="left">对 cgroup 中的任务的可用内存进行限制，并自动生成资源占用报告</td>
+</tr>
+<tr>
+<td align="center">net_cls</td>
+<td align="left">使用等级识别符（classid）标记网络数据包，这让 Linux 流量控制器（tc 指令）可以识别来自特定 cgroup 任务的数据包，并进行网络限制</td>
+</tr>
+<tr>
+<td align="center">net_prio</td>
+<td align="left">允许基于 cgroup 设置网络流量(netowork traffic)的优先级</td>
+</tr>
+<tr>
+<td align="center">perf_event</td>
+<td align="left">允许使用 perf 工具来监控 cgroup</td>
+</tr>
+<tr>
+<td align="center">pids</td>
+<td align="left">限制任务的数量</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cpu限制">cpu限制</h3>
+<p>cpu子系统根据进程设置的调度属性，选择对应的CPU资源调度方法</p>
+<ol>
+<li>
+<p><a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt?spm=a2c6h.12873639.0.0.5faf1b924vDOWa&amp;file=sched-design-CFS.txt">完全公平调度 Completely Fair Scheduler (CFS)</a></p>
+<p>CFS调度针对属性为 <strong>SCHED_OTHER, SCHED_BATCH, SCHED_IDLE</strong> 的进程</p>
+<p>限制手段分为两方面，</p>
+<ol>
+<li>
+<p>限制资源组的CPU使用硬上限，</p>
+</li>
+<li>
+<p>以及资源组的CPU使用权重。</p>
+</li>
+</ol>
+<p>CFS调度资源组内的任务在CPU空闲时超权重使用CPU资源，但是不能超过硬上限。主要配置是</p>
+<ul>
+<li>cpu.shares: 相对权重</li>
+<li>cpu.cfs_period_us: 统计CPU使用时间的周期，需要与 cpu.cfs_quota_us 一起使用</li>
+<li>cpu.cfs_quota_us = 周期内允许占用的CPU时间(指单核的时间, 多核则需要在设置时累加)</li>
+</ul>
+<p>例如 <strong>groupA cpu.shares=250</strong>, <strong>groupB cpu.shares=750</strong>，则 CFS 保证了groupA的进程能使用25%的CPU资源，groupB的进程能使用75%的CPU资源。如果CPU较空闲，groupA的进程能使用超过25%的CPU资源。如果又加了个groupC进来，并且配置了cpu.shares = 250，那么CPU资源将在三个GROUP之间重分配。</p>
+<p>配置 <strong>cpu.cfs_period_us = 1000000, cpu.cfs_quota_us = 4000000</strong> , 表示 周期为1秒，允许使用4秒CPU时间。（假设CPU&gt;=4核心，表示这个组在一个使用周期(1s)内可以跑满4核资源）</p>
+</li>
+<li>
+<p><a href="https://www.kernel.org/doc/Documentation/scheduler/sched-rt-group.txt?spm=a2c6h.12873639.0.0.5faf1b924vDOWa&amp;file=sched-rt-group.txt">实时调度 Real-Time scheduler (RT)</a></p>
+<ol>
+<li>SCHED_FIFO</li>
+<li>SCHED_RR</li>
+</ol>
+</li>
+</ol>
+<h2 id="envprechecks">Env&amp;Prechecks</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#f92672">[</span>root@worker ~<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/*elease*</span>
+CentOS Linux release 7.9.2009 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+Derived from Red Hat Enterprise Linux 7.8 <span style="color:#f92672">(</span>Source<span style="color:#f92672">)</span>
+NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CentOS Linux&#34;</span>
+VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;7 (Core)&#34;</span>
+ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;centos&#34;</span>
+ID_LIKE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;rhel fedora&#34;</span>
+VERSION_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;7&#34;</span>
+PRETTY_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CentOS Linux 7 (Core)&#34;</span>
+ANSI_COLOR<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;0;31&#34;</span>
+CPE_NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;cpe:/o:centos:centos:7&#34;</span>
+HOME_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.centos.org/&#34;</span>
+BUG_REPORT_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://bugs.centos.org/&#34;</span>
+
+CENTOS_MANTISBT_PROJECT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;CentOS-7&#34;</span>
+CENTOS_MANTISBT_PROJECT_VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;7&#34;</span>
+REDHAT_SUPPORT_PRODUCT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;centos&#34;</span>
+REDHAT_SUPPORT_PRODUCT_VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;7&#34;</span>
+
+CentOS Linux release 7.9.2009 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+CentOS Linux release 7.9.2009 <span style="color:#f92672">(</span>Core<span style="color:#f92672">)</span>
+cpe:/o:centos:centos:7
+
+
+<span style="color:#f92672">[</span>root@worker ~<span style="color:#f92672">]</span><span style="color:#75715e"># uname -a</span>
+Linux worker 4.4.246-1.el7.elrepo.x86_64 <span style="color:#75715e">#1 SMP Tue Nov 24 09:26:59 EST 2020 x86_64 x86_64 x86_64 GNU/Linux</span>
+
+<span style="color:#f92672">[</span>root@worker cgroup-test<span style="color:#f92672">]</span><span style="color:#75715e"># mount | grep cgroup</span>
+tmpfs on /sys/fs/cgroup type tmpfs <span style="color:#f92672">(</span>ro,nosuid,nodev,noexec,mode<span style="color:#f92672">=</span>755<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/systemd type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,xattr,release_agent<span style="color:#f92672">=</span>/usr/lib/systemd/systemd-cgroups-agent,name<span style="color:#f92672">=</span>systemd<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/cpuset type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,cpuset<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/net_cls,net_prio type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,net_cls,net_prio<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/devices type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,devices<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/cpu,cpuacct type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,cpu,cpuacct<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/hugetlb type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,hugetlb<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/perf_event type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,perf_event<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/blkio type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,blkio<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/freezer type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,freezer<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/memory type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,memory<span style="color:#f92672">)</span>
+cgroup on /sys/fs/cgroup/pids type cgroup <span style="color:#f92672">(</span>rw,nosuid,nodev,noexec,relatime,pids<span style="color:#f92672">)</span>
+
+<span style="color:#f92672">[</span>root@worker ~<span style="color:#f92672">]</span><span style="color:#75715e"># lssubsys</span>
+cpuset
+cpu,cpuacct
+blkio
+memory
+devices
+freezer
+net_cls,net_prio
+perf_event
+hugetlb
+pids
+
+<span style="color:#75715e"># 查看物理 CPU 数量</span>
+<span style="color:#f92672">[</span>root@worker cgroup-test<span style="color:#f92672">]</span><span style="color:#75715e"># cat /proc/cpuinfo | grep &#34;physical id&#34; | sort | uniq</span>
+physical id	: <span style="color:#ae81ff">0</span>
+physical id	: <span style="color:#ae81ff">2</span>
+physical id	: <span style="color:#ae81ff">4</span>
+physical id	: <span style="color:#ae81ff">6</span>
+
+<span style="color:#75715e"># 查看每块 CPU 的核心数</span>
+<span style="color:#f92672">[</span>root@worker cgroup-test<span style="color:#f92672">]</span><span style="color:#75715e"># cat /proc/cpuinfo | grep &#34;cores&#34; | uniq</span>
+cpu cores	: <span style="color:#ae81ff">1</span>
+
+<span style="color:#75715e"># 查看主机总的逻辑线程数</span>
+<span style="color:#f92672">[</span>root@worker cgroup-test<span style="color:#f92672">]</span><span style="color:#75715e"># cat /proc/cpuinfo | grep &#34;processor&#34; | wc -l</span>
+<span style="color:#ae81ff">4</span>
+
+<span style="color:#f92672">[</span>root@worker ~<span style="color:#f92672">]</span><span style="color:#75715e">#  yum install libcgroup-tools -y</span>
+</code></pre></div><h2 id="cgroup-cpu-demo">cgroup cpu demo</h2>
+<h3 id="demo-script">demo script</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#75715e">#!/bin/env bash
+</span><span style="color:#75715e"></span><span style="color:#75715e"># filename is tash.sh</span>
+x<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">while</span> <span style="color:#f92672">[</span> True <span style="color:#f92672">]</span>;<span style="color:#66d9ef">do</span>
+    x<span style="color:#f92672">=</span>$x+1
+<span style="color:#66d9ef">done</span>;
+</code></pre></div><h3 id="create-test-cgroup">create test cgroup</h3>
+<ol>
+<li><code>cgcreate -g cpu:/test</code>
+<ol>
+<li><code>echo 100000 &gt; /sys/fs/cgroup/cpu/test/cpu.cfs_period_us</code></li>
+<li><code>echo 50000 &gt; /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us</code></li>
+<li>test 组下的任务最多只能占用 50% 的 cpu 时间</li>
+</ol>
+</li>
+<li><code>cgcreate -g cpuacct:/test</code></li>
+<li><code>cgcreate -g cpuset:/test</code>
+<ol>
+<li><code>echo &quot;0-1&quot; &gt; /sys/fs/cgroup/cpuset/test/cpuset.cpus</code></li>
+<li><code>echo 0 &gt; /sys/fs/cgroup/cpuset/test/cpuset.mems</code></li>
+</ol>
+</li>
+</ol>
+<h3 id="test">test</h3>
+<ol>
+<li>
+<p>直接运行 task.sh，查看 cpu 占用，图上所示，脚本使用 <strong>cpu3</strong>，并且占用了 <strong>100%</strong> 的 cpu 时间</p>
+<p><img src="/img/inpost/cgroup/task0.png" alt="使用系统默认cgroup，直接运行脚本"></p>
+</li>
+<li>
+<p>使用 cpu 限制，执行 <code>cgexec -g cpu:/test ./task.sh &amp;</code></p>
+<p><img src="/img/inpost/cgroup/task1.png" alt="使用 50% cpu limit cgroup"></p>
+</li>
+<li>
+<p>使用 cpu 限制和绑定 cpu 运行，执行 <code>cgexec -g cpu:/test -g cpuset:/test ./task.sh &amp;</code></p>
+<p><img src="/img/inpost/cgroup/task2.png" alt=""></p>
+</li>
+</ol>
+<h2 id="mem-demo">mem demo</h2>
+<p>TODO&hellip;</p></article>
+    </section>
+
+    <footer class="ui attached segment dream-tags">
+      
+        
+          <a class="ui label" href="/tags/linux" title="linux">linux</a>
+        
+          <a class="ui label" href="/tags/docker" title="docker">docker</a>
+        
+      
+      <div
+        class="ui label"
+        style="float: right; background: #1b1c1d !important; cursor: pointer;"
+        onclick="savePostAsImg()">
+        <i class="save icon"></i> Save as image
+      </div>
+    </footer>
+
+    
+      <footer class="ui attached segment">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。
+      </footer>
+    
+
+    
+
+  </div>
   <div class="sixteen wide mobile sixteen wide tablet four wide computer column">
     <article class="dream-header">
   <section class="ui top attached center aligned segment">
@@ -415,206 +684,6 @@
 </article>
 
   </div>
-  <div class="sixteen wide mobile sixteen wide tablet twelve wide computer column">
-    <div class="ui segment dream-categories-section">
-      <h2 class="ui header">
-        所有分类
-        <div class="ui grey sub header">
-          
-            8 分类
-          
-        </div>
-      </h2>
-
-      
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/linux/">linux</a>
-          2篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/git/">git常用命令记录</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/linux-cmd/">linux常用命令记录</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/">云原生</a>
-          7篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/service-mesh2/">ServiceMesh探究PPT记录</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/client-go/">client-go详解</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/serverless/">serverless理解</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/soa-microservice/">SOA及微服务概念</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/go-micro-istio/">微服务使用istio分布式追踪</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/k8s-ciro/">k8s crio 测试环境搭建</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/service-mesh/">service mesh 初探</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E5%AE%B9%E5%99%A8/">容器</a>
-          3篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/docker/">docker详解</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/k8s-ciro/">k8s crio 测试环境搭建</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/container/">常用容器服务构建</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E5%BA%95%E5%B1%82%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/">底层虚拟化技术</a>
-          4篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/cgroup/">CGroup理解</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/qemu/">关于Qemu的记录</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/spice-h264/">spice图形显示优化</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/spice/">云桌面spice初探</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E7%94%9F%E6%B4%BB-%E9%9A%8F%E7%AC%94-%E6%80%BB%E7%BB%93/">生活-随笔-总结</a>
-          3篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/buy-me-a-coffee/">Buy Me A Coffee</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/20180601%E9%9A%8F%E7%AC%94/">随便扯扯淡-2018/06</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/20170321%E9%9A%8F%E7%AC%94/">随便扯扯淡-2017/03</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E7%9E%8E%E6%8A%98%E8%85%BE/">瞎折腾</a>
-          3篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/openwrt/">openwrt软路由搭建</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/game-bb/">血源诅咒记录</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/aliyun-k8s/">阿里云k8s环境搭建测试</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0/">编程语言学习</a>
-          5篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/rust/">rust学习笔记</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/golang/">golang学习笔记</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/python/">python code gist</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/closure/">闭包的理解</a>
-            </li>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/c-plus-plus-gist/">C&#43;&#43;单例模式与线程类思考</a>
-            </li>
-          
-        </ul>
-      
-        
-        <h3 class="ui header">
-          <a href="/categories/%E9%98%85%E8%AF%BB/">阅读</a>
-          1篇文章
-        </h3>
-        <ul>
-          
-            <li>
-              <a href="https://hanamichi.wiki/posts/%E7%A8%8B%E5%BA%8F%E5%91%98%E4%BF%AE%E7%82%BC%E4%B9%8B%E9%81%93/">程序员修炼之道-阅读摘抄</a>
-            </li>
-          
-        </ul>
-      
-
-    </div>
-  </div>
 </div>
 
         </section>
@@ -756,7 +825,6 @@
 
   
   
-
 </div>
 
         </section>
