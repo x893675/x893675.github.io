@@ -30,7 +30,7 @@ client-go详解
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hanamichi.wiki/posts/client-go/" />
 <meta property="article:published_time" content="2020-10-07T14:21:26+08:00" />
-<meta property="article:modified_time" content="2020-10-07T14:21:26+08:00" />
+<meta property="article:modified_time" content="2021-02-28T12:00:00+08:00" />
 
 
 
@@ -89,7 +89,7 @@ client-go详解
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           client-go详解
-          <div class="sub header">@ hanamichi · Wednesday, Oct 7, 2020 · 5 分钟阅读 · 更新于 Oct 7, 2020</div>
+          <div class="sub header">@ hanamichi · Wednesday, Oct 7, 2020 · 6 分钟阅读 · 更新于 Feb 28, 2021</div>
         </h2>
       </header>
       <article style="margin-top: 2rem;"><p>client-go中informer list&amp;watch机制</p>
@@ -98,6 +98,7 @@ client-go详解
 <li><a href="#informer">informer</a>
 <ul>
 <li><a href="#informer%E7%BB%84%E4%BB%B6">informer组件</a></li>
+<li><a href="#informer-%E6%95%B4%E4%BD%93%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">informer 整体工作流程</a></li>
 <li><a href="#%E6%B5%81%E7%A8%8B%E5%AE%9E%E4%BE%8B">流程实例</a></li>
 </ul>
 </li>
@@ -127,10 +128,17 @@ client-go详解
 <li>Reflector：通过Kubernetes Watch API监听resource下的所有事件</li>
 <li>Lister：用来被调用List/Get方法</li>
 <li>Processor：记录并触发回调函数, Processor 中记录了所有的回调函数实例(即 ResourceEventHandler 实例)</li>
-<li>DeltaFIFO: DeltaFIFO 和 LocalStore 是 Informer 的两级缓存, 用来存储Watch API返回的各种事件</li>
-<li>LocalStore: DeltaFIFO 和 LocalStore 是 Informer 的两级缓存, Lister的List/Get方法访问</li>
+<li>DeltaFIFO: 一个增量队列，将 Reflector 监控变化的对象形成一个 FIFO 队列，此处的 Delta 就是变化；</li>
+<li>LocalStore: 就是 informer 的 cache，这里面缓存的是 apiserver 中的对象(其中有一部分可能还在DeltaFIFO 中)，此时使用者再查询对象的时候就直接从 cache 中查找，减少了 apiserver 的压力，LocalStore 只会被 Lister 的 List/Get 方法访问。</li>
 </ul>
-<p>在k8s中一些控制器可能会关注多种资源，比如Deployment可能会关注Pod和replicaset，replicaSet可能还会关注Pod，为了避免每个控制器都独立的去与apiserver建立链接，k8s中抽象了sharedInformer的概念，即共享的informer, 针对同一资源只建立一个链接</p>
+<h3 id="informer-整体工作流程">informer 整体工作流程</h3>
+<ul>
+<li>Reflector使用ListAndWatch方法，先从apiserver中list某类资源的所有实例，拿到对象的最新版本，然后用watch方法监听该resourceversion之后的所有变化，<em>若中途出现异常，reflector则会从断开的resourceversion处重新监听所有变化</em> 一旦有Add、Del、Update动作，Reflector会收到更新通知，该事件及它所对应的API对象这个组合，被称为增量Delta,它会被放进DeltaFIFO中</li>
+<li>Informer会不断从这个DeltaFIFO中读取增量，每拿出一个对象，Informer就会判断这个增量的事件类型，然后创建或更新本地的缓存。</li>
+<li>DeltaFIFO再pop这个事件到controller中，controller会调用事先注册到ResourceEventHandler回调函数进行处理。</li>
+</ul>
+<p><img src="/img/inpost/client-go/informer.png" alt="informer"></p>
+<p>在k8s中一些控制器可能会关注多种资源，比如Deployment可能会关注Pod和replicaset，replicaSet可能还会关注Pod，为了避免每个控制器都独立的去与apiserver建立链接，k8s中抽象了sharedInformer的概念，即共享的informer, 针对同一资源只建立一个链接。由工厂方法 sharedInformerFactor 创建，内部维护了一个informer的map， 当存在某种资源的 informer 时，会直接返回。</p>
 <p>因为彼此共用informer,但是每个组件的处理逻辑可能各不相同，在informer中通过观察者模式，各个组件可以注册一个EventHandler来实现业务逻辑的注入</p>
 <p><img src="/img/inpost/client-go/client-go-5.png" alt=""></p>
 <h3 id="流程实例">流程实例</h3>
@@ -302,6 +310,12 @@ client-go详解
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/" class="item">常见并发模型梳理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -584,8 +598,8 @@ client-go详解
         </div>
         <div class="ui attached segment markdown-body">
           <p>关于我</p>
-<p>Hanamichi 的❤博客</p>
-<p>记录一些🌈生活上，技术上的事</p>
+<p>Hanamichi 的  ❤ 博客</p>
+<p>记录一些  🌈 生活上，技术上的事</p>
 <p>全平台玩家(pc-steam, ps4, switch)</p>
 <p>职业是后端工程师</p>
 <p>正在努力学习</p>
@@ -608,7 +622,7 @@ client-go详解
 <li>JavaScript</li>
 </ul>
 <p>目前在 <a href="http://www.99cloud.net">99cloud</a> 工作</p>
-<p>&ndash; 2020 年 1 月 4 日更新</p>
+<p>&ndash; 2021 年 2 月 1 日更新</p>
         </div>
       </article>
     </section>
