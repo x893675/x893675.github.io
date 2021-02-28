@@ -1,7 +1,7 @@
 ---
 title: client-go详解
 date: 2020-10-07T14:21:26+08:00
-lastmod: 2020-10-07T14:21:26+08:00
+lastmod: 2021-02-28T12:00:00+08:00
 author: hanamichi
 cover: /img/client-go.jpg
 categories: ['云原生']
@@ -15,6 +15,7 @@ client-go中informer list&watch机制
 - [clien-go结构原理图示](#clien-go结构原理图示)
 - [informer](#informer)
   - [informer组件](#informer组件)
+  - [informer 整体工作流程](#informer-整体工作流程)
   - [流程实例](#流程实例)
 - [controller工作流程](#controller工作流程)
 - [kubernetes API 约定](#kubernetes-api-约定)
@@ -51,10 +52,18 @@ Informer 只会调用 Kubernetes List 和 Watch 两种类型的 API。Informer �
 - Reflector：通过Kubernetes Watch API监听resource下的所有事件
 - Lister：用来被调用List/Get方法
 - Processor：记录并触发回调函数, Processor 中记录了所有的回调函数实例(即 ResourceEventHandler 实例)
-- DeltaFIFO: DeltaFIFO 和 LocalStore 是 Informer 的两级缓存, 用来存储Watch API返回的各种事件
-- LocalStore: DeltaFIFO 和 LocalStore 是 Informer 的两级缓存, Lister的List/Get方法访问
+- DeltaFIFO: 一个增量队列，将 Reflector 监控变化的对象形成一个 FIFO 队列，此处的 Delta 就是变化；
+- LocalStore: 就是 informer 的 cache，这里面缓存的是 apiserver 中的对象(其中有一部分可能还在DeltaFIFO 中)，此时使用者再查询对象的时候就直接从 cache 中查找，减少了 apiserver 的压力，LocalStore 只会被 Lister 的 List/Get 方法访问。
 
-在k8s中一些控制器可能会关注多种资源，比如Deployment可能会关注Pod和replicaset，replicaSet可能还会关注Pod，为了避免每个控制器都独立的去与apiserver建立链接，k8s中抽象了sharedInformer的概念，即共享的informer, 针对同一资源只建立一个链接
+### informer 整体工作流程
+
+- Reflector使用ListAndWatch方法，先从apiserver中list某类资源的所有实例，拿到对象的最新版本，然后用watch方法监听该resourceversion之后的所有变化，*若中途出现异常，reflector则会从断开的resourceversion处重新监听所有变化* 一旦有Add、Del、Update动作，Reflector会收到更新通知，该事件及它所对应的API对象这个组合，被称为增量Delta,它会被放进DeltaFIFO中
+- Informer会不断从这个DeltaFIFO中读取增量，每拿出一个对象，Informer就会判断这个增量的事件类型，然后创建或更新本地的缓存。
+- DeltaFIFO再pop这个事件到controller中，controller会调用事先注册到ResourceEventHandler回调函数进行处理。
+
+![informer](/img/inpost/client-go/informer.png)
+
+在k8s中一些控制器可能会关注多种资源，比如Deployment可能会关注Pod和replicaset，replicaSet可能还会关注Pod，为了避免每个控制器都独立的去与apiserver建立链接，k8s中抽象了sharedInformer的概念，即共享的informer, 针对同一资源只建立一个链接。由工厂方法 sharedInformerFactor 创建，内部维护了一个informer的map， 当存在某种资源的 informer 时，会直接返回。
 
 因为彼此共用informer,但是每个组件的处理逻辑可能各不相同，在informer中通过观察者模式，各个组件可以注册一个EventHandler来实现业务逻辑的注入
 

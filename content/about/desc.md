@@ -1,16 +1,16 @@
 ---
 title: 关于我
 date: 2019-11-11T01:30:25+08:00
-lastmod: 2021-1-3T012:30:00+08:00
+lastmod: 2021-2-1T012:30:00+08:00
 ---
 
 关于我
 
 <!--more-->
 
-Hanamichi 的:heart:博客
+Hanamichi 的  :heart: 博客
 
-记录一些:rainbow:生活上，技术上的事
+记录一些  :rainbow: 生活上，技术上的事
 
 全平台玩家(pc-steam, ps4, switch)
 
@@ -39,4 +39,4 @@ Hanamichi 的:heart:博客
 
 目前在 [99cloud](http://www.99cloud.net) 工作
 
--- 2020 年 1 月 4 日更新
+-- 2021 年 2 月 1 日更新
