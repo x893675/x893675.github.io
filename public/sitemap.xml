@@ -4,7 +4,42 @@
   
   <url>
     <loc>https://hanamichi.wiki/categories/</loc>
-    <lastmod>2021-02-13T14:21:26+08:00</lastmod>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/tags/golang/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/tags/linux/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/categories/linux/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/tags/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/posts/%E5%B9%B6%E5%8F%91%E6%A8%A1%E5%9E%8B/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hanamichi.wiki/posts/</loc>
+    <lastmod>2021-02-28T14:21:26+08:00</lastmod>
   </url>
   
   <url>
@@ -18,33 +53,13 @@
   </url>
   
   <url>
-    <loc>https://hanamichi.wiki/</loc>
-    <lastmod>2021-02-13T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/tags/linux/</loc>
-    <lastmod>2021-02-13T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/tags/</loc>
-    <lastmod>2021-02-13T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hanamichi.wiki/categories/%E5%BA%95%E5%B1%82%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF/</loc>
     <lastmod>2021-02-13T14:21:26+08:00</lastmod>
   </url>
   
   <url>
-    <loc>https://hanamichi.wiki/posts/</loc>
-    <lastmod>2021-02-13T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hanamichi.wiki/tags/kubernetes/</loc>
-    <lastmod>2021-01-03T14:21:26+08:00</lastmod>
+    <lastmod>2021-02-28T12:00:00+08:00</lastmod>
   </url>
   
   <url>
@@ -59,7 +74,7 @@
   
   <url>
     <loc>https://hanamichi.wiki/categories/%E4%BA%91%E5%8E%9F%E7%94%9F/</loc>
-    <lastmod>2021-01-03T14:21:26+08:00</lastmod>
+    <lastmod>2021-02-28T12:00:00+08:00</lastmod>
   </url>
   
   <url>
@@ -74,7 +89,7 @@
   
   <url>
     <loc>https://hanamichi.wiki/posts/client-go/</loc>
-    <lastmod>2020-10-07T14:21:26+08:00</lastmod>
+    <lastmod>2021-02-28T12:00:00+08:00</lastmod>
   </url>
   
   <url>
@@ -110,11 +125,6 @@
   <url>
     <loc>https://hanamichi.wiki/tags/%E8%B5%9E%E8%B5%8F/</loc>
     <lastmod>2020-01-15T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/tags/golang/</loc>
-    <lastmod>2020-01-01T14:21:26+08:00</lastmod>
   </url>
   
   <url>
@@ -249,11 +259,6 @@
   
   <url>
     <loc>https://hanamichi.wiki/posts/git/</loc>
-    <lastmod>2018-03-07T14:21:26+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hanamichi.wiki/categories/linux/</loc>
     <lastmod>2018-03-07T14:21:26+08:00</lastmod>
   </url>
   
