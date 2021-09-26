@@ -1,5 +1,5 @@
 ---
-title: 常用容器服务构建
+title: buildx构建多架构镜像
 date: 2021-09-20T14:21:26+08:00
 lastmod: 2021-09-20T14:21:26+08:00
 author: hanamichi
