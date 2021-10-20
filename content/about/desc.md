@@ -2,6 +2,7 @@
 title: 关于我
 date: 2019-11-11T01:30:25+08:00
 lastmod: 2021-2-1T012:30:00+08:00
+cover: /img/cgroup.jpg
 ---
 
 关于我
