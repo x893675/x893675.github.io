@@ -1,11 +1,11 @@
 ---
-title: buildx构建多架构镜像
-date: 2021-09-20T14:21:26+08:00
-lastmod: 2021-09-20T14:21:26+08:00
+title: 常见并发模型梳理
+date: 2021-03-01T14:21:26+08:00
+lastmod: 2021-03-01T14:21:26+08:00
 author: hanamichi
-cover: /img/container.jpg
-categories: ['容器']
-tags: ['docker']
+cover: /img/concurrency-pattern.jpg
+categories: ['linux']
+tags: ['linux','golang']
 ---
 
 使用 docker buildx 进行多架构镜像构建
