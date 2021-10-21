@@ -2,6 +2,9 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://hanamichi.wiki/posts/docker-buildx/</loc>
+    <lastmod>2021-09-20T14:21:26+08:00</lastmod>
+  </url><url>
     <loc>https://hanamichi.wiki/categories/</loc>
     <lastmod>2021-09-20T14:21:26+08:00</lastmod>
   </url><url>
@@ -15,9 +18,6 @@
     <lastmod>2021-09-20T14:21:26+08:00</lastmod>
   </url><url>
     <loc>https://hanamichi.wiki/categories/%E5%AE%B9%E5%99%A8/</loc>
-    <lastmod>2021-09-20T14:21:26+08:00</lastmod>
-  </url><url>
-    <loc>https://hanamichi.wiki/posts/docker-buildx/</loc>
     <lastmod>2021-09-20T14:21:26+08:00</lastmod>
   </url><url>
     <loc>https://hanamichi.wiki/posts/</loc>
