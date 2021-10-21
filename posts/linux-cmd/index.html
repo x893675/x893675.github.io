@@ -20,7 +20,7 @@ linux常用命令记录
 
 
 
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.88.1" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/linux-cmd/" />
 
@@ -28,9 +28,10 @@ linux常用命令记录
 <meta property="og:title" content="linux常用命令记录" />
 <meta property="og:description" content="记录一些linux的命令及使用" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/linux-cmd/" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/linux-cmd/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-09-01T14:21:26+08:00" />
 <meta property="article:modified_time" content="2017-09-01T14:21:26+08:00" />
+
 
 
 
@@ -89,7 +90,7 @@ linux常用命令记录
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           linux常用命令记录
-          <div class="sub header">@ hanamichi · Friday, Sep 1, 2017 · 6 分钟阅读 · 更新于 Sep 1, 2017</div>
+          <div class="sub header">@ hanamichi · Friday, Sep 1, 2017 · 6 分钟阅读 · 更新于 9月 1, 2017</div>
         </h2>
       </header>
       <article style="margin-top: 2rem;"><p>记录一些linux的命令及使用</p>
@@ -114,7 +115,7 @@ linux常用命令记录
 </ul>
 <h2 id="查看硬件信息">查看硬件信息</h2>
 <h3 id="dmidecode命令">dmidecode命令</h3>
-<pre><code>sudo dmidecode -t processor      (CPU核芯)
+<pre tabindex="0"><code>sudo dmidecode -t processor      (CPU核芯)
 sudo dmidecode -t memory         (内存)
 sudo dmidecode -t cache          (缓存)
 sudo dmidecode -t system         (电脑型号、产商)
@@ -124,7 +125,7 @@ sudo dmidecode -t connector      (连接设备)
 sudo dmidecode -t chassis        (机箱)
 sudo dmidecode -t bios           (BIOS) 
 </code></pre><p><strong>其他设备编号：</strong></p>
-<pre><code>1	System
+<pre tabindex="0"><code>1	System
 2	Base Board
 3	Chassis
 4	Processor
@@ -168,9 +169,9 @@ sudo dmidecode -t bios           (BIOS)
 </code></pre><h2 id="centos相关">centos相关</h2>
 <h3 id="yum-相关">yum 相关</h3>
 <p>1 <strong>语法</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum <span style="color:#f92672">(</span>选项<span style="color:#f92672">)</span><span style="color:#f92672">(</span>参数<span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum <span style="color:#f92672">(</span>选项<span style="color:#f92672">)(</span>参数<span style="color:#f92672">)</span>
 </code></pre></div><p>2 <strong>选项</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-h：显示帮助信息； 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-h：显示帮助信息； 
 -y：对所有的提问都回答“yes”；
 -c：指定配置文件； 
 -q：安静模式； 
@@ -180,7 +181,7 @@ sudo dmidecode -t bios           (BIOS)
 -R：设置yum处理一个命令的最大等待时间； 
 -C：完全从缓存中运行，而不去下载或者更新任何头文件。
 </code></pre></div><p>3 <strong>参数</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">install：安装rpm软件包； 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">install：安装rpm软件包； 
 update：更新rpm软件包； 
 check-update：检查是否有可用的更新rpm软件包； 
 remove：删除指定的rpm软件包； 
@@ -201,14 +202,14 @@ whatprovides:查找软件所在的包和仓库
 <li>查看可能批量安装的列表<code>yum grouplist</code></li>
 </ul>
 <p>5 <strong>清除缓存</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum clean packages <span style="color:#75715e">#清除缓存目录下的软件包</span> 
-yum clean headers <span style="color:#75715e">#清除缓存目录下的 headers</span> 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum clean packages <span style="color:#75715e">#清除缓存目录下的软件包 </span>
+yum clean headers <span style="color:#75715e">#清除缓存目录下的 headers </span>
 yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 headers</span>
 </code></pre></div><h3 id="rpm命令">rpm命令</h3>
 <p>1 <strong>语法</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm <span style="color:#f92672">(</span>选项<span style="color:#f92672">)</span><span style="color:#f92672">(</span>参数<span style="color:#f92672">)</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm <span style="color:#f92672">(</span>选项<span style="color:#f92672">)(</span>参数<span style="color:#f92672">)</span>
 </code></pre></div><p>2 <strong>选项</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-a：查询所有套件；
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-a：查询所有套件；
 -b&lt;完成阶段&gt;&lt;套件档&gt;+或-t &lt;完成阶段&gt;&lt;套件档&gt;+：设置包装套件的完成阶段，并指定套件档的文件名称； 
 -c：只列出组态配置文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
 -d：只列出文本文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
@@ -226,7 +227,7 @@ yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 he
 -v：显示指令执行过程； 
 -vv：详细显示指令执行过程，便于排错。
 </code></pre></div><p>3 <strong>参数</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">软件包：指定要操纵的rpm软件包。
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">软件包：指定要操纵的rpm软件包。
 </code></pre></div><p>4 <strong>实例</strong></p>
 <ul>
 <li>安装rpm包:<code>rpm -ivh your-package.rpm</code></li>
@@ -236,7 +237,7 @@ yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 he
 <li>卸载rpm包:<code>rpm -e 包名</code>包名含版本号等信息，不能有rpm后缀，使用<code>--nodeps</code>强制卸载</li>
 </ul>
 <p>5 <strong>不安装提取rpm包文件</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm2cpio xxx.rpm | cpio -vi 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm2cpio xxx.rpm | cpio -vi 
 rpm2cpio xxx.rpm | cpio -idmv 
 rpm2cpio xxx.rpm | cpio --extract --make-directories
 
@@ -252,7 +253,7 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 <li>一个已经安装过的软件包，还可以使用<code>rpm -qi xxxxxx.rpm</code></li>
 </ul>
 <p>8 <strong>查看某个程序所在的包</strong></p>
-<pre><code>返回软件包的全名: rpm -qf `which 程序名`
+<pre tabindex="0"><code>返回软件包的全名: rpm -qf `which 程序名`
 返回软件包的有关信息: rpm -qif `which 程序名`
 返回软件包的文件列表: rpm -qlf `which 程序名`
 </code></pre><h3 id="rpmbuild及spec文件详解">rpmbuild及SPEC文件详解</h3>
@@ -266,30 +267,30 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 <ol>
 <li>
 <p>导入key</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
 </code></pre></div></li>
 <li>
 <p>安装repo</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
 </code></pre></div></li>
 <li>
 <p>查看可用的内核包(lt为稳定版，ml为最新版)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*&#34;</span> --enablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;elrepo-kernel&#34;</span> list available
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*&#34;</span> --enablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;elrepo-kernel&#34;</span> list available
 </code></pre></div></li>
 <li>
 <p>安装最新版内核</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#ae81ff">\*</span> --enablerepo<span style="color:#f92672">=</span>elrepo-kernel install  kernel-ml.x86_64
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#ae81ff">\*</span> --enablerepo<span style="color:#f92672">=</span>elrepo-kernel install  kernel-ml.x86_64
 </code></pre></div></li>
 <li>
 <p>查看系统可用内核</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">awk -F<span style="color:#ae81ff">\&#39;</span> <span style="color:#e6db74">&#39;$1==&#34;menuentry &#34; {print i++ &#34; : &#34; $2}&#39;</span> /etc/grub2.cfg
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">awk -F<span style="color:#ae81ff">\&#39;</span> <span style="color:#e6db74">&#39;$1==&#34;menuentry &#34; {print i++ &#34; : &#34; $2}&#39;</span> /etc/grub2.cfg
 <span style="color:#75715e">#output..</span>
 <span style="color:#75715e">#0 : CentOS Linux (5.4.3-1.el7.elrepo.x86_64) 7 (Core)</span>
 <span style="color:#75715e">#1 : CentOS Linux (0-rescue-9871dd427bb842f8ae4396c60d6abed4) 7 (Core)</span>
 </code></pre></div></li>
 <li>
 <p>设置最新的内核为默认版本</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub2-set-default <span style="color:#ae81ff">0</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub2-set-default <span style="color:#ae81ff">0</span>
 <span style="color:#75715e"># 0 为上一条命令输出的相应序号</span>
 </code></pre></div></li>
 </ol>
@@ -299,7 +300,7 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 <li><a href="http://elrepo.org/tiki/tiki-index.php">http://elrepo.org/tiki/tiki-index.php</a></li>
 </ul>
 <h3 id="静态ip配置文件">静态ip配置文件</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost docker<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/sysconfig/network-scripts/ifcfg-ens33</span> 
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost docker<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/sysconfig/network-scripts/ifcfg-ens33 </span>
 TYPE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Ethernet&#34;</span>
 PROXY_METHOD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>
 BROWSER_ONLY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
@@ -323,7 +324,7 @@ DNS1<span style="color:#f92672">=</span>8.8.8.8
 <p>假定物理网卡为<strong>eth0</strong>，网桥为<strong>br0</strong></p>
 <p><code>vim /etc/sysconfig/network-scripts/ifcfg-eht0</code></p>
 <p>更改文件中的以下条目：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># NAME,DEVICE,UUID写成自己环境中的值</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># NAME,DEVICE,UUID写成自己环境中的值</span>
 TYPE<span style="color:#f92672">=</span>Ethernet
 BOOTPROTO<span style="color:#f92672">=</span>none
 NAME<span style="color:#f92672">=</span>eth0
@@ -333,7 +334,7 @@ ONBOOT<span style="color:#f92672">=</span>yes
 BRIDGE<span style="color:#f92672">=</span>br0
 </code></pre></div><p><code>vim /etc/sysconfig/network-scripts/ifcfg-br0 </code></p>
 <p>文件内容如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 更改相应ip，也可用dhcp</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 更改相应ip，也可用dhcp</span>
 TYPE<span style="color:#f92672">=</span>Bridge
 DEVICE<span style="color:#f92672">=</span>br0
 BOOTPROTO<span style="color:#f92672">=</span>static
@@ -344,7 +345,7 @@ GATEWAY<span style="color:#f92672">=</span>172.16.0.1
 DNS1<span style="color:#f92672">=</span>202.103.24.68
 </code></pre></div><p><code>service network restart</code></p>
 <p>禁用网络过滤</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#增加以下条目</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#增加以下条目</span>
 net.bridge.bridge-nf-call-ip6tables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 net.bridge.bridge-nf-call-iptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
 net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
@@ -358,7 +359,7 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
 </ul>
 <p>⚠️： 以上两种方式不兼容，同一个配置在两种方式中都有定义，dockerd会启动报错</p>
 <p>daemon.json文件的样例:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;exec-opts&#34;</span>: [<span style="color:#e6db74">&#34;native.cgroupdriver=systemd&#34;</span>],
     <span style="color:#f92672">&#34;log-driver&#34;</span>: <span style="color:#e6db74">&#34;json-file&#34;</span>,
     <span style="color:#f92672">&#34;log-opts&#34;</span>: { <span style="color:#f92672">&#34;max-size&#34;</span>: <span style="color:#e6db74">&#34;100m&#34;</span> },
@@ -553,6 +554,12 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker-buildx/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -761,7 +768,7 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
         </div>
         <div class="ui attached segment markdown-body">
           <p>关于我</p>
-<p>Hanamichi 的  ❤ 博客</p>
+<p>Hanamichi 的  ❤️ 博客</p>
 <p>记录一些  🌈 生活上，技术上的事</p>
 <p>全平台玩家(pc-steam, ps4, switch)</p>
 <p>职业是后端工程师</p>

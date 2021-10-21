@@ -20,7 +20,7 @@ k8s crio 测试环境搭建
 
 
 
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.88.1" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/k8s-ciro/" />
 
@@ -28,9 +28,10 @@ k8s crio 测试环境搭建
 <meta property="og:title" content="k8s crio 测试环境搭建" />
 <meta property="og:description" content="k8s&#43;crio&#43;ipvs测试环境搭建记录" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/k8s-ciro/" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/k8s-ciro/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2019-11-01T14:21:26+08:00" />
 <meta property="article:modified_time" content="2019-11-01T14:21:26+08:00" />
+
 
 
 
@@ -89,7 +90,7 @@ k8s crio 测试环境搭建
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           k8s crio 测试环境搭建
-          <div class="sub header">@ hanamichi · Friday, Nov 1, 2019 · 3 分钟阅读 · 更新于 Nov 1, 2019</div>
+          <div class="sub header">@ hanamichi · Friday, Nov 1, 2019 · 3 分钟阅读 · 更新于 11月 1, 2019</div>
         </h2>
       </header>
       <article style="margin-top: 2rem;"><p>k8s+crio+ipvs测试环境搭建记录</p>
@@ -137,29 +138,29 @@ k8s crio 测试环境搭建
 </li>
 <li>
 <p>设置内核参数</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span style="color:#e6db74">&lt;&lt;EOF
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat &gt; /etc/sysctl.d/99-kubernetes-cri.conf <span style="color:#e6db74">&lt;&lt;EOF
 </span><span style="color:#e6db74">net.bridge.bridge-nf-call-iptables  = 1
 </span><span style="color:#e6db74">net.ipv4.ip_forward                 = 1
 </span><span style="color:#e6db74">net.bridge.bridge-nf-call-ip6tables = 1
 </span><span style="color:#e6db74">EOF</span>
-   
+
 modprobe overlay
 modprobe br_netfilter
 </code></pre></div></li>
 <li>
 <p>安装ipvsadm,并设置ipvs模块自启</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install ipvsadm
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install ipvsadm
+
 cat &gt; /etc/sysconfig/modules/ipvs.modules <span style="color:#e6db74">&lt;&lt; EOF
 </span><span style="color:#e6db74">/sbin/modinfo -F filename ip_vs &gt; /dev/null 2&gt;&amp;1
 </span><span style="color:#e6db74">if [ $? -eq 0 ];then
-</span><span style="color:#e6db74"> /sbin/modprobe ip_vs
+</span><span style="color:#e6db74">	/sbin/modprobe ip_vs
 </span><span style="color:#e6db74">fi
 </span><span style="color:#e6db74">EOF</span>
 </code></pre></div></li>
 </ol>
 <h3 id="安装kubeadm">安装kubeadm</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat &gt; /etc/yum.repos.d/kubernetes.repo <span style="color:#e6db74">&lt;&lt;EOF
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat &gt; /etc/yum.repos.d/kubernetes.repo <span style="color:#e6db74">&lt;&lt;EOF
 </span><span style="color:#e6db74">[kubernetes]
 </span><span style="color:#e6db74">name=Kubernetes
 </span><span style="color:#e6db74">baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
@@ -174,7 +175,7 @@ cat &gt; /etc/sysconfig/modules/ipvs.modules <span style="color:#e6db74">&lt;&lt
 <ol>
 <li>
 <p>安装依赖软件包</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y <span style="color:#ae81ff">\
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  btrfs-progs-devel <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  containers-common <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  device-mapper-devel <span style="color:#ae81ff">\
@@ -193,82 +194,82 @@ cat &gt; /etc/sysconfig/modules/ipvs.modules <span style="color:#e6db74">&lt;&lt
 </code></pre></div></li>
 <li>
 <p>编译安装cri-o</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/cri-o/cri-o
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/cri-o/cri-o
+
 cd cri-o
-   
+
 git checkout -b v1.16.1 v1.16.1
-   
+
 make <span style="color:#f92672">&amp;&amp;</span> make install
-   
+
 make install.config
-   
+
 make install.systemd
 </code></pre></div></li>
 <li>
 <p>编译安装conmon</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/containers/conmon
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/containers/conmon
+
 cd conmon
-   
+
 make <span style="color:#f92672">&amp;&amp;</span> make install
 </code></pre></div></li>
 <li>
 <p>编译安装cni-plugins</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/containernetworking/plugins
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/containernetworking/plugins
+
 cd plugins
-   
+
 git checkout -b 0.8.3 v0.8.3
-   
+
 ./build_linux.sh
-   
+
 mkdir -p /opt/cni/bin
-   
+
 cp bin/* /opt/cni/bin/
 </code></pre></div></li>
 <li>
 <p>修改<code>/etc/crio/crio.config</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ini" data-lang="ini"><span style="color:#a6e22e">log_level</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;info&#34;
-</span><span style="color:#e6db74">   </span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ini" data-lang="ini"><span style="color:#a6e22e">log_level</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;info&#34;</span>
+
 <span style="color:#a6e22e">cgroup_manager</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;systemd&#34;</span>
 </code></pre></div></li>
 <li>
 <p>启动crio服务</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl daemon-reload <span style="color:#f92672">&amp;&amp;</span> systemctl enable crio --now
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl daemon-reload <span style="color:#f92672">&amp;&amp;</span> systemctl enable crio --now
+
 <span style="color:#75715e">#可以使用crio-status config命令查看crio的配置</span>
 </code></pre></div></li>
 <li>
 <p>安装crio-ctl</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;v1.17.0&#34;</span>
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;v1.17.0&#34;</span>
+
 curl -L https://github.com/kubernetes-sigs/cri-tools/releases/download/$VERSION/crictl-<span style="color:#e6db74">${</span>VERSION<span style="color:#e6db74">}</span>-linux-amd64.tar.gz --output crictl-<span style="color:#e6db74">${</span>VERSION<span style="color:#e6db74">}</span>-linux-amd64.tar.gz
-   
+
 tar zxvf crictl-$VERSION-linux-amd64.tar.gz -C /usr/local/bin
-   
+
 rm -f crictl-$VERSION-linux-amd64.tar.gz
 </code></pre></div></li>
 <li>
 <p>配置kubelet</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat &gt; /etc/sysconfig/kubelet <span style="color:#e6db74">&lt;&lt;EOF
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat &gt; /etc/sysconfig/kubelet <span style="color:#e6db74">&lt;&lt;EOF
 </span><span style="color:#e6db74">KUBELET_EXTRA_ARGS=--container-runtime=remote --cgroup-driver=systemd --container-runtime-endpoint=&#39;unix:///var/run/crio/crio.sock&#39; --runtime-request-timeout=5m
 </span><span style="color:#e6db74">EOF</span>
 </code></pre></div></li>
 <li>
 <p>启动kubelet</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl daemon-reload <span style="color:#f92672">&amp;&amp;</span> systemctl enable kubelet --now
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">systemctl daemon-reload <span style="color:#f92672">&amp;&amp;</span> systemctl enable kubelet --now
 </code></pre></div></li>
 </ol>
 <h3 id="安装k8s">安装k8s</h3>
 <ol>
 <li>
 <p>使用kubeadm初始化集群，因之后使用calico网络插件，所以cidr的值需要填写<code>192.168.0.0/16</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm init  --pod-network-cidr<span style="color:#f92672">=</span>192.168.0.0/16  --kubernetes-version<span style="color:#f92672">=</span>1.16.3
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm init  --pod-network-cidr<span style="color:#f92672">=</span>192.168.0.0/16  --kubernetes-version<span style="color:#f92672">=</span>1.16.3
 </code></pre></div></li>
 <li>
 <p>安装网络插件</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
 </code></pre></div></li>
 <li>
 <p>执行<code>kubectl get po --all-namespaces -w</code>查看并等待pod运行正常</p>
@@ -278,88 +279,88 @@ rm -f crictl-$VERSION-linux-amd64.tar.gz
 </li>
 <li>
 <p>集群启动正常后kube-proxy默认使用iptables，先更改成ipvs(<strong>通过kubeadm配置文件配置之后再研究</strong>)</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl get cm kube-proxy -n kube-system -o yaml | sed <span style="color:#e6db74">&#39;s/mode: &#34;&#34;/mode: &#34;ipvs&#34;/&#39;</span> | kubectl apply -f -
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl get cm kube-proxy -n kube-system -o yaml | sed <span style="color:#e6db74">&#39;s/mode: &#34;&#34;/mode: &#34;ipvs&#34;/&#39;</span> | kubectl apply -f -
+
 <span style="color:#66d9ef">for</span> i in <span style="color:#66d9ef">$(</span>kubectl get po -n kube-system | awk <span style="color:#e6db74">&#39;/kube-proxy/ {print $1}&#39;</span><span style="color:#66d9ef">)</span>; <span style="color:#66d9ef">do</span>
   kubectl delete po $i -n kube-system
 <span style="color:#66d9ef">done</span>
-   
+
 <span style="color:#75715e">#执行ipvsadm -l可看到ipvs规则</span>
 </code></pre></div></li>
 <li>
 <p>配置自动补全</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y bash-completion
-   
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y bash-completion
+
 <span style="color:#75715e">#重新进入shell</span>
-   
+
 source &lt;<span style="color:#f92672">(</span>kubectl completion bash<span style="color:#f92672">)</span>
 </code></pre></div></li>
 </ol>
 <h3 id="测试集群正常">测试集群正常</h3>
 <p>测试deployment文件如下，部署后通过curl clusterIP:port访问服务，查看网络是否正常</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  labels:
-    app: nginx
-spec:
-  replicas: <span style="color:#ae81ff">1</span>
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:alpine
-        ports:
-        - containerPort: <span style="color:#ae81ff">80</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx-deployment</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">matchLabels</span>:
+      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+  <span style="color:#f92672">template</span>:
+    <span style="color:#f92672">metadata</span>:
+      <span style="color:#f92672">labels</span>:
+        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+    <span style="color:#f92672">spec</span>:
+      <span style="color:#f92672">containers</span>:
+      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">nginx</span>
+        <span style="color:#f92672">image</span>: <span style="color:#ae81ff">nginx:alpine</span>
+        <span style="color:#f92672">ports</span>:
+        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">80</span>
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: my-service
-spec:
-  selector:
-    app: nginx
-  ports:
-    - protocol: TCP
-      port: <span style="color:#ae81ff">8080</span>
-      targetPort: <span style="color:#ae81ff">80</span>
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">my-service</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">nginx</span>
+  <span style="color:#f92672">ports</span>:
+    - <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+      <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8080</span>
+      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">80</span>
 </code></pre></div><h2 id="istio搭建">istio搭建</h2>
 <p>使用istio版本为<strong>istio-1.4.2</strong></p>
 <ol>
 <li>
 <p>下载istio</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -L https://istio.io/downloadIstio | sh -
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">curl -L https://istio.io/downloadIstio | sh -
 </code></pre></div></li>
 <li>
 <p>将istioctl添加值环境变量</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$PATH<span style="color:#e6db74">:/root/istio-1.4.2/bin</span><span style="color:#e6db74">&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">export PATH<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$PATH<span style="color:#e6db74">:/root/istio-1.4.2/bin&#34;</span>
 </code></pre></div></li>
 <li>
 <p>安装前验证</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl verify-install
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl verify-install
 </code></pre></div></li>
 <li>
 <p>安装demo</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl manifest apply --set profile<span style="color:#f92672">=</span>demo
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl manifest apply --set profile<span style="color:#f92672">=</span>demo
 </code></pre></div></li>
 <li>
 <p>对namespace的pod自动注入需要加入label</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl label namespace &lt;namespace&gt; istio-injection<span style="color:#f92672">=</span>enabled
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl label namespace &lt;namespace&gt; istio-injection<span style="color:#f92672">=</span>enabled
 </code></pre></div></li>
 <li>
 <p>手动注入</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl kube-inject -f &lt;your-app-spec&gt;.yaml | kubectl apply -f -
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl kube-inject -f &lt;your-app-spec&gt;.yaml | kubectl apply -f -
 </code></pre></div></li>
 <li>
 <p>卸载</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl manifest generate --set profile<span style="color:#f92672">=</span>demo | kubectl delete -f -
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">istioctl manifest generate --set profile<span style="color:#f92672">=</span>demo | kubectl delete -f -
 </code></pre></div></li>
 </ol>
 <h2 id="微服务使用istio注意事项">微服务使用istio注意事项</h2>
@@ -372,36 +373,35 @@ spec:
 </li>
 <li>
 <p>istio目前能识别的是http1.1,http2.0以及grpc的流量，在定义k8s的service时，需要指明name，istio才能对特定的流量进行区别，例如如下service定义:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">apiVersion: v1
-kind: Service
-metadata:
-  name: api
-  labels:
-    app: api
-spec:
-  ports:
-    - port: <span style="color:#ae81ff">8080</span>
-      targetPort: <span style="color:#ae81ff">8080</span>
-      name: http
-  selector:
-    app: api
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">api</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">api</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">ports</span>:
+    - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8080</span>
+      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8080</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">api</span>
+---
+<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+<span style="color:#f92672">metadata</span>:
+  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">auth-srv</span>
+  <span style="color:#f92672">labels</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">auth</span>
+<span style="color:#f92672">spec</span>:
+  <span style="color:#f92672">ports</span>:
+    - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8080</span>
+      <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">8080</span>
+      <span style="color:#f92672">name</span>: <span style="color:#ae81ff">grpc</span>
+  <span style="color:#f92672">selector</span>:
+    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">auth</span>
 </code></pre></div></li>
-</ul>
-<hr>
-<p>apiVersion: v1
-kind: Service
-metadata:
-name: auth-srv
-labels:
-app: auth
-spec:
-ports:
-- port: 8080
-targetPort: 8080
-name: grpc
-selector:
-app: auth</p>
-<pre><code></code></pre></article>
+</ul></article>
     </section>
 
     <footer class="ui attached segment dream-tags">
@@ -586,6 +586,12 @@ app: auth</p>
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker-buildx/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -794,7 +800,7 @@ app: auth</p>
         </div>
         <div class="ui attached segment markdown-body">
           <p>关于我</p>
-<p>Hanamichi 的  ❤ 博客</p>
+<p>Hanamichi 的  ❤️ 博客</p>
 <p>记录一些  🌈 生活上，技术上的事</p>
 <p>全平台玩家(pc-steam, ps4, switch)</p>
 <p>职业是后端工程师</p>

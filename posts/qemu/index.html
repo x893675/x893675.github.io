@@ -20,7 +20,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.88.1" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/qemu/" />
 
@@ -28,9 +28,10 @@
 <meta property="og:title" content="关于Qemu的记录" />
 <meta property="og:description" content="qemu-kvm的一些记录" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/qemu/" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/qemu/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2017-12-07T14:21:26+08:00" />
 <meta property="article:modified_time" content="2017-12-07T14:21:26+08:00" />
+
 
 
 
@@ -89,7 +90,7 @@
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           关于Qemu的记录
-          <div class="sub header">@ hanamichi · Thursday, Dec 7, 2017 · 5 分钟阅读 · 更新于 Dec 7, 2017</div>
+          <div class="sub header">@ hanamichi · Thursday, Dec 7, 2017 · 5 分钟阅读 · 更新于 12月 7, 2017</div>
         </h2>
       </header>
       <article style="margin-top: 2rem;"><p>qemu-kvm的一些记录</p>
@@ -123,43 +124,43 @@
 </ul>
 <h2 id="虚拟机xml文件中使用qemu命令行参数">虚拟机xml文件中使用qemu命令行参数</h2>
 <p>qemu中有些命令行的参数可以使用xml直接定义，另外一些不能直接定义的需要使用libvrit提供的<code>qemu:commandline</code>标签来配置。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;domain</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;kvm&#39;</span> <span style="color:#a6e22e">xmlns:qemu=</span><span style="color:#e6db74">&#39;http://libvirt.org/schemas/domain/qemu/1.0&#39;</span><span style="color:#f92672">&gt;</span>
-  <span style="color:#75715e">&lt;!--</span><span style="color:#75715e">-</span><span style="color:#75715e"> 虚拟机定义（os,cpu,mem等） </span><span style="color:#75715e">--&gt;</span>
-  <span style="color:#f92672">&lt;device</span><span style="color:#f92672">&gt;</span>
-  <span style="color:#75715e">&lt;!--</span><span style="color:#75715e">-</span><span style="color:#75715e"> 虚拟机设备定义 </span><span style="color:#75715e">--&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;domain</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;kvm&#39;</span> <span style="color:#a6e22e">xmlns:qemu=</span><span style="color:#e6db74">&#39;http://libvirt.org/schemas/domain/qemu/1.0&#39;</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#75715e">&lt;!--- 虚拟机定义（os,cpu,mem等） --&gt;</span>
+  <span style="color:#f92672">&lt;device&gt;</span>
+  <span style="color:#75715e">&lt;!--- 虚拟机设备定义 --&gt;</span>
   <span style="color:#f92672">&lt;/device&gt;</span>
-  <span style="color:#f92672">&lt;qemu:commandline</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#f92672">&lt;qemu:commandline&gt;</span>
     <span style="color:#f92672">&lt;qemu:arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">/&gt;</span>
     <span style="color:#f92672">&lt;qemu:env</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#39;&#39;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;&#39;</span><span style="color:#f92672">/&gt;</span>
   <span style="color:#f92672">&lt;/qemu:commandline&gt;</span>
 <span style="color:#f92672">&lt;/domain&gt;</span>
 </code></pre></div><p>实例：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;qemu:commandline</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;qemu:commandline&gt;</span>
    <span style="color:#f92672">&lt;qemu:arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;-option-rom&#39;</span><span style="color:#f92672">/&gt;</span>
    <span style="color:#f92672">&lt;qemu:arg</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;path/to/my.rom&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/qemu:commandline&gt;</span>
-</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;qemu:commandline</span><span style="color:#f92672">&gt;</span>
+</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;qemu:commandline&gt;</span>
    <span style="color:#f92672">&lt;qemu:env</span> <span style="color:#a6e22e">name=</span><span style="color:#e6db74">&#39;my_env&#39;</span> <span style="color:#a6e22e">value=</span><span style="color:#e6db74">&#39;my_value&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/qemu:commandline&gt;</span>
 </code></pre></div><h2 id="虚拟机xml文件中配置网卡">虚拟机xml文件中配置网卡</h2>
 <h3 id="nat模式">NAT模式</h3>
 <p>查看libvirt当前默认虚拟网络是否开启</p>
 <p><code>virsh net-list --all</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># virsh net-define /usr/share/libvirt/networks/default.xml</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># virsh net-define /usr/share/libvirt/networks/default.xml</span>
 <span style="color:#75715e"># virsh net-autostart default</span>
 <span style="color:#75715e"># virsh net-start default</span>
 </code></pre></div><p><code>brctl show</code>,如果<strong>virbr0</strong>正常，则设置正常</p>
 <p>更改系统配置，开启IP转发。</p>
 <p><code># vim /etc/sysctl.conf</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> net.ipv4.ip_forward <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"> net.ipv4.ip_forward <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
 </code></pre></div><p>虚拟机xml文件网络配置如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;interface</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;network&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;interface</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;network&#39;</span><span style="color:#f92672">&gt;</span>
    <span style="color:#f92672">&lt;source</span> <span style="color:#a6e22e">network=</span><span style="color:#e6db74">&#39;default&#39;</span><span style="color:#f92672">/&gt;</span>
    <span style="color:#f92672">&lt;mac</span> <span style="color:#a6e22e">address=</span><span style="color:#e6db74">&#39;00:16:3e:1a:b3:4a&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/interface&gt;</span>
 </code></pre></div><h3 id="桥接模式">桥接模式</h3>
 <p>linux网桥配置参考文章：<a href="http://hanamichi.wiki/posts/linux-cmd/">Linux下网桥配置</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;interface</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;bridge&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;interface</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;bridge&#39;</span><span style="color:#f92672">&gt;</span>
   <span style="color:#f92672">&lt;source</span> <span style="color:#a6e22e">bridge=</span><span style="color:#e6db74">&#39;br0&#39;</span><span style="color:#f92672">/&gt;</span>
   <span style="color:#f92672">&lt;mac</span> <span style="color:#a6e22e">address=</span><span style="color:#e6db74">&#39;00:16:3e:1a:b3:4a&#39;</span><span style="color:#f92672">/&gt;</span>
   <span style="color:#f92672">&lt;model</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;virtio&#39;</span><span style="color:#f92672">/&gt;</span>
@@ -187,11 +188,11 @@
 <p><img src="/img/inpost/qemu/2-4.png" alt="图2-4"></p>
 <h3 id="qemu-usb控制器配置">QEMU-USB控制器配置</h3>
 <h4 id="usb30控制器-1">usb3.0控制器</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;nec-xhci&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;nec-xhci&#39;</span><span style="color:#f92672">&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> index值代表USB控制器在usb总线中的位置，数值从0开始，添加另外的usb控制器，index值自增 </span><span style="color:#75715e">--&gt;</span>
+<span style="color:#75715e">&lt;!-- index值代表USB控制器在usb总线中的位置，数值从0开始，添加另外的usb控制器，index值自增 --&gt;</span>
 </code></pre></div><h4 id="usb20控制器组">usb2.0控制器组</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;ich9-ehci1&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;ich9-ehci1&#39;</span><span style="color:#f92672">&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
 <span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;ich9-uhci1&#39;</span><span style="color:#f92672">&gt;</span>
       <span style="color:#f92672">&lt;master</span> <span style="color:#a6e22e">startport=</span><span style="color:#e6db74">&#39;0&#39;</span><span style="color:#f92672">/&gt;</span>
@@ -202,16 +203,16 @@
 <span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;ich9-uhci3&#39;</span><span style="color:#f92672">&gt;</span>
       <span style="color:#f92672">&lt;master</span> <span style="color:#a6e22e">startport=</span><span style="color:#e6db74">&#39;4&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> 在虚拟机中添加一个2.0控制器，必须以一个2.0控制器和3个1.0控制器组的形式添加，且3个1.0控制器的index值必须跟2.0控制器的index值相同 </span><span style="color:#75715e">--&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> index值代表USB控制器在usb总线中的位置，数值从0开始，添加另外的usb控制器，index值自增 </span><span style="color:#75715e">--&gt;</span>
+<span style="color:#75715e">&lt;!-- 在虚拟机中添加一个2.0控制器，必须以一个2.0控制器和3个1.0控制器组的形式添加，且3个1.0控制器的index值必须跟2.0控制器的index值相同 --&gt;</span>
+<span style="color:#75715e">&lt;!-- index值代表USB控制器在usb总线中的位置，数值从0开始，添加另外的usb控制器，index值自增 --&gt;</span>
 </code></pre></div><h4 id="usb10控制器">usb1.0控制器</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;piix3-uhci&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;piix3-uhci&#39;</span><span style="color:#f92672">&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> index值代表USB控制器在usb总线中的位置，数值从0开始，添加另外的usb控制器，index值自增 </span><span style="color:#75715e">--&gt;</span>
+<span style="color:#75715e">&lt;!-- index值代表USB控制器在usb总线中的位置，数值从0开始，添加另外的usb控制器，index值自增 --&gt;</span>
 </code></pre></div><h3 id="qemu-usb透传和重定向配置">QEMU-USB透传和重定向配置</h3>
 <p>以3.0控制器加2.0控制器组为例讲解</p>
 <p><strong>虚拟机usb控制器配置如下：</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;nec-xhci&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;nec-xhci&#39;</span><span style="color:#f92672">&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
 <span style="color:#f92672">&lt;controller</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">index=</span><span style="color:#e6db74">&#39;1&#39;</span> <span style="color:#a6e22e">model=</span><span style="color:#e6db74">&#39;ich9-ehci1&#39;</span><span style="color:#f92672">&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
@@ -225,7 +226,7 @@
       <span style="color:#f92672">&lt;master</span> <span style="color:#a6e22e">startport=</span><span style="color:#e6db74">&#39;4&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/controller&gt;</span>
 </code></pre></div><p><strong>虚拟机usb输入设备和重定向通道配置如下：</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;input</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;tablet&#39;</span> <span style="color:#a6e22e">bus=</span><span style="color:#e6db74">&#39;usb&#39;</span><span style="color:#f92672">&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;input</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;tablet&#39;</span> <span style="color:#a6e22e">bus=</span><span style="color:#e6db74">&#39;usb&#39;</span><span style="color:#f92672">&gt;</span>
       <span style="color:#f92672">&lt;address</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">bus=</span><span style="color:#e6db74">&#39;1&#39;</span> <span style="color:#a6e22e">port=</span><span style="color:#e6db74">&#39;1&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/input&gt;</span>
 <span style="color:#f92672">&lt;redirdev</span> <span style="color:#a6e22e">bus=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;spicevmc&#39;</span><span style="color:#f92672">&gt;</span>
@@ -240,11 +241,11 @@
 <span style="color:#f92672">&lt;redirdev</span> <span style="color:#a6e22e">bus=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;spicevmc&#39;</span><span style="color:#f92672">&gt;</span>
       <span style="color:#f92672">&lt;address</span> <span style="color:#a6e22e">type=</span><span style="color:#e6db74">&#39;usb&#39;</span> <span style="color:#a6e22e">bus=</span><span style="color:#e6db74">&#39;0&#39;</span> <span style="color:#a6e22e">port=</span><span style="color:#e6db74">&#39;4&#39;</span><span style="color:#f92672">/&gt;</span>
 <span style="color:#f92672">&lt;/redirdev&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> 将tablet输入设备连接在2.0控制器的端口上，address标签中bus值为控制器的索引值，port值为连接在控制器的哪个端口，2.0控制器有6个端口，port值默认从1开始 </span><span style="color:#75715e">--&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> 将4个重定向通道连接到3.0控制器上，address标签的值同2.0控制器，port值为1</span><span style="color:#75715e">-</span><span style="color:#75715e">15 </span><span style="color:#75715e">--&gt;</span>
-<span style="color:#75715e">&lt;!--</span><span style="color:#75715e"> 可根据自己的需要改变连接情况 </span><span style="color:#75715e">--&gt;</span>
+<span style="color:#75715e">&lt;!-- 将tablet输入设备连接在2.0控制器的端口上，address标签中bus值为控制器的索引值，port值为连接在控制器的哪个端口，2.0控制器有6个端口，port值默认从1开始 --&gt;</span>
+<span style="color:#75715e">&lt;!-- 将4个重定向通道连接到3.0控制器上，address标签的值同2.0控制器，port值为1-15 --&gt;</span>
+<span style="color:#75715e">&lt;!-- 可根据自己的需要改变连接情况 --&gt;</span>
 </code></pre></div><p><strong>USB设备透传设置如下:</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">virsh qemu-monitor-command domain-name --hmp <span style="color:#e6db74">&#39;device_add usb-redir,chardev=chardev1235,id=device1236,bus=usb.0,port=4&#39;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">virsh qemu-monitor-command domain-name --hmp <span style="color:#e6db74">&#39;device_add usb-redir,chardev=chardev1235,id=device1236,bus=usb.0,port=4&#39;</span>
 <span style="color:#75715e">#domain-name,chardev,id根据自己的情况修改</span>
 <span style="color:#75715e">#bus=usb.0,port=4表示将设备连接到索引值为0的usb控制器的4号端口上,port项为可选</span>
 
@@ -438,6 +439,12 @@ virsh qemu-monitor-command domain-name --hmp <span style="color:#e6db74">&#39;de
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker-buildx/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -646,7 +653,7 @@ virsh qemu-monitor-command domain-name --hmp <span style="color:#e6db74">&#39;de
         </div>
         <div class="ui attached segment markdown-body">
           <p>关于我</p>
-<p>Hanamichi 的  ❤ 博客</p>
+<p>Hanamichi 的  ❤️ 博客</p>
 <p>记录一些  🌈 生活上，技术上的事</p>
 <p>全平台玩家(pc-steam, ps4, switch)</p>
 <p>职业是后端工程师</p>

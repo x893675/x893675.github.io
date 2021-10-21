@@ -20,7 +20,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.88.1" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/go-micro-istio/" />
 
@@ -28,9 +28,10 @@
 <meta property="og:title" content="微服务使用istio分布式追踪" />
 <meta property="og:description" content="golang微服务对接k8s及使用istio的分布式追踪" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/go-micro-istio/" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/go-micro-istio/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2020-01-01T14:21:26+08:00" />
 <meta property="article:modified_time" content="2020-01-01T14:21:26+08:00" />
+
 
 
 
@@ -89,7 +90,7 @@
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           微服务使用istio分布式追踪
-          <div class="sub header">@ hanamichi · Wednesday, Jan 1, 2020 · 5 分钟阅读 · 更新于 Jan 1, 2020</div>
+          <div class="sub header">@ hanamichi · Wednesday, Jan 1, 2020 · 5 分钟阅读 · 更新于 1月 1, 2020</div>
         </h2>
       </header>
       <article style="margin-top: 2rem;"><p>golang微服务对接k8s及使用istio的分布式追踪</p>
@@ -142,7 +143,7 @@
 <p>注意: 在http请求中，比如使用gin框架时，这些header中的key应是首字母大写的，例如:<code>X-Request-Id</code></p>
 <h3 id="代码示例分析">代码示例分析</h3>
 <p>以下代码段使用的是gin作为http框架，AuthSvc是rpc客户端，使用go-micro框架</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">import</span>(
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">import</span>(
 	<span style="color:#e6db74">&#34;github.com/uber/jaeger-client-go&#34;</span>
 	<span style="color:#a6e22e">ot</span> <span style="color:#e6db74">&#34;github.com/opentracing/opentracing-go&#34;</span>
 	<span style="color:#e6db74">&#34;github.com/micro/go-micro/metadata&#34;</span>
@@ -222,7 +223,7 @@
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">span</span>.<span style="color:#a6e22e">Finish</span>()
 }
 </code></pre></div><p>由上图的注释分析得到下列span关系:</p>
-<pre><code>root span --&gt; span2 -- span3
+<pre tabindex="0"><code>root span --&gt; span2 -- span3
                     -- span4
 </code></pre><p>在istio中就把之前分裂的两个trace记录合并为一个了。</p>
 <p>结论:</p>
@@ -417,6 +418,12 @@
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker-buildx/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -625,7 +632,7 @@
         </div>
         <div class="ui attached segment markdown-body">
           <p>关于我</p>
-<p>Hanamichi 的  ❤ 博客</p>
+<p>Hanamichi 的  ❤️ 博客</p>
 <p>记录一些  🌈 生活上，技术上的事</p>
 <p>全平台玩家(pc-steam, ps4, switch)</p>
 <p>职业是后端工程师</p>
