@@ -20,7 +20,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.62.2" />
+<meta name="generator" content="Hugo 0.88.1" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/closure/" />
 
@@ -28,9 +28,10 @@
 <meta property="og:title" content="闭包的理解" />
 <meta property="og:description" content="关于闭包的一些理解及记录" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/closure/" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/closure/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2018-05-30T14:21:26+08:00" />
 <meta property="article:modified_time" content="2018-05-30T14:21:26+08:00" />
+
 
 
 
@@ -89,7 +90,7 @@
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
           闭包的理解
-          <div class="sub header">@ hanamichi · Wednesday, May 30, 2018 · 1 分钟阅读 · 更新于 May 30, 2018</div>
+          <div class="sub header">@ hanamichi · Wednesday, May 30, 2018 · 1 分钟阅读 · 更新于 五月 30, 2018</div>
         </h2>
       </header>
       <article style="margin-top: 2rem;"><p>关于闭包的一些理解及记录</p>
@@ -100,7 +101,7 @@
 <blockquote>
 <p>闭包也是一种为表示带有自由变量的过程而用的实用技术</p>
 </blockquote>
-<pre><code>f(x,y) = x+y+z
+<pre tabindex="0"><code>f(x,y) = x+y+z
 </code></pre><p>在函数f中，x,y为约束变量，z为自由变量。</p>
 <p>同样在一个代码块中，如果某个变量在这个代码块中没被定义过，那么这个变量就可以被认为是一个自由变量。</p>
 <p>Haskell社区把函数分为两类，一种为闭包，另一种和闭包相对的叫组合子</p>
@@ -112,7 +113,7 @@
 </blockquote>
 <p>全局函数（本质上是一个有名字的组合子）被归为闭包的一种特殊形式。</p>
 <p>例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">//从银行账户中取款时，每一次取款都会更新账户余额balance，
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">//从银行账户中取款时，每一次取款都会更新账户余额balance，
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">makeAccount</span>(<span style="color:#a6e22e">balance</span>){
     <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">withdraw</span>(<span style="color:#a6e22e">amount</span>){
     	<span style="color:#a6e22e">balance</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">balance</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">amount</span>;
@@ -127,7 +128,7 @@
 <span style="color:#75715e">// =&gt; 90
 </span><span style="color:#75715e"></span><span style="color:#a6e22e">withdraw1</span>(<span style="color:#ae81ff">30</span>);
 <span style="color:#75715e">// =&gt; 60
-</span><span style="color:#75715e"></span><span style="color:#75715e">//我们还可以生成不止一个withdraw闭包，而且各个闭包之间是相互独立的。
+</span><span style="color:#75715e">//我们还可以生成不止一个withdraw闭包，而且各个闭包之间是相互独立的。
 </span></code></pre></div></article>
     </section>
 
@@ -313,6 +314,12 @@
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/docker-buildx/" class="item">常用容器服务构建</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -521,7 +528,7 @@
         </div>
         <div class="ui attached segment markdown-body">
           <p>关于我</p>
-<p>Hanamichi 的  ❤ 博客</p>
+<p>Hanamichi 的  ❤️ 博客</p>
 <p>记录一些  🌈 生活上，技术上的事</p>
 <p>全平台玩家(pc-steam, ps4, switch)</p>
 <p>职业是后端工程师</p>
