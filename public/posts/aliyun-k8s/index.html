@@ -20,7 +20,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.101.0" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/aliyun-k8s/" />
 
@@ -122,45 +122,45 @@
 <ol>
 <li>
 <p>更改host</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">hostnamectl set-hostname master-node
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>hostnamectl set-hostname master-node
+</span></span></code></pre></div></li>
 <li>
 <p>更改<code>/etc/hosts</code>文件</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yourip  master-node
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yourip  master-node
+</span></span></code></pre></div></li>
 <li>
 <p>关闭<code>selinux</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sed -i --follow-symlinks <span style="color:#e6db74">&#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39;</span> /etc/sysconfig/selinux
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sed -i --follow-symlinks <span style="color:#e6db74">&#39;s/SELINUX=enforcing/SELINUX=disabled/g&#39;</span> /etc/sysconfig/selinux
+</span></span></code></pre></div></li>
 <li>
 <p>禁用<code>swap</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">swapoff -a
-</code></pre></div><p>编辑<code>/etc/fstab</code>,注释<code>swap</code>的那条记录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>swapoff -a
+</span></span></code></pre></div><p>编辑<code>/etc/fstab</code>,注释<code>swap</code>的那条记录</p>
 </li>
 <li>
 <p>安装docker</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y yum-utils device-mapper-persistent-data lvm2
-
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-yum install docker-ce -y
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install -y yum-utils device-mapper-persistent-data lvm2
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>yum install docker-ce -y
+</span></span></code></pre></div></li>
 <li>
 <p>将docker的<code>cgroup driver</code>更改成<code>systemd</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat <span style="color:#e6db74">&lt;&lt;EOF &gt; /etc/docker/daemon.json
-</span><span style="color:#e6db74">{
-</span><span style="color:#e6db74">  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
-</span><span style="color:#e6db74">  &#34;log-driver&#34;: &#34;json-file&#34;,
-</span><span style="color:#e6db74">  &#34;log-opts&#34;: {
-</span><span style="color:#e6db74">    &#34;max-size&#34;: &#34;100m&#34;
-</span><span style="color:#e6db74">  },
-</span><span style="color:#e6db74">  &#34;storage-driver&#34;: &#34;overlay2&#34;,
-</span><span style="color:#e6db74">  &#34;storage-opts&#34;: [
-</span><span style="color:#e6db74">    &#34;overlay2.override_kernel_check=true&#34;
-</span><span style="color:#e6db74">  ]
-</span><span style="color:#e6db74">}
-</span><span style="color:#e6db74">EOF</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt; /etc/docker/daemon.json
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">{
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;exec-opts&#34;: [&#34;native.cgroupdriver=systemd&#34;],
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;log-driver&#34;: &#34;json-file&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;log-opts&#34;: {
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;max-size&#34;: &#34;100m&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  },
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;storage-driver&#34;: &#34;overlay2&#34;,
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  &#34;storage-opts&#34;: [
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    &#34;overlay2.override_kernel_check=true&#34;
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">  ]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">}
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div></li>
 <li>
 <p><code>systemctl enable --now docker</code></p>
 </li>
@@ -169,36 +169,36 @@ yum install docker-ce -y
 </li>
 <li>
 <p>加载内核模块</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">modprobe br_netfilter
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>modprobe br_netfilter
+</span></span></code></pre></div></li>
 <li>
 <p>安装k8s repo文件</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">cat <span style="color:#e6db74">&lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
-</span><span style="color:#e6db74">[kubernetes]
-</span><span style="color:#e6db74">name=Kubernetes
-</span><span style="color:#e6db74">baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
-</span><span style="color:#e6db74">enabled=1
-</span><span style="color:#e6db74">gpgcheck=1
-</span><span style="color:#e6db74">repo_gpgcheck=1
-</span><span style="color:#e6db74">gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-</span><span style="color:#e6db74">exclude=kube*
-</span><span style="color:#e6db74">EOF</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cat <span style="color:#e6db74">&lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">[kubernetes]
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">name=Kubernetes
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">enabled=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpgcheck=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">repo_gpgcheck=1
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">exclude=kube*
+</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">EOF</span>
+</span></span></code></pre></div></li>
 <li>
 <p>安装kubeadm等工具</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install -y kubelet kubeadm kubectl --disableexcludes<span style="color:#f92672">=</span>kubernetes
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install -y kubelet kubeadm kubectl --disableexcludes<span style="color:#f92672">=</span>kubernetes
+</span></span></code></pre></div></li>
 <li>
 <p>启动集群</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubeadm init  --pod-network-cidr<span style="color:#f92672">=</span>192.168.0.0/16
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubeadm init  --pod-network-cidr<span style="color:#f92672">=</span>192.168.0.0/16
+</span></span></code></pre></div></li>
 <li>
 <p>根据提示拷贝kubeconfig文件</p>
 </li>
 <li>
 <p>安装网络插件</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml</span>
+</span></span></code></pre></div></li>
 <li>
 <p>使用<code>kubectl get po --all-namespaces -w</code>查看pod状态</p>
 </li>
@@ -209,80 +209,80 @@ yum install docker-ce -y
 <h2 id="ingress安装">ingress安装</h2>
 <p>ingress选用contour</p>
 <p>安装方式见参考链接,在阿里云上使用,envoy的service使用nodeport方式暴露,具体yaml如下:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
- <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy</span>
- <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">heptio-contour</span>
-<span style="color:#f92672">spec</span>:
- <span style="color:#f92672">ports</span>:
- - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
-   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
-   <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-   <span style="color:#f92672">nodePort</span>: <span style="color:#ae81ff">30080</span>
- - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
-   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
-   <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-   <span style="color:#f92672">nodePort</span>: <span style="color:#ae81ff">30443</span>
- <span style="color:#f92672">selector</span>:
-   <span style="color:#f92672">app</span>: <span style="color:#ae81ff">envoy</span>
- <span style="color:#f92672">type</span>: <span style="color:#ae81ff">NodePort</span>
-</code></pre></div><h3 id="参考链接">参考链接</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">heptio-contour</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">http</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">nodePort</span>: <span style="color:#ae81ff">30080</span>
+</span></span><span style="display:flex;"><span> - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">nodePort</span>: <span style="color:#ae81ff">30443</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">app</span>: <span style="color:#ae81ff">envoy</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">type</span>: <span style="color:#ae81ff">NodePort</span>
+</span></span></code></pre></div><h3 id="参考链接">参考链接</h3>
 <p><a href="https://www.yangcs.net/posts/use-envoy-as-a-kubernetes-ingress/">使用 Contour 接管 Kubernetes 的南北流量</a></p>
 <h2 id="应用部署">应用部署</h2>
 <h3 id="k8s-dashboard">k8s-dashboard</h3>
 <ol>
 <li>
 <p>部署k8s-dashboard</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+</span></span></code></pre></div></li>
 <li>
 <p>定义ingressroute</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">contour.heptio.com/v1beta1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">IngressRoute</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">dashboard</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">virtualhost</span>:
-    <span style="color:#f92672">fqdn</span>: <span style="color:#ae81ff">yoursubdomain</span>
-    <span style="color:#f92672">tls</span>:
-      <span style="color:#f92672">passthrough</span>: <span style="color:#66d9ef">true</span>
-  <span style="color:#f92672">tcpproxy</span>:
-    <span style="color:#f92672">services</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-dashboard</span>
-        <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
-  <span style="color:#f92672">routes</span>:
-    - <span style="color:#f92672">match</span>: <span style="color:#ae81ff">/</span>
-      <span style="color:#f92672">services</span>:
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-dashboard</span>
-          <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
-</code></pre></div><p>ingressroute资源与dashboard均在kube-system下, 使用<code>https://yoursubdomain:30443</code>访问</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">contour.heptio.com/v1beta1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">IngressRoute</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">dashboard</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">virtualhost</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">fqdn</span>: <span style="color:#ae81ff">yoursubdomain</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tls</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">passthrough</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tcpproxy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-dashboard</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">routes</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">match</span>: <span style="color:#ae81ff">/</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">kubernetes-dashboard</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</span></span></code></pre></div><p>ingressroute资源与dashboard均在kube-system下, 使用<code>https://yoursubdomain:30443</code>访问</p>
 </li>
 <li>
 <p>创建集群管理员账户,使用以下文件创建sa</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">zhuxiaowei</span>
-  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRoleBinding</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">zhuxiaowei</span>
-<span style="color:#f92672">roleRef</span>:
-  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
-  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-admin</span>
-<span style="color:#f92672">subjects</span>:
-- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">zhuxiaowei</span>
-  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">zhuxiaowei</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRoleBinding</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">zhuxiaowei</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">roleRef</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ClusterRole</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">cluster-admin</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">subjects</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">ServiceAccount</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">zhuxiaowei</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">kube-system</span>
+</span></span></code></pre></div></li>
 <li>
 <p>获取token登录dashboard</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#ae81ff">kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep zhuxiaowei | awk &#39;{print $1}&#39;)</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#ae81ff">kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep zhuxiaowei | awk &#39;{print $1}&#39;)</span>
+</span></span></code></pre></div></li>
 </ol>
 <h3 id="troubleshoot">troubleshoot</h3>
 <ol>
@@ -291,26 +291,26 @@ yum install docker-ce -y
 <ol>
 <li>
 <p>使用以下命令创建自签证书:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">openssl genrsa -out ca.key <span style="color:#ae81ff">2048</span>
-
-openssl req -new -x509 -key ca.key -out ca.crt -days <span style="color:#ae81ff">3650</span> -subj <span style="color:#e6db74">&#34;/C=CN/ST=HB/L=WH/O=DM/OU=YPT/CN=CA&#34;</span>
-
-openssl x509 -in ca.crt -noout -text
-
-openssl genrsa -out dashboard.key <span style="color:#ae81ff">2048</span>
-
-openssl req -new -sha256 -key dashboard.key -out dashboard.csr -subj <span style="color:#e6db74">&#34;/C=CN/ST=HB/L=WH/O=DM/OU=YPT/CN=yourdomain&#34;</span>
-
-openssl x509 -req -sha256 -days <span style="color:#ae81ff">3650</span> -in dashboard.csr -out dashboard.crt -CA ca.crt -CAkey ca.key -CAcreateserial
-
-openssl x509 -in dashboard.crt -noout -text
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>openssl genrsa -out ca.key <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openssl req -new -x509 -key ca.key -out ca.crt -days <span style="color:#ae81ff">3650</span> -subj <span style="color:#e6db74">&#34;/C=CN/ST=HB/L=WH/O=DM/OU=YPT/CN=CA&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openssl x509 -in ca.crt -noout -text
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openssl genrsa -out dashboard.key <span style="color:#ae81ff">2048</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openssl req -new -sha256 -key dashboard.key -out dashboard.csr -subj <span style="color:#e6db74">&#34;/C=CN/ST=HB/L=WH/O=DM/OU=YPT/CN=yourdomain&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openssl x509 -req -sha256 -days <span style="color:#ae81ff">3650</span> -in dashboard.csr -out dashboard.crt -CA ca.crt -CAkey ca.key -CAcreateserial
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>openssl x509 -in dashboard.crt -noout -text
+</span></span></code></pre></div></li>
 <li>
 <p>创建<code>kubernetes-dashboard-certs</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">kubectl delete secret kubernetes-dashboard-certs -n kube-system
-
-kubectl create secret generic kubernetes-dashboard-certs --from-file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dashboard.crt,dashboard.key&#34;</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>kubectl delete secret kubernetes-dashboard-certs -n kube-system
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>kubectl create secret generic kubernetes-dashboard-certs --from-file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;dashboard.crt,dashboard.key&#34;</span>
+</span></span></code></pre></div></li>
 </ol>
 </li>
 </ol>
@@ -318,112 +318,112 @@ kubectl create secret generic kubernetes-dashboard-certs --from-file<span style=
 <ol>
 <li>
 <p>创建pv和pvc</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pv-volume-001</span>
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">local</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">manual</span>
-  <span style="color:#f92672">capacity</span>:
-    <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
-  <span style="color:#f92672">accessModes</span>:
-    - <span style="color:#ae81ff">ReadWriteOnce</span>
-  <span style="color:#f92672">hostPath</span>:
-    <span style="color:#f92672">path</span>: <span style="color:#e6db74">&#34;/mnt/k8s-data&#34;</span>
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav-data-claim</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">manual</span>
-  <span style="color:#f92672">accessModes</span>:
-    - <span style="color:#ae81ff">ReadWriteOnce</span>
-  <span style="color:#f92672">resources</span>:
-    <span style="color:#f92672">requests</span>:
-      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolume</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pv-volume-001</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">local</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">manual</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">capacity</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">accessModes</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">ReadWriteOnce</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">hostPath</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">path</span>: <span style="color:#e6db74">&#34;/mnt/k8s-data&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">PersistentVolumeClaim</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav-data-claim</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">storageClassName</span>: <span style="color:#ae81ff">manual</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">accessModes</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#ae81ff">ReadWriteOnce</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">requests</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">storage</span>: <span style="color:#ae81ff">10Gi</span>
+</span></span></code></pre></div></li>
 <li>
 <p>使用以下deployment.yaml部署webdav服务</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">matchLabels</span>:
-      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
-  <span style="color:#f92672">template</span>:
-    <span style="color:#f92672">metadata</span>:
-      <span style="color:#f92672">labels</span>:
-        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
-    <span style="color:#f92672">spec</span>:
-      <span style="color:#f92672">containers</span>:
-      - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">twizzel/webdav:latest</span>
-        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">IfNotPresent</span>
-        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
-        <span style="color:#f92672">env</span>:
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AUTH_TYPE</span>
-          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">Basic</span>
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">USERNAME</span>
-          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">xxxxxxxxx</span>
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">PASSWORD</span>
-          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">xxxxxxxxx</span>
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">SSL_CERT</span>
-          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">selfsigned</span>
-        <span style="color:#f92672">ports</span>:
-        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">443</span>
-          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
-          <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-        <span style="color:#f92672">volumeMounts</span>:
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav-data</span>
-          <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/var/lib/dav</span>
-      <span style="color:#f92672">volumes</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav-data</span>
-        <span style="color:#f92672">persistentVolumeClaim</span>:
-          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">webdav-data-claim</span>
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">labels</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">ports</span>:
-  - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
-    <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
-    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
-    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">443</span>
-  <span style="color:#f92672">selector</span>:
-    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
-  <span style="color:#f92672">sessionAffinity</span>: <span style="color:#ae81ff">None</span>
-  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
-
-<span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">contour.heptio.com/v1beta1</span>
-<span style="color:#f92672">kind</span>: <span style="color:#ae81ff">IngressRoute</span>
-<span style="color:#f92672">metadata</span>:
-  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
-<span style="color:#f92672">spec</span>:
-  <span style="color:#f92672">virtualhost</span>:
-    <span style="color:#f92672">fqdn</span>: <span style="color:#ae81ff">yoursubdomain</span>
-    <span style="color:#f92672">tls</span>:
-      <span style="color:#f92672">passthrough</span>: <span style="color:#66d9ef">true</span>
-  <span style="color:#f92672">tcpproxy</span>:
-    <span style="color:#f92672">services</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
-        <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
-  <span style="color:#f92672">routes</span>:
-    - <span style="color:#f92672">match</span>: <span style="color:#ae81ff">/</span>
-      <span style="color:#f92672">services</span>:
-        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
-          <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">apps/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Deployment</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">replicas</span>: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">matchLabels</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">image</span>: <span style="color:#ae81ff">twizzel/webdav:latest</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">imagePullPolicy</span>: <span style="color:#ae81ff">IfNotPresent</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">env</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">AUTH_TYPE</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">Basic</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">USERNAME</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">xxxxxxxxx</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">PASSWORD</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">xxxxxxxxx</span>
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">SSL_CERT</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">value</span>: <span style="color:#ae81ff">selfsigned</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">containerPort</span>: <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">volumeMounts</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav-data</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">mountPath</span>: <span style="color:#ae81ff">/var/lib/dav</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">volumes</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav-data</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">persistentVolumeClaim</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">claimName</span>: <span style="color:#ae81ff">webdav-data-claim</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Service</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">ports</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">protocol</span>: <span style="color:#ae81ff">TCP</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">name</span>: <span style="color:#ae81ff">https</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">targetPort</span>: <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">selector</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">app</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">sessionAffinity</span>: <span style="color:#ae81ff">None</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">type</span>: <span style="color:#ae81ff">ClusterIP</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">contour.heptio.com/v1beta1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">IngressRoute</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">virtualhost</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">fqdn</span>: <span style="color:#ae81ff">yoursubdomain</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">tls</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">passthrough</span>: <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tcpproxy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">routes</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">match</span>: <span style="color:#ae81ff">/</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">services</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">webdav</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</span></span></code></pre></div></li>
 </ol></article>
     </section>
 
@@ -482,6 +482,8 @@ kubectl create secret generic kubernetes-dashboard-certs --from-file<span style=
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/dns" title="dns">dns</a>
+    
       <a class="ui label" href="/tags/docker" title="docker">docker</a>
     
       <a class="ui label" href="/tags/golang" title="golang">golang</a>
@@ -529,6 +531,12 @@ kubectl create secret generic kubernetes-dashboard-certs --from-file<span style=
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/dns/" class="item">dns查询原理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -789,7 +797,7 @@ kubectl create secret generic kubernetes-dashboard-certs --from-file<span style=
 
   <section class="ui bottom attached center aligned segment">
       
-      <p>© 2017 - 2021 Hanamichi的博客</p>
+      <p>© 2017 - 2023 Hanamichi的博客</p>
       
       <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
   </section>
@@ -888,7 +896,7 @@ kubectl create secret generic kubernetes-dashboard-certs --from-file<span style=
 <p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
 <p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
 <p>我的<strong>微信赞赏码</strong>：</p>
-<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+<img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" />
         </div>
       </article>
     </section>

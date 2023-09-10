@@ -20,7 +20,7 @@ buildx使用
 
 
 
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.101.0" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/docker-buildx/" />
 
@@ -118,38 +118,38 @@ buildx使用
 <ol>
 <li>
 <p>以 systemd 方式安装 coredns, cordons 配置文件如下:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ini" data-lang="ini"><span style="color:#a6e22e">.:53 {</span>
-  <span style="color:#75715e"># 绑定interface ip</span>
-  <span style="color:#a6e22e">bind 10.0.0.13</span>
-  <span style="color:#75715e"># 先走本机的hosts</span>
-  <span style="color:#75715e"># https://coredns.io/plugins/hosts/</span>
-  <span style="color:#a6e22e">hosts {</span>
-    <span style="color:#75715e"># 自定义sms.service search.service 的解析</span>
-    <span style="color:#75715e"># 因为解析的域名少我们这里直接用hosts插件即可完成需求</span>
-    <span style="color:#75715e"># 如果有大量自定义域名解析那么建议用file插件使用 符合RFC 1035规范的DNS解析配置文件</span>
-    <span style="color:#a6e22e">172.16.29.140 caas.registry.com</span>
-    <span style="color:#75715e"># ttl</span>
-    <span style="color:#a6e22e">ttl 60</span>
-    <span style="color:#75715e"># 重载hosts配置</span>
-    <span style="color:#a6e22e">reload 1m</span>
-    <span style="color:#75715e"># 继续执行</span>
-    <span style="color:#a6e22e">fallthrough</span>
-  <span style="color:#a6e22e">}</span>
-  <span style="color:#75715e"># file enables serving zone data from an RFC 1035-style master file.</span>
-  <span style="color:#75715e"># https://coredns.io/plugins/file/</span>
-  <span style="color:#75715e"># file service.signed service</span>
-  <span style="color:#75715e"># 最后所有的都转发到系统配置的上游dns服务器去解析</span>
-  <span style="color:#a6e22e">forward . /etc/resolv.conf</span>
-  <span style="color:#75715e"># 缓存时间ttl</span>
-  <span style="color:#a6e22e">cache 120</span>
-  <span style="color:#75715e"># 自动加载配置文件的间隔时间</span>
-  <span style="color:#a6e22e">reload 6s</span>
-  <span style="color:#75715e"># 输出日志</span>
-  <span style="color:#a6e22e">log</span>
-  <span style="color:#75715e"># 输出错误</span>
-  <span style="color:#a6e22e">errors</span>
-<span style="color:#a6e22e">}</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-ini" data-lang="ini"><span style="display:flex;"><span><span style="color:#a6e22e">.:53 {</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 绑定interface ip</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">bind 10.0.0.13</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 先走本机的hosts</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># https://coredns.io/plugins/hosts/</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">hosts {</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 自定义sms.service search.service 的解析</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 因为解析的域名少我们这里直接用hosts插件即可完成需求</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 如果有大量自定义域名解析那么建议用file插件使用 符合RFC 1035规范的DNS解析配置文件</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">172.16.29.140 caas.registry.com</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># ttl</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">ttl 60</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 重载hosts配置</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">reload 1m</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e"># 继续执行</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fallthrough</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">}</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># file enables serving zone data from an RFC 1035-style master file.</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># https://coredns.io/plugins/file/</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># file service.signed service</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 最后所有的都转发到系统配置的上游dns服务器去解析</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">forward . /etc/resolv.conf</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 缓存时间ttl</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">cache 120</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 自动加载配置文件的间隔时间</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">reload 6s</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 输出日志</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">log</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#75715e"># 输出错误</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">errors</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">}</span>
+</span></span></code></pre></div></li>
 <li>
 <p>将 <code>nameserver 10.0.0.13</code> 本机 ip 写入 <code>/etc/resolv.conf</code> 的第一行，ping harbor 地址查看是否正常</p>
 </li>
@@ -228,6 +228,8 @@ buildx使用
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/dns" title="dns">dns</a>
+    
       <a class="ui label" href="/tags/docker" title="docker">docker</a>
     
       <a class="ui label" href="/tags/golang" title="golang">golang</a>
@@ -275,6 +277,12 @@ buildx使用
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/dns/" class="item">dns查询原理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -535,7 +543,7 @@ buildx使用
 
   <section class="ui bottom attached center aligned segment">
       
-      <p>© 2017 - 2021 Hanamichi的博客</p>
+      <p>© 2017 - 2023 Hanamichi的博客</p>
       
       <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
   </section>
@@ -634,7 +642,7 @@ buildx使用
 <p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
 <p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
 <p>我的<strong>微信赞赏码</strong>：</p>
-<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+<img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" />
         </div>
       </article>
     </section>
