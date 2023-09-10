@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>
-docker详解
+dns查询原理
 </title>
 
     
@@ -15,29 +15,29 @@ docker详解
 
   
   <meta name="author" content="hanamichi" />
-  <meta name="description" content="docker相关总结
+  <meta name="description" content="DNS 查询原理
 " />
 
 
 
 <meta name="generator" content="Hugo 0.101.0" />
 
-<link rel="canonical" href="https://hanamichi.wiki/posts/docker/" />
+<link rel="canonical" href="https://hanamichi.wiki/posts/dns/" />
 
 
-<meta property="og:title" content="docker详解" />
-<meta property="og:description" content="docker相关总结" />
+<meta property="og:title" content="dns查询原理" />
+<meta property="og:description" content="DNS 查询原理" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://hanamichi.wiki/posts/docker/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-10-08T14:21:26+08:00" />
-<meta property="article:modified_time" content="2020-10-08T14:21:26+08:00" />
+<meta property="og:url" content="https://hanamichi.wiki/posts/dns/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-09-09T12:00:00+08:00" />
+<meta property="article:modified_time" content="2023-09-09T12:00:00+08:00" />
 
 
 
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="docker详解"/>
-<meta name="twitter:description" content="docker相关总结"/>
+<meta name="twitter:title" content="dns查询原理"/>
+<meta name="twitter:description" content="DNS 查询原理"/>
 
 
 <link rel="stylesheet" href="/css/github-markdown.css" />
@@ -89,73 +89,88 @@ docker详解
     <section class="ui top attached segment" id="dream-save-post-as-img">
       <header style="margin-top: 0 !important;">
         <h2 class="ui header">
-          docker详解
-          <div class="sub header">@ hanamichi · Thursday, Oct 8, 2020 · 3 分钟阅读 · 更新于 10月 8, 2020</div>
+          dns查询原理
+          <div class="sub header">@ hanamichi · Saturday, Sep 9, 2023 · 3 分钟阅读 · 更新于 9月 9, 2023</div>
         </h2>
       </header>
-      <article style="margin-top: 2rem;"><p>docker相关总结</p>
+      <article style="margin-top: 2rem;"><p>DNS 查询原理</p>
 <ul>
-<li><a href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86">预备知识</a>
+<li><a href="#dns-%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%B1%BB%E5%9E%8B">DNS 服务器类型</a></li>
+<li><a href="#dns-%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B">DNS 查询过程</a></li>
+<li><a href="#%E6%9C%AC%E6%9C%BA%E6%B5%8B%E8%AF%95">本机测试</a>
 <ul>
-<li><a href="#namespace">namespace</a></li>
-<li><a href="#cgroups">CGroups</a></li>
-<li><a href="#chroot">chroot</a></li>
+<li><a href="#%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8E">环境说明</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E8%BF%87%E7%A8%8B">测试过程</a></li>
 </ul>
 </li>
-<li><a href="#docker%E6%9E%B6%E6%9E%84">docker架构</a></li>
-<li><a href="#%E5%8E%9F%E7%90%86">原理</a></li>
 </ul>
-<h2 id="预备知识">预备知识</h2>
-<h3 id="namespace">namespace</h3>
-<p>命名空间 (namespaces) 是 Linux 为我们提供的用于分离进程树、网络接口、挂载点以及进程间通信等资源的方法。</p>
-<p>Linux 的命名空间机制提供了以下七种不同的命名空间，包括</p>
+<h2 id="dns-服务器类型">DNS 服务器类型</h2>
 <ul>
-<li><code>CLONE_NEWCGROUP</code></li>
-<li><code>CLONE_NEWIPC</code></li>
-<li><code>CLONE_NEWNET</code></li>
-<li><code>CLONE_NEWNS</code></li>
-<li><code>CLONE_NEWPID</code></li>
-<li><code>CLONE_NEWUSER</code></li>
-<li><code>CLONE_NEWUTS</code></li>
+<li>根域名服务器(root name server): 顶级域名服务器的顶级，管理顶级域名服务器的域名和IP地址。</li>
+<li>顶级域名服务器(top-level domain server): 管理各自顶级域名服务器的域名和IP地址。</li>
+<li>权威域名服务器(authoritative name server): 管理各自域名的域名和IP地址。</li>
+<li>本地域名服务器 / 递归域名服务器 (local name server): 一般由运行商提供，主要作用就是代理用户进行域名解析，用户的所有域名解析请求都会发送到本地域名服务器，本地域名服务器会根据域名的层级关系，从根域名服务器开始递归查询，直到找到对应的IP地址，然后返回给用户。常见的本地域名服务器有：114.114.114.114 / 8.8.8.8 等</li>
 </ul>
-<p>通过这七个选项我们能在创建新的进程时设置新进程应该在哪些资源上与宿主机器进行隔离。</p>
-<p>进程是 Linux 以及现在操作系统中非常重要的概念，它表示一个正在执行的程序，也是在现代分时系统中的一个任务单元。</p>
-<p>当前机器上有很多的进程正在执行，在上述进程中有两个非常特殊，一个是 <code>pid</code> 为 1 的 <code>/sbin/init</code> 进程，另一个是 <code>pid</code> 为 2 的 <code>kthreadd</code> 进程，这两个进程都是被 Linux 中的上帝进程 <code>idle</code> 创建出来的，其中前者负责执行内核的一部分初始化工作和系统配置，也会创建一些类似 <code>getty</code> 的注册进程，而后者负责管理和调度其他的内核进程。</p>
-<h3 id="cgroups">CGroups</h3>
-<p>Linux 的 CGroup 能够为一组进程分配资源，也就是我们在上面提到的 CPU、内存、网络带宽等资源，通过对资源的分配，CGroup 能够提供以下的几种功能：</p>
-<ul>
-<li>resource limiting</li>
-<li>prioritization</li>
-<li>accounting</li>
-<li>control</li>
-</ul>
-<p>在 CGroup 中，所有的任务就是一个系统的一个进程，而 CGroup 就是一组按照某种标准划分的进程，在 CGroup 这种机制中，所有的资源控制都是以 CGroup 作为单位实现的，每一个进程都可以随时加入一个 CGroup 也可以随时退出一个 CGroup。</p>
-<h3 id="chroot">chroot</h3>
-<p>在 Linux 系统中，系统默认的目录就都是以 <code>/</code> 也就是根目录开头的，<code>chroot</code> 的使用能够改变当前的系统根目录结构，通过改变当前系统的根目录，我们能够限制用户的权利，在新的根目录下并不能够访问旧系统根目录的结构个文件，也就建立了一个与原系统完全隔离的目录结构。</p>
-<h2 id="docker架构">docker架构</h2>
-<p><img src="/img/inpost/docker/docker-1.png" alt="docker-arch"></p>
-<p><img src="/img/inpost/docker/docker-2.png" alt="docker-ps"></p>
+<p><img src="/img/inpost/dns/dns-2.png" alt="dns服务器类型"></p>
+<p>域名服务器中的缓存时间由记录的 TTL(Time To Live) 值决定，TTL 值越小，缓存时间越短。通常这个时间由域名的所有者设置.</p>
+<h2 id="dns-查询过程">DNS 查询过程</h2>
+<p>查询总的来说分为两类: 递归查询和迭代查询</p>
+<p>一般来说，客户端到本地域名服务器的查询是递归查询，本地域名服务器到根域名服务器的查询是迭代查询。</p>
+<p>用户向本地域名服务器只发送一条查询请求，本地域名服务器会代替用户向根域名服务器，顶级域名服务器，权威域名服务器等发送多条查询请求，直到找到对应的IP地址，然后返回给用户。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 本机ip: 10.0.0.146, 网关ip: 10.0.0.4</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 使用 tcpdump 抓包</span>
+</span></span><span style="display:flex;"><span>tcpdump -i any -nt -s <span style="color:#ae81ff">500</span> port domain
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#另外开一个终端，使用 dig 命令查询域名</span>
+</span></span><span style="display:flex;"><span>dig hanamichi.wiki @10.0.0.4
+</span></span></code></pre></div><p>结果如下图所示:</p>
+<p><img src="/img/inpost/dns/dns-1.png" alt="dig查询结果"></p>
+<p>可以看到，本机向网关发送了一条 dns 查询请求，网关将 dns 查询转发到了上游的公共递归 dns 服务器，上游 dns 服务器返回了查询结果。</p>
+<p>以用浏览器访问 <code>github.com</code> 网站为例，访问过程如下：</p>
 <ol>
-<li>dockerd 是docker-containerd 的父进程， docker-containerd 是n个docker-containerd-shim 的父进程。</li>
-<li>Containerd 是一个 gRPC 的服务器。它会在接到 docker daemon 的远程请 求之后，新建一个线程去处理这次请求。依靠 runC 去创建容器进程。而在容器启动之后， runC 进程会退出。</li>
-<li>runC 命令，是 libcontainer 的一个简单的封装。这个工具可以 用来管理单个容器，比如容器创建，或者容器删除。</li>
+<li>浏览器缓存: 浏览器会首先检查自己的缓存中是否有该域名对应的解析结果，如果有，则直接返回结果，不再进行后续的 DNS 解析。</li>
+<li>操作系统缓存: 浏览器缓存中无域名对应 IP 则会自动检查用户计算机系统 Hosts 文件 DNS 缓存是否有该域名对应 IP。</li>
+<li>公共递归 DNS 服务器 / Local DNS Server : 通常是向 ISP 的 DNS 服务器中查询，如果 ISP 的 DNS 中没有缓存，则会向根域名服务器发起请求。</li>
+<li>询问根域名服务器: 根域名收到请求后会查看区域文件记录，若无则将其管辖范围内顶级域名（如.com、.cn等）服务器 IP 告诉本地 DNS 服务器。</li>
+<li>询问顶级域名服务器: 顶级域名服务器收到请求后查看区域文件记录，若无记录则将其管辖范围内权威域名服务器的 IP 地址告诉本地 DNS 服务器。</li>
+<li>询问权威域名服务器: 权威域名服务器接受到请求后查询自己的缓存，如果没有则进入下一级域名服务器进行查找，并重复该步骤直至找到正确记录。</li>
+<li>递归 DNS 服务器 / 本地域名服务器 把返回的结果保存到缓存，以备下一次使用，同时将该结果反馈给客户端</li>
 </ol>
-<h2 id="原理">原理</h2>
+<p>上述描述的 1,2 两步在客户端完成，3-7 在本地域名服务器完成。</p>
+<p><img src="/img/inpost/dns/dns-3.png" alt="递归dns服务器查询过程"></p>
+<p>上图出自<code>https://github.com/azl397985856/fe-interview/issues/108</code></p>
+<h2 id="本机测试">本机测试</h2>
+<h3 id="环境说明">环境说明</h3>
+<p>time.hanamichi.wiki 在阿里云上做了解析， cname 到 iovip-as0.qiniuio.com， ttl是600秒</p>
+<p>iovip-as0.qiniuio.com 是七牛的一个域名，用于做 cdn 加速</p>
+<h3 id="测试过程">测试过程</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>dig time.hanamichi.wiki +trace +additional
+</span></span></code></pre></div><p><img src="/img/inpost/dns/dns-4.png" alt=""></p>
 <ul>
-<li>linux命名空间实现进程、网络以及文件系统的隔离</li>
-<li>cgroups实现CPU、内存等资源的隔离</li>
-<li>在容器网络模型中，每一个容器内部都包含一个 Sandbox，其中存储着当前容器的网络栈配置，包括容器的接口、路由表和 DNS 设置，Linux 使用网络命名空间实现这个 Sandbox，每一个 Sandbox 中都可能会有一个或多个 Endpoint，在 Linux 上就是一个虚拟的网卡 veth，Sandbox 通过 Endpoint 加入到对应的网络中，这里的网络可能就是我们在上面提到的 Linux 网桥或者 VLAN。</li>
-<li>想要正常启动一个容器就需要在 rootfs 中挂载几个特定的目录(/dev/,/proc,/bin,/etc,/lib,/usr,/tmp)</li>
-<li>镜像的本质是压缩包</li>
-<li>UnionFS 其实是一种为 Linux 操作系统设计的用于把多个文件系统『联合』到同一个挂载点的文件系统服务。而 AUFS 即 Advanced UnionFS 其实就是 UnionFS 的升级版，它能够提供更优秀的性能和效率。</li>
-<li>多种存储驱动，默认为overlay2</li>
-</ul></article>
+<li>第一次查询，返回了 13 个跟剧名服务器的地址。</li>
+<li>第二次查询，向 <code>h.root-servers.net</code> 查询，返回了顶级域名 .wiki 记录的地址。</li>
+<li>第三次查询，向 <code>b.nic.wiki</code> 查询，返回了权威域名服务器 hanamichi.wiki 的地址</li>
+<li>第四次查询，向 <code>dns16.hichina.com</code> 查询，返回了 time.hanamcihi.wiki 的解析记录</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>dig iovip-as0.qiniuio.com +trace +additional
+</span></span></code></pre></div><p><img src="/img/inpost/dns/dns-5.png" alt=""></p>
+<ul>
+<li>第一次查询，返回了 13 个跟剧名服务器的地址。</li>
+<li>第二次查询，向 <code>m.root-servers.net</code> 查询，返回了顶级域名 .com 记录的地址。</li>
+<li>第三次查询，向 <code>a.gtld-servers.net</code> 查询，返回了权威域名服务器 qiniuio.com 的地址</li>
+<li>第四次查询，向 <code>ns3.dnsv5.com</code> 查询，返回了 <code>iovip-as0.qiniuio.com.</code> 的解析记录</li>
+</ul>
+<p>查询域名用到的权威服务器可以使用命令:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>nslookup -type<span style="color:#f92672">=</span>TXT time.hanamichi.wiki 114.114.114.114
+</span></span></code></pre></div><p><img src="/img/inpost/dns/dns-6.png" alt=""></p></article>
     </section>
 
     <footer class="ui attached segment dream-tags">
       
         
-          <a class="ui label" href="/tags/docker" title="docker">docker</a>
+          <a class="ui label" href="/tags/linux" title="linux">linux</a>
+        
+          <a class="ui label" href="/tags/dns" title="dns">dns</a>
         
       
       <div

@@ -19,7 +19,7 @@
 
 
 
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.101.0" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/spice/" />
 
@@ -314,97 +314,97 @@ RedWindow : 继承自RedDrawable和RedWindow_p，基本窗口状态和功能(显
 </ul>
 <p>其中使用gstreamer框架可以使用的编码格式(spice 目前支持的)有mjpeg, h264, vp8, 均采用CPU编码。</p>
 <p>spice 抽象了一个<code>VideoEncoder</code>结构体，调用统一的接口进行编码的一系列操作，编码方案和编码操作没有耦合在一起，相互透明。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> VideoEncoder VideoEncoder;
-<span style="color:#66d9ef">struct</span> VideoEncoder {
-    <span style="color:#75715e">/* Releases the video encoder&#39;s resources */</span>
-    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>destroy)(VideoEncoder <span style="color:#f92672">*</span>encoder);
-
-    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>encode_frame)(VideoEncoder <span style="color:#f92672">*</span>encoder, <span style="color:#66d9ef">uint32_t</span> frame_mm_time,
-                        <span style="color:#66d9ef">const</span> SpiceBitmap <span style="color:#f92672">*</span>bitmap,
-                        <span style="color:#66d9ef">const</span> SpiceRect <span style="color:#f92672">*</span>src, <span style="color:#66d9ef">int</span> top_down,
-                        gpointer bitmap_opaque, VideoBuffer<span style="color:#f92672">**</span> outbuf);
-
-    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>client_stream_report)(VideoEncoder <span style="color:#f92672">*</span>encoder,
-                                 <span style="color:#66d9ef">uint32_t</span> num_frames, <span style="color:#66d9ef">uint32_t</span> num_drops,
-                                 <span style="color:#66d9ef">uint32_t</span> start_frame_mm_time,
-                                 <span style="color:#66d9ef">uint32_t</span> end_frame_mm_time,
-                                 <span style="color:#66d9ef">int32_t</span> end_frame_delay, <span style="color:#66d9ef">uint32_t</span> audio_delay);
-
-    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>notify_server_frame_drop)(VideoEncoder <span style="color:#f92672">*</span>encoder);
-
-    <span style="color:#66d9ef">uint64_t</span> (<span style="color:#f92672">*</span>get_bit_rate)(VideoEncoder <span style="color:#f92672">*</span>encoder);
-
-    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>get_stats)(VideoEncoder <span style="color:#f92672">*</span>encoder, VideoEncoderStats <span style="color:#f92672">*</span>stats);
-
-    SpiceVideoCodecType codec_type;
-};
-
-<span style="color:#66d9ef">typedef</span> VideoEncoder<span style="color:#f92672">*</span> (<span style="color:#f92672">*</span>new_video_encoder_t)(SpiceVideoCodecType codec_type,
-                                             <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
-                                             VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
-                                             bitmap_ref_t bitmap_ref,
-                                             bitmap_unref_t bitmap_unref);
-
-VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">mjpeg_encoder_new</span>(SpiceVideoCodecType codec_type,
-                                <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
-                                VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
-                                bitmap_ref_t bitmap_ref,
-                                bitmap_unref_t bitmap_unref);
-
-<span style="color:#75715e">#if defined(HAVE_GSTREAMER_1_0) || defined(HAVE_GSTREAMER_0_10)
-</span><span style="color:#75715e"></span>
-VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gstreamer_encoder_new</span>(SpiceVideoCodecType codec_type,
-                                    <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
-                                    VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
-                                    bitmap_ref_t bitmap_ref,
-                                    bitmap_unref_t bitmap_unref);
-<span style="color:#75715e">#endif
-</span><span style="color:#75715e"></span>
-<span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> RedVideoCodec {
-    new_video_encoder_t create;
-    SpiceVideoCodecType type;
-    <span style="color:#66d9ef">uint32_t</span> cap;
-} RedVideoCodec;
-</code></pre></div><p>上面的代码段是编码器<code> VideoEncoder</code>的结构体定义和两种编码方案的编码器创建函数声明。在创建编码器函数的实现中会创建相应的编码器实例，填充<code>VideoEncoder</code>结构体，并将编码器实例返回。<strong>编码器只会在满足创建流的条件后被调用创建</strong>。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> VideoEncoder VideoEncoder;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">struct</span> VideoEncoder {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* Releases the video encoder&#39;s resources */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>destroy)(VideoEncoder <span style="color:#f92672">*</span>encoder);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> (<span style="color:#f92672">*</span>encode_frame)(VideoEncoder <span style="color:#f92672">*</span>encoder, <span style="color:#66d9ef">uint32_t</span> frame_mm_time,
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">const</span> SpiceBitmap <span style="color:#f92672">*</span>bitmap,
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">const</span> SpiceRect <span style="color:#f92672">*</span>src, <span style="color:#66d9ef">int</span> top_down,
+</span></span><span style="display:flex;"><span>                        gpointer bitmap_opaque, VideoBuffer<span style="color:#f92672">**</span> outbuf);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>client_stream_report)(VideoEncoder <span style="color:#f92672">*</span>encoder,
+</span></span><span style="display:flex;"><span>                                 <span style="color:#66d9ef">uint32_t</span> num_frames, <span style="color:#66d9ef">uint32_t</span> num_drops,
+</span></span><span style="display:flex;"><span>                                 <span style="color:#66d9ef">uint32_t</span> start_frame_mm_time,
+</span></span><span style="display:flex;"><span>                                 <span style="color:#66d9ef">uint32_t</span> end_frame_mm_time,
+</span></span><span style="display:flex;"><span>                                 <span style="color:#66d9ef">int32_t</span> end_frame_delay, <span style="color:#66d9ef">uint32_t</span> audio_delay);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>notify_server_frame_drop)(VideoEncoder <span style="color:#f92672">*</span>encoder);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint64_t</span> (<span style="color:#f92672">*</span>get_bit_rate)(VideoEncoder <span style="color:#f92672">*</span>encoder);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (<span style="color:#f92672">*</span>get_stats)(VideoEncoder <span style="color:#f92672">*</span>encoder, VideoEncoderStats <span style="color:#f92672">*</span>stats);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    SpiceVideoCodecType codec_type;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> VideoEncoder<span style="color:#f92672">*</span> (<span style="color:#f92672">*</span>new_video_encoder_t)(SpiceVideoCodecType codec_type,
+</span></span><span style="display:flex;"><span>                                             <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
+</span></span><span style="display:flex;"><span>                                             VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
+</span></span><span style="display:flex;"><span>                                             bitmap_ref_t bitmap_ref,
+</span></span><span style="display:flex;"><span>                                             bitmap_unref_t bitmap_unref);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">mjpeg_encoder_new</span>(SpiceVideoCodecType codec_type,
+</span></span><span style="display:flex;"><span>                                <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
+</span></span><span style="display:flex;"><span>                                VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
+</span></span><span style="display:flex;"><span>                                bitmap_ref_t bitmap_ref,
+</span></span><span style="display:flex;"><span>                                bitmap_unref_t bitmap_unref);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#if defined(HAVE_GSTREAMER_1_0) || defined(HAVE_GSTREAMER_0_10)
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span>VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gstreamer_encoder_new</span>(SpiceVideoCodecType codec_type,
+</span></span><span style="display:flex;"><span>                                    <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
+</span></span><span style="display:flex;"><span>                                    VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs,
+</span></span><span style="display:flex;"><span>                                    bitmap_ref_t bitmap_ref,
+</span></span><span style="display:flex;"><span>                                    bitmap_unref_t bitmap_unref);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">typedef</span> <span style="color:#66d9ef">struct</span> RedVideoCodec {
+</span></span><span style="display:flex;"><span>    new_video_encoder_t create;
+</span></span><span style="display:flex;"><span>    SpiceVideoCodecType type;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">uint32_t</span> cap;
+</span></span><span style="display:flex;"><span>} RedVideoCodec;
+</span></span></code></pre></div><p>上面的代码段是编码器<code> VideoEncoder</code>的结构体定义和两种编码方案的编码器创建函数声明。在创建编码器函数的实现中会创建相应的编码器实例，填充<code>VideoEncoder</code>结构体，并将编码器实例返回。<strong>编码器只会在满足创建流的条件后被调用创建</strong>。</p>
 <p><img src="/img/inpost/spice/spice1.png" alt="spice video encoder"></p>
 <p>启动虚拟机，即QEMU进程启动时，会分析命令行参数，如果指定了使用spice，则会调用spice的初始化函数进行初始化。此时会将spice server 端支持的视频编码格式加入一个数组中，以便在之后创建编码器的时候使用。</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">static</span> VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">dcc_create_video_encoder</span>(DisplayChannelClient <span style="color:#f92672">*</span>dcc,
-                                              <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
-                                              VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs)
-{
-    DisplayChannel <span style="color:#f92672">*</span>display <span style="color:#f92672">=</span> DCC_TO_DC(dcc);
-    RedChannelClient <span style="color:#f92672">*</span>rcc <span style="color:#f92672">=</span> RED_CHANNEL_CLIENT(dcc);
-    <span style="color:#66d9ef">int</span> client_has_multi_codec <span style="color:#f92672">=</span> red_channel_client_test_remote_cap(rcc, SPICE_DISPLAY_CAP_MULTI_CODEC);
-    <span style="color:#66d9ef">int</span> i;
-
-    <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> display<span style="color:#f92672">-&gt;</span>priv<span style="color:#f92672">-&gt;</span>video_codecs<span style="color:#f92672">-&gt;</span>len; i<span style="color:#f92672">++</span>) {
-        RedVideoCodec<span style="color:#f92672">*</span> video_codec <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>g_array_index (display<span style="color:#f92672">-&gt;</span>priv<span style="color:#f92672">-&gt;</span>video_codecs, RedVideoCodec, i);
-
-        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>client_has_multi_codec <span style="color:#f92672">&amp;&amp;</span>
-            video_codec<span style="color:#f92672">-&gt;</span>type <span style="color:#f92672">!=</span> SPICE_VIDEO_CODEC_TYPE_MJPEG) {
-            <span style="color:#75715e">/* Old clients only support MJPEG */</span>
-            <span style="color:#66d9ef">continue</span>;
-        }
-        <span style="color:#66d9ef">if</span> (client_has_multi_codec <span style="color:#f92672">&amp;&amp;</span>
-            <span style="color:#f92672">!</span>red_channel_client_test_remote_cap(rcc, video_codec<span style="color:#f92672">-&gt;</span>cap)) {
-            <span style="color:#75715e">/* The client is recent but does not support this codec */</span>
-            <span style="color:#66d9ef">continue</span>;
-        }
-
-        VideoEncoder<span style="color:#f92672">*</span> video_encoder <span style="color:#f92672">=</span> video_codec<span style="color:#f92672">-&gt;</span>create(video_codec<span style="color:#f92672">-&gt;</span>type, starting_bit_rate, cbs, bitmap_ref, bitmap_unref);
-        <span style="color:#66d9ef">if</span> (video_encoder) {
-            <span style="color:#66d9ef">return</span> video_encoder;
-        }
-    }
-
-    <span style="color:#75715e">/* Try to use the builtin MJPEG video encoder as a fallback */</span>
-    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>client_has_multi_codec <span style="color:#f92672">||</span> red_channel_client_test_remote_cap(rcc, SPICE_DISPLAY_CAP_CODEC_MJPEG)) {
-        <span style="color:#66d9ef">return</span> mjpeg_encoder_new(SPICE_VIDEO_CODEC_TYPE_MJPEG, starting_bit_rate, cbs, bitmap_ref, bitmap_unref);
-    }
-
-    <span style="color:#66d9ef">return</span> NULL;
-}
-</code></pre></div><p>在创建编码器之前会对询问客户端是否支持多个编码，之后对之前初始化的编码格式数组按顺序进行测试，如果客户端支持，则创建编码器返回。如果数组中的所有格式都不支持，则选用默认的mjpeg格式编码。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c" data-lang="c"><span style="display:flex;"><span><span style="color:#66d9ef">static</span> VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">dcc_create_video_encoder</span>(DisplayChannelClient <span style="color:#f92672">*</span>dcc,
+</span></span><span style="display:flex;"><span>                                              <span style="color:#66d9ef">uint64_t</span> starting_bit_rate,
+</span></span><span style="display:flex;"><span>                                              VideoEncoderRateControlCbs <span style="color:#f92672">*</span>cbs)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    DisplayChannel <span style="color:#f92672">*</span>display <span style="color:#f92672">=</span> DCC_TO_DC(dcc);
+</span></span><span style="display:flex;"><span>    RedChannelClient <span style="color:#f92672">*</span>rcc <span style="color:#f92672">=</span> RED_CHANNEL_CLIENT(dcc);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> client_has_multi_codec <span style="color:#f92672">=</span> red_channel_client_test_remote_cap(rcc, SPICE_DISPLAY_CAP_MULTI_CODEC);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> i;
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> (i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>; i <span style="color:#f92672">&lt;</span> display<span style="color:#f92672">-&gt;</span>priv<span style="color:#f92672">-&gt;</span>video_codecs<span style="color:#f92672">-&gt;</span>len; i<span style="color:#f92672">++</span>) {
+</span></span><span style="display:flex;"><span>        RedVideoCodec<span style="color:#f92672">*</span> video_codec <span style="color:#f92672">=</span> <span style="color:#f92672">&amp;</span>g_array_index (display<span style="color:#f92672">-&gt;</span>priv<span style="color:#f92672">-&gt;</span>video_codecs, RedVideoCodec, i);
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>client_has_multi_codec <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>            video_codec<span style="color:#f92672">-&gt;</span>type <span style="color:#f92672">!=</span> SPICE_VIDEO_CODEC_TYPE_MJPEG) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/* Old clients only support MJPEG */</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (client_has_multi_codec <span style="color:#f92672">&amp;&amp;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">!</span>red_channel_client_test_remote_cap(rcc, video_codec<span style="color:#f92672">-&gt;</span>cap)) {
+</span></span><span style="display:flex;"><span>            <span style="color:#75715e">/* The client is recent but does not support this codec */</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">continue</span>;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        VideoEncoder<span style="color:#f92672">*</span> video_encoder <span style="color:#f92672">=</span> video_codec<span style="color:#f92672">-&gt;</span>create(video_codec<span style="color:#f92672">-&gt;</span>type, starting_bit_rate, cbs, bitmap_ref, bitmap_unref);
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (video_encoder) {
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">return</span> video_encoder;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">/* Try to use the builtin MJPEG video encoder as a fallback */</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>client_has_multi_codec <span style="color:#f92672">||</span> red_channel_client_test_remote_cap(rcc, SPICE_DISPLAY_CAP_CODEC_MJPEG)) {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> mjpeg_encoder_new(SPICE_VIDEO_CODEC_TYPE_MJPEG, starting_bit_rate, cbs, bitmap_ref, bitmap_unref);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> NULL;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>在创建编码器之前会对询问客户端是否支持多个编码，之后对之前初始化的编码格式数组按顺序进行测试，如果客户端支持，则创建编码器返回。如果数组中的所有格式都不支持，则选用默认的mjpeg格式编码。</p>
 <p><img src="/img/inpost/spice/spice2.png" alt="spice video stream"></p>
 <p>上图是spice中视频命令流的主要函数流程图。其中左图是得到qxl绘图指令后执行各种操作后把视频流发送给客户端。</p>
 <p>中图是处理display命令的具体执行函数，只有<strong>qxl的命令是绘图指令</strong>才会进行之后的绘图区域创建和维护渲染树创建流等操作。</p>
@@ -469,6 +469,8 @@ VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gst
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/dns" title="dns">dns</a>
+    
       <a class="ui label" href="/tags/docker" title="docker">docker</a>
     
       <a class="ui label" href="/tags/golang" title="golang">golang</a>
@@ -516,6 +518,12 @@ VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gst
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/dns/" class="item">dns查询原理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -776,7 +784,7 @@ VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gst
 
   <section class="ui bottom attached center aligned segment">
       
-      <p>© 2017 - 2021 Hanamichi的博客</p>
+      <p>© 2017 - 2023 Hanamichi的博客</p>
       
       <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
   </section>
@@ -875,7 +883,7 @@ VideoEncoder<span style="color:#f92672">*</span> <span style="color:#a6e22e">gst
 <p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
 <p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
 <p>我的<strong>微信赞赏码</strong>：</p>
-<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+<img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" />
         </div>
       </article>
     </section>

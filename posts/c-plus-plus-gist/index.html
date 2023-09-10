@@ -16,11 +16,11 @@ C&#43;&#43;单例模式与线程类思考
   
   <meta name="author" content="hanamichi" />
   <meta name="description" content="C&#43;&#43;代码片段研究
- 单例模式研究 自旋锁 " />
+单例模式研究 自旋锁 " />
 
 
 
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.101.0" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/c-plus-plus-gist/" />
 
@@ -112,31 +112,31 @@ C&#43;&#43;单例模式与线程类思考
 <li><a href="#thread%E7%B1%BB%E4%B8%8E%E8%87%AA%E8%A7%A3%E9%94%81%E7%9A%84%E5%B0%81%E8%A3%85">thread类与自解锁的封装</a></li>
 </ul>
 <h2 id="c单例模式宏定义">C++单例模式宏定义</h2>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">//singleton.h
-</span><span style="color:#75715e"></span><span style="color:#75715e">#ifndef SINGLETON_H_
-</span><span style="color:#75715e">#define SINGLETON_H_
-</span><span style="color:#75715e">#define DECLARE_SINGLETON(ClassName) \
-</span><span style="color:#75715e">	private: \
-</span><span style="color:#75715e">		static ClassName *singleton_; \
-</span><span style="color:#75715e">	public: \
-</span><span style="color:#75715e">		static ClassName *GetInstance(); \
-</span><span style="color:#75715e">		static void ReleaseInstance();
-</span><span style="color:#75715e">#define IMPLEMENT_SINGLETON(ClassName) \
-</span><span style="color:#75715e">	ClassName *ClassName::singleton_ = NULL; \
-</span><span style="color:#75715e">	ClassName *ClassName::GetInstance() { \
-</span><span style="color:#75715e">		if (singleton_ == NULL) { \
-</span><span style="color:#75715e">			singleton_ = new ClassName(); \
-</span><span style="color:#75715e">		} \
-</span><span style="color:#75715e">		return singleton_; \
-</span><span style="color:#75715e">	} \
-</span><span style="color:#75715e">	void ClassName::ReleaseInstance() { \
-</span><span style="color:#75715e">		if (singleton_ != NULL) { \
-</span><span style="color:#75715e">			delete singleton_; \
-</span><span style="color:#75715e">			singleton_ = NULL; \
-</span><span style="color:#75715e">		} \
-</span><span style="color:#75715e">	}
-</span><span style="color:#75715e">#endif
-</span></code></pre></div><h2 id="由单例模式引发的思考">由单例模式引发的思考</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">//singleton.h
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#ifndef SINGLETON_H_
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define SINGLETON_H_
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define DECLARE_SINGLETON(ClassName) \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	private: \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		static ClassName *singleton_; \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	public: \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		static ClassName *GetInstance(); \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		static void ReleaseInstance();
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#define IMPLEMENT_SINGLETON(ClassName) \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	ClassName *ClassName::singleton_ = NULL; \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	ClassName *ClassName::GetInstance() { \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		if (singleton_ == NULL) { \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">			singleton_ = new ClassName(); \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		} \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		return singleton_; \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	} \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	void ClassName::ReleaseInstance() { \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		if (singleton_ != NULL) { \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">			delete singleton_; \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">			singleton_ = NULL; \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">		} \
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">	}
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span></code></pre></div><h2 id="由单例模式引发的思考">由单例模式引发的思考</h2>
 <p>1.<strong>问题的引发</strong></p>
 <p>在Ｃ++中，类静态函数只能访问类的静态成员变量和静态成员函数，也不能在类静态函数中使用this指针(因为类静态函数不与对象绑定，所以没有this指针)，那么单例模式中，GetInstance方法可能会调用类构造函数，而构造函数并不是静态函数，这与static的使用相违背。</p>
 <p>2.<strong>思考</strong></p>
@@ -144,262 +144,262 @@ C&#43;&#43;单例模式与线程类思考
 <p>由这个问题引申的一个问题是C与C++的区别到底是什么，C是面向过程？C++是面向对象?这个区别仅仅是作为语言特性在区分，而这些语言特性仅仅是编译器做的相关限制。所以在单例模式这个问题上我认为可以做一些相关的转换思考，<strong>所谓的类静态成员函数可以将其看做是一个普通的全局函数，只要知道其他任何函数的地址就可以访问该函数，编译器对这个全局函数做了诸多限制，简而言之就是很多函数的地址对他来说是透明的，只有编译器允许的函数地址才能访问。</strong></p>
 <h2 id="thread类与自解锁的封装">thread类与自解锁的封装</h2>
 <p>1.<strong>thread.h</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">//thread.h
-</span><span style="color:#75715e"></span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;pthread.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Mutex</span>
-{
-<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-    Mutex(<span style="color:#66d9ef">bool</span> init <span style="color:#f92672">=</span> false);
-    <span style="color:#f92672">~</span>Mutex();
-    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">Init</span>();
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Destroy</span>();
-    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">TryLock</span>();
-    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">Lock</span>();
-    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">Unlock</span>();
-<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-    <span style="color:#66d9ef">bool</span> initialized_;
-    pthread_mutex_t	mutex_;
-};
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>Init()
-{
-    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>initialized_)
-    {
-        initialized_ <span style="color:#f92672">=</span> (pthread_mutex_init(<span style="color:#f92672">&amp;</span>mutex_, NULL) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>);
-    }
-    <span style="color:#66d9ef">return</span> initialized_;
-}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> Mutex<span style="color:#f92672">::</span>Destroy()
-{
-    <span style="color:#66d9ef">if</span> (initialized_)
-    {
-        pthread_mutex_destroy(<span style="color:#f92672">&amp;</span>mutex_);
-        initialized_ <span style="color:#f92672">=</span> false;
-    }
-}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>TryLock()
-{
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pthread_mutex_trylock</span>(<span style="color:#f92672">&amp;</span>mutex_) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//函数成功返回0，其他任何值都错误,非阻塞的LOCK方式
-</span><span style="color:#75715e"></span>}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>Lock()
-{
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pthread_mutex_lock</span>(<span style="color:#f92672">&amp;</span>mutex_) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//阻塞lock方式
-</span><span style="color:#75715e"></span>}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>Unlock()
-{
-    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pthread_mutex_unlock</span>(<span style="color:#f92672">&amp;</span>mutex_) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;
-}
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MutexScopedLocker</span>
-{
-<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-    MutexScopedLocker(Mutex <span style="color:#f92672">&amp;</span>mutex, <span style="color:#66d9ef">bool</span> initialLock <span style="color:#f92672">=</span> true) <span style="color:#f92672">:</span> mutex_(mutex), locked_(false)
-    {
-        <span style="color:#66d9ef">if</span> (initialLock)
-        {
-            Lock();
-        }
-    }
-    <span style="color:#f92672">~</span>MutexScopedLocker()
-    {
-        Unlock();
-    }
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Lock</span>()
-    {
-        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>locked_)
-        {
-            mutex_.Lock();
-            locked_ <span style="color:#f92672">=</span> true;
-        }
-    }
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Unlock</span>()
-    {
-        <span style="color:#66d9ef">if</span> (locked_)
-        {
-            mutex_.Unlock();
-            locked_ <span style="color:#f92672">=</span> false;
-        }
-    }
-<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-    Mutex	<span style="color:#f92672">&amp;</span>mutex_;
-    <span style="color:#66d9ef">bool</span>	locked_;
-};
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread</span>;
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Runnable</span>
-{
-<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-    Runnable();
-    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Runnable();
-    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-};
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread</span>
-{
-<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-    <span style="color:#66d9ef">enum</span>
-    {
-        PRIORITY_REALTIME <span style="color:#f92672">=</span> <span style="color:#ae81ff">49</span>,
-        PRIORITY_HIGH <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>,
-        PRIORITY_NORMAL <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>,
-        PRIORITY_LOW <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
-    };
-    Thread();
-    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Thread();
-    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Sleep</span>(<span style="color:#66d9ef">int</span> milliseconds);
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Interrupt</span>();
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Kill</span>();
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Join</span>();
-    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">IsInterrupted</span>() <span style="color:#66d9ef">const</span>;
-    <span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
-    <span style="color:#66d9ef">bool</span> Run(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>), T <span style="color:#f92672">*</span>instance, <span style="color:#66d9ef">int</span> priority <span style="color:#f92672">=</span> Thread<span style="color:#f92672">::</span>PRIORITY_NORMAL);
-    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">IsAlive</span>() <span style="color:#66d9ef">const</span>;
-<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-    <span style="color:#66d9ef">bool</span> interrupted_;
-    <span style="color:#66d9ef">bool</span> alive_;
-    pthread_t thread_;
-    Runnable <span style="color:#f92672">*</span>runnable_;
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>();
-    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ThreadProc</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg);
-};
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Sleep(<span style="color:#66d9ef">int</span> milliseconds)
-{
-    usleep(milliseconds <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>);
-}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Interrupt()
-{
-    interrupted_ <span style="color:#f92672">=</span> true;
-}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Thread<span style="color:#f92672">::</span>IsInterrupted() <span style="color:#66d9ef">const</span>
-{
-    <span style="color:#66d9ef">return</span> interrupted_;
-}
-<span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Thread<span style="color:#f92672">::</span>IsAlive() <span style="color:#66d9ef">const</span>
-{
-    <span style="color:#66d9ef">return</span> alive_;
-}
-<span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
-<span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RunnableMethod</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Runnable
-{
-<span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
-    RunnableMethod(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span>), T <span style="color:#f92672">*</span>instance);
-    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>);
-<span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
-    <span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method_)(Thread <span style="color:#f92672">*</span>);
-    T <span style="color:#f92672">*</span>instance_;
-};
-<span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
-RunnableMethod<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>RunnableMethod(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span>), T <span style="color:#f92672">*</span>instance)
-    <span style="color:#f92672">:</span> method_(method)
-    , instance_(instance)
-{
-}
-<span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
-<span style="color:#66d9ef">void</span> RunnableMethod<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>Run(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>)
-{
-    (instance_<span style="color:#f92672">-&gt;*</span>method_)(<span style="color:#66d9ef">thread</span>);
-}
-<span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
-<span style="color:#66d9ef">bool</span> Thread<span style="color:#f92672">::</span>Run(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>), T <span style="color:#f92672">*</span>instance, <span style="color:#66d9ef">int</span> priority<span style="color:#75715e">/* = Thread::PRIORITY_NORMAL*/</span>)
-{
-    <span style="color:#66d9ef">if</span> (alive_)
-    {
-        <span style="color:#66d9ef">return</span> false;
-    }
-    <span style="color:#66d9ef">if</span> (runnable_ <span style="color:#f92672">!=</span> NULL)
-    {
-        <span style="color:#66d9ef">delete</span> runnable_;
-    }
-    runnable_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RunnableMethod<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>(method, instance);
-    alive_ <span style="color:#f92672">=</span> true;
-    interrupted_ <span style="color:#f92672">=</span> false;
-    pthread_attr_t attr;
-    pthread_attr_init(<span style="color:#f92672">&amp;</span>attr);
-    pthread_attr_setinheritsched(<span style="color:#f92672">&amp;</span>attr, PTHREAD_EXPLICIT_SCHED);
-<span style="color:#75715e">#ifndef MOCK_RUN
-</span><span style="color:#75715e"></span>    pthread_attr_setschedpolicy(<span style="color:#f92672">&amp;</span>attr, SCHED_FIFO);
-<span style="color:#75715e">#endif
-</span><span style="color:#75715e"></span>    sched_param param;
-    param.sched_priority <span style="color:#f92672">=</span> priority;
-    pthread_attr_setschedparam(<span style="color:#f92672">&amp;</span>attr, <span style="color:#f92672">&amp;</span>param);
-    <span style="color:#66d9ef">if</span> (pthread_create(<span style="color:#f92672">&amp;</span>thread_, <span style="color:#f92672">&amp;</span>attr, ThreadProc, <span style="color:#66d9ef">this</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#75715e">//LOG_FATAL(&#34;Thread&#34;, &#34;pthread_create failed&#34;);
-</span><span style="color:#75715e"></span>        alive_ <span style="color:#f92672">=</span> false;
-    }
-    pthread_attr_destroy(<span style="color:#f92672">&amp;</span>attr);
-    <span style="color:#66d9ef">int</span> policy;
-    <span style="color:#66d9ef">if</span> (pthread_getschedparam(thread_, <span style="color:#f92672">&amp;</span>policy, <span style="color:#f92672">&amp;</span>param) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
-    {
-        <span style="color:#75715e">//LOG_ERROR(&#34;Thread&#34;, &#34;pthread_getschedparam failed&#34;);
-</span><span style="color:#75715e"></span>    } <span style="color:#66d9ef">else</span> {
-       <span style="color:#75715e">// LOG_DEBUG(&#34;Thread&#34;, &#34;new thread:%ul;policy:%d;priority:%d&#34;, thread_, policy, param.sched_priority);
-</span><span style="color:#75715e"></span>    }
-    <span style="color:#66d9ef">return</span> alive_;
-}
-</code></pre></div><p>2.<strong>thread.cpp</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c++" data-lang="c++"><span style="color:#75715e">//thread.cpp
-</span><span style="color:#75715e"></span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;thread.h&#34;</span><span style="color:#75715e">
-</span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;signal.h&gt;</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span>Mutex<span style="color:#f92672">::</span>Mutex(<span style="color:#66d9ef">bool</span> init<span style="color:#75715e">/* = false*/</span>)
-    <span style="color:#f92672">:</span> initialized_(false)
-{
-    <span style="color:#66d9ef">if</span> (init)
-    {
-        Init();
-    }
-}
-Mutex<span style="color:#f92672">::~</span>Mutex()
-{
-    Destroy();
-}
-Runnable<span style="color:#f92672">::</span>Runnable()
-{
-}
-Runnable<span style="color:#f92672">::~</span>Runnable()
-{
-}
-Thread<span style="color:#f92672">::</span>Thread()
-    <span style="color:#f92672">:</span> interrupted_(false)
-    , alive_(false)
-    , thread_(<span style="color:#ae81ff">0</span>)
-    , runnable_(NULL)
-{
-}
-Thread<span style="color:#f92672">::~</span>Thread()
-{
-    Join();
-    <span style="color:#66d9ef">if</span> (runnable_ <span style="color:#f92672">!=</span> NULL)
-    {
-        <span style="color:#66d9ef">delete</span> runnable_;
-    }
-}
-<span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Kill()
-{
-    <span style="color:#66d9ef">if</span> (alive_)
-    {
-        pthread_kill(thread_, <span style="color:#ae81ff">0</span>);
-    }
-    alive_ <span style="color:#f92672">=</span> false;
-}
-<span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Join()
-{
-    <span style="color:#66d9ef">if</span> (alive_)
-    {
-        <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>result <span style="color:#f92672">=</span> NULL;
-        pthread_join(thread_, <span style="color:#f92672">&amp;</span>result);
-        pthread_detach(thread_);
-        thread_ <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
-    }
-    alive_ <span style="color:#f92672">=</span> false;
-}
-<span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Run()
-{
-    runnable_<span style="color:#f92672">-&gt;</span>Run(<span style="color:#66d9ef">this</span>);
-}
-<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>Thread<span style="color:#f92672">::</span>ThreadProc(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg)
-{
-    ((Thread <span style="color:#f92672">*</span>)arg)<span style="color:#f92672">-&gt;</span>Run();
-    <span style="color:#66d9ef">return</span> NULL;
-}
-</code></pre></div></article>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">//thread.h
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;pthread.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;unistd.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Mutex</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    Mutex(<span style="color:#66d9ef">bool</span> init <span style="color:#f92672">=</span> false);
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">~</span>Mutex();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">Init</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Destroy</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">TryLock</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">Lock</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">Unlock</span>();
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> initialized_;
+</span></span><span style="display:flex;"><span>    pthread_mutex_t	mutex_;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>Init()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>initialized_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        initialized_ <span style="color:#f92672">=</span> (pthread_mutex_init(<span style="color:#f92672">&amp;</span>mutex_, NULL) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> initialized_;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> Mutex<span style="color:#f92672">::</span>Destroy()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (initialized_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        pthread_mutex_destroy(<span style="color:#f92672">&amp;</span>mutex_);
+</span></span><span style="display:flex;"><span>        initialized_ <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>TryLock()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pthread_mutex_trylock</span>(<span style="color:#f92672">&amp;</span>mutex_) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//函数成功返回0，其他任何值都错误,非阻塞的LOCK方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>Lock()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pthread_mutex_lock</span>(<span style="color:#f92672">&amp;</span>mutex_) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;<span style="color:#75715e">//阻塞lock方式
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Mutex<span style="color:#f92672">::</span>Unlock()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">pthread_mutex_unlock</span>(<span style="color:#f92672">&amp;</span>mutex_) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MutexScopedLocker</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    MutexScopedLocker(Mutex <span style="color:#f92672">&amp;</span>mutex, <span style="color:#66d9ef">bool</span> initialLock <span style="color:#f92672">=</span> true) <span style="color:#f92672">:</span> mutex_(mutex), locked_(false)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (initialLock)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            Lock();
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">~</span>MutexScopedLocker()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Unlock();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Lock</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>locked_)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            mutex_.Lock();
+</span></span><span style="display:flex;"><span>            locked_ <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Unlock</span>()
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (locked_)
+</span></span><span style="display:flex;"><span>        {
+</span></span><span style="display:flex;"><span>            mutex_.Unlock();
+</span></span><span style="display:flex;"><span>            locked_ <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    Mutex	<span style="color:#f92672">&amp;</span>mutex_;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span>	locked_;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Runnable</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    Runnable();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Runnable();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>) <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Thread</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">enum</span>
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        PRIORITY_REALTIME <span style="color:#f92672">=</span> <span style="color:#ae81ff">49</span>,
+</span></span><span style="display:flex;"><span>        PRIORITY_HIGH <span style="color:#f92672">=</span> <span style="color:#ae81ff">30</span>,
+</span></span><span style="display:flex;"><span>        PRIORITY_NORMAL <span style="color:#f92672">=</span> <span style="color:#ae81ff">10</span>,
+</span></span><span style="display:flex;"><span>        PRIORITY_LOW <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>    };
+</span></span><span style="display:flex;"><span>    Thread();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">virtual</span> <span style="color:#f92672">~</span>Thread();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Sleep</span>(<span style="color:#66d9ef">int</span> milliseconds);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Interrupt</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Kill</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Join</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">IsInterrupted</span>() <span style="color:#66d9ef">const</span>;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> Run(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>), T <span style="color:#f92672">*</span>instance, <span style="color:#66d9ef">int</span> priority <span style="color:#f92672">=</span> Thread<span style="color:#f92672">::</span>PRIORITY_NORMAL);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> <span style="color:#a6e22e">IsAlive</span>() <span style="color:#66d9ef">const</span>;
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> interrupted_;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">bool</span> alive_;
+</span></span><span style="display:flex;"><span>    pthread_t thread_;
+</span></span><span style="display:flex;"><span>    Runnable <span style="color:#f92672">*</span>runnable_;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ThreadProc</span>(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg);
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Sleep(<span style="color:#66d9ef">int</span> milliseconds)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    usleep(milliseconds <span style="color:#f92672">*</span> <span style="color:#ae81ff">1000</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Interrupt()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    interrupted_ <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Thread<span style="color:#f92672">::</span>IsInterrupted() <span style="color:#66d9ef">const</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> interrupted_;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">inline</span> <span style="color:#66d9ef">bool</span> Thread<span style="color:#f92672">::</span>IsAlive() <span style="color:#66d9ef">const</span>
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> alive_;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">class</span> <span style="color:#a6e22e">RunnableMethod</span> <span style="color:#f92672">:</span> <span style="color:#66d9ef">public</span> Runnable
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    RunnableMethod(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span>), T <span style="color:#f92672">*</span>instance);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">Run</span>(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>);
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method_)(Thread <span style="color:#f92672">*</span>);
+</span></span><span style="display:flex;"><span>    T <span style="color:#f92672">*</span>instance_;
+</span></span><span style="display:flex;"><span>};
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span>RunnableMethod<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>RunnableMethod(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span>), T <span style="color:#f92672">*</span>instance)
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">:</span> method_(method)
+</span></span><span style="display:flex;"><span>    , instance_(instance)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> RunnableMethod<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;::</span>Run(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    (instance_<span style="color:#f92672">-&gt;*</span>method_)(<span style="color:#66d9ef">thread</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">template</span> <span style="color:#f92672">&lt;</span><span style="color:#66d9ef">typename</span> T<span style="color:#f92672">&gt;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">bool</span> Thread<span style="color:#f92672">::</span>Run(<span style="color:#66d9ef">void</span> (T<span style="color:#f92672">::*</span>method)(Thread <span style="color:#f92672">*</span><span style="color:#66d9ef">thread</span>), T <span style="color:#f92672">*</span>instance, <span style="color:#66d9ef">int</span> priority<span style="color:#75715e">/* = Thread::PRIORITY_NORMAL*/</span>)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (alive_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">return</span> false;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (runnable_ <span style="color:#f92672">!=</span> NULL)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">delete</span> runnable_;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    runnable_ <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> RunnableMethod<span style="color:#f92672">&lt;</span>T<span style="color:#f92672">&gt;</span>(method, instance);
+</span></span><span style="display:flex;"><span>    alive_ <span style="color:#f92672">=</span> true;
+</span></span><span style="display:flex;"><span>    interrupted_ <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>    pthread_attr_t attr;
+</span></span><span style="display:flex;"><span>    pthread_attr_init(<span style="color:#f92672">&amp;</span>attr);
+</span></span><span style="display:flex;"><span>    pthread_attr_setinheritsched(<span style="color:#f92672">&amp;</span>attr, PTHREAD_EXPLICIT_SCHED);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#ifndef MOCK_RUN
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    pthread_attr_setschedpolicy(<span style="color:#f92672">&amp;</span>attr, SCHED_FIFO);
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#endif
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    sched_param param;
+</span></span><span style="display:flex;"><span>    param.sched_priority <span style="color:#f92672">=</span> priority;
+</span></span><span style="display:flex;"><span>    pthread_attr_setschedparam(<span style="color:#f92672">&amp;</span>attr, <span style="color:#f92672">&amp;</span>param);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (pthread_create(<span style="color:#f92672">&amp;</span>thread_, <span style="color:#f92672">&amp;</span>attr, ThreadProc, <span style="color:#66d9ef">this</span>) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//LOG_FATAL(&#34;Thread&#34;, &#34;pthread_create failed&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        alive_ <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    pthread_attr_destroy(<span style="color:#f92672">&amp;</span>attr);
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">int</span> policy;
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (pthread_getschedparam(thread_, <span style="color:#f92672">&amp;</span>policy, <span style="color:#f92672">&amp;</span>param) <span style="color:#f92672">!=</span> <span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//LOG_ERROR(&#34;Thread&#34;, &#34;pthread_getschedparam failed&#34;);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    } <span style="color:#66d9ef">else</span> {
+</span></span><span style="display:flex;"><span>       <span style="color:#75715e">// LOG_DEBUG(&#34;Thread&#34;, &#34;new thread:%ul;policy:%d;priority:%d&#34;, thread_, policy, param.sched_priority);
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    }
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> alive_;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>2.<strong>thread.cpp</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span><span style="color:#75715e">//thread.cpp
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#75715e">#include</span> <span style="color:#75715e">&#34;thread.h&#34;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;signal.h&gt;</span><span style="color:#75715e">
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>Mutex<span style="color:#f92672">::</span>Mutex(<span style="color:#66d9ef">bool</span> init<span style="color:#75715e">/* = false*/</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">:</span> initialized_(false)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (init)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        Init();
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>Mutex<span style="color:#f92672">::~</span>Mutex()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Destroy();
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>Runnable<span style="color:#f92672">::</span>Runnable()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>Runnable<span style="color:#f92672">::~</span>Runnable()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>Thread<span style="color:#f92672">::</span>Thread()
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">:</span> interrupted_(false)
+</span></span><span style="display:flex;"><span>    , alive_(false)
+</span></span><span style="display:flex;"><span>    , thread_(<span style="color:#ae81ff">0</span>)
+</span></span><span style="display:flex;"><span>    , runnable_(NULL)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>Thread<span style="color:#f92672">::~</span>Thread()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    Join();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (runnable_ <span style="color:#f92672">!=</span> NULL)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">delete</span> runnable_;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Kill()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (alive_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        pthread_kill(thread_, <span style="color:#ae81ff">0</span>);
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    alive_ <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Join()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">if</span> (alive_)
+</span></span><span style="display:flex;"><span>    {
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>result <span style="color:#f92672">=</span> NULL;
+</span></span><span style="display:flex;"><span>        pthread_join(thread_, <span style="color:#f92672">&amp;</span>result);
+</span></span><span style="display:flex;"><span>        pthread_detach(thread_);
+</span></span><span style="display:flex;"><span>        thread_ <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    alive_ <span style="color:#f92672">=</span> false;
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> Thread<span style="color:#f92672">::</span>Run()
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    runnable_<span style="color:#f92672">-&gt;</span>Run(<span style="color:#66d9ef">this</span>);
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>Thread<span style="color:#f92672">::</span>ThreadProc(<span style="color:#66d9ef">void</span> <span style="color:#f92672">*</span>arg)
+</span></span><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    ((Thread <span style="color:#f92672">*</span>)arg)<span style="color:#f92672">-&gt;</span>Run();
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> NULL;
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div></article>
     </section>
 
     <footer class="ui attached segment dream-tags">
@@ -457,6 +457,8 @@ Thread<span style="color:#f92672">::~</span>Thread()
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/dns" title="dns">dns</a>
+    
       <a class="ui label" href="/tags/docker" title="docker">docker</a>
     
       <a class="ui label" href="/tags/golang" title="golang">golang</a>
@@ -504,6 +506,12 @@ Thread<span style="color:#f92672">::~</span>Thread()
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/dns/" class="item">dns查询原理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -764,7 +772,7 @@ Thread<span style="color:#f92672">::~</span>Thread()
 
   <section class="ui bottom attached center aligned segment">
       
-      <p>© 2017 - 2021 Hanamichi的博客</p>
+      <p>© 2017 - 2023 Hanamichi的博客</p>
       
       <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
   </section>
@@ -863,7 +871,7 @@ Thread<span style="color:#f92672">::~</span>Thread()
 <p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
 <p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
 <p>我的<strong>微信赞赏码</strong>：</p>
-<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+<img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" />
         </div>
       </article>
     </section>

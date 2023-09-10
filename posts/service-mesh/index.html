@@ -20,7 +20,7 @@ service mesh 初探
 
 
 
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.101.0" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/service-mesh/" />
 
@@ -238,370 +238,370 @@ service mesh 初探
 <p><img src="/img/in-post/k8s-istio/envoymesh.png" alt="envoy"></p>
 <p>front-envoy容器监听本机80端口，根据请求的url分发到后端的service1和service2，service1和service2容器中除service自身进程外，也有一个envoy进程。</p>
 <p>测试envoy的路由能力:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
-* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-*   Trying 192.168.234.185...
-* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-&gt; GET /service/1 HTTP/1.1
-&gt; User-Agent: curl/7.29.0
-&gt; Host: 192.168.234.185:8000
-&gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
-&lt; content-length: <span style="color:#ae81ff">89</span>
-&lt; server: envoy
-&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 02:57:47 GMT
-&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">6</span>
-&lt; 
-Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: b23dda0a4e84 resolvedhostname: 172.18.0.3
-* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/2</span>
-* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-*   Trying 192.168.234.185...
-* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-&gt; GET /service/2 HTTP/1.1
-&gt; User-Agent: curl/7.29.0
-&gt; Host: 192.168.234.185:8000
-&gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
-&lt; content-length: <span style="color:#ae81ff">89</span>
-&lt; server: envoy
-&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 02:58:27 GMT
-&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">4</span>
-&lt; 
-Hello from behind Envoy <span style="color:#f92672">(</span>service 2<span style="color:#f92672">)</span>! hostname: 4c15ee182dcf resolvedhostname: 172.18.0.4
-* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
-</code></pre></div><p>扩展服务1的个数为3，测试envoy的负载均衡功能:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
+</span></span><span style="display:flex;"><span>* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>*   Trying 192.168.234.185...
+</span></span><span style="display:flex;"><span>* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>&gt; GET /service/1 HTTP/1.1
+</span></span><span style="display:flex;"><span>&gt; User-Agent: curl/7.29.0
+</span></span><span style="display:flex;"><span>&gt; Host: 192.168.234.185:8000
+</span></span><span style="display:flex;"><span>&gt; Accept: */*
+</span></span><span style="display:flex;"><span>&gt; 
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>&lt; content-length: <span style="color:#ae81ff">89</span>
+</span></span><span style="display:flex;"><span>&lt; server: envoy
+</span></span><span style="display:flex;"><span>&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 02:57:47 GMT
+</span></span><span style="display:flex;"><span>&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: b23dda0a4e84 resolvedhostname: 172.18.0.3
+</span></span><span style="display:flex;"><span>* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/2</span>
+</span></span><span style="display:flex;"><span>* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>*   Trying 192.168.234.185...
+</span></span><span style="display:flex;"><span>* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>&gt; GET /service/2 HTTP/1.1
+</span></span><span style="display:flex;"><span>&gt; User-Agent: curl/7.29.0
+</span></span><span style="display:flex;"><span>&gt; Host: 192.168.234.185:8000
+</span></span><span style="display:flex;"><span>&gt; Accept: */*
+</span></span><span style="display:flex;"><span>&gt; 
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>&lt; content-length: <span style="color:#ae81ff">89</span>
+</span></span><span style="display:flex;"><span>&lt; server: envoy
+</span></span><span style="display:flex;"><span>&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 02:58:27 GMT
+</span></span><span style="display:flex;"><span>&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>Hello from behind Envoy <span style="color:#f92672">(</span>service 2<span style="color:#f92672">)</span>! hostname: 4c15ee182dcf resolvedhostname: 172.18.0.4
+</span></span><span style="display:flex;"><span>* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
+</span></span></code></pre></div><p>扩展服务1的个数为3，测试envoy的负载均衡功能:</p>
 <p><code>docker-compose scale service1=3</code></p>
 <p>多次向 service1 发送请求，前端 envoy 将通过循环轮询三台 service1 机器来负载均衡请求：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
-* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-*   Trying 192.168.234.185...
-* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-&gt; GET /service/1 HTTP/1.1
-&gt; User-Agent: curl/7.29.0
-&gt; Host: 192.168.234.185:8000
-&gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
-&lt; content-length: <span style="color:#ae81ff">89</span>
-&lt; server: envoy
-&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:00:58 GMT
-&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">4</span>
-&lt; 
-Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: c1cb6c31f7f4 resolvedhostname: 172.18.0.6
-* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
-<span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
-* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-*   Trying 192.168.234.185...
-* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-&gt; GET /service/1 HTTP/1.1
-&gt; User-Agent: curl/7.29.0
-&gt; Host: 192.168.234.185:8000
-&gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
-&lt; content-length: <span style="color:#ae81ff">89</span>
-&lt; server: envoy
-&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:01:00 GMT
-&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">5</span>
-&lt; 
-Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: aac59ca26f25 resolvedhostname: 172.18.0.5
-* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
-<span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
-* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-*   Trying 192.168.234.185...
-* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-&gt; GET /service/1 HTTP/1.1
-&gt; User-Agent: curl/7.29.0
-&gt; Host: 192.168.234.185:8000
-&gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
-&lt; content-length: <span style="color:#ae81ff">89</span>
-&lt; server: envoy
-&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:01:01 GMT
-&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">2</span>
-&lt; 
-Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: b23dda0a4e84 resolvedhostname: 172.18.0.3
-* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
-<span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
-* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-*   Trying 192.168.234.185...
-* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
-&gt; GET /service/1 HTTP/1.1
-&gt; User-Agent: curl/7.29.0
-&gt; Host: 192.168.234.185:8000
-&gt; Accept: */*
-&gt; 
-&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
-&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
-&lt; content-length: <span style="color:#ae81ff">89</span>
-&lt; server: envoy
-&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:01:04 GMT
-&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">1</span>
-&lt; 
-Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: c1cb6c31f7f4 resolvedhostname: 172.18.0.6
-* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
-</code></pre></div><p>获取监测信息和服务信息:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
+</span></span><span style="display:flex;"><span>* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>*   Trying 192.168.234.185...
+</span></span><span style="display:flex;"><span>* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>&gt; GET /service/1 HTTP/1.1
+</span></span><span style="display:flex;"><span>&gt; User-Agent: curl/7.29.0
+</span></span><span style="display:flex;"><span>&gt; Host: 192.168.234.185:8000
+</span></span><span style="display:flex;"><span>&gt; Accept: */*
+</span></span><span style="display:flex;"><span>&gt; 
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>&lt; content-length: <span style="color:#ae81ff">89</span>
+</span></span><span style="display:flex;"><span>&lt; server: envoy
+</span></span><span style="display:flex;"><span>&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:00:58 GMT
+</span></span><span style="display:flex;"><span>&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: c1cb6c31f7f4 resolvedhostname: 172.18.0.6
+</span></span><span style="display:flex;"><span>* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
+</span></span><span style="display:flex;"><span>* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>*   Trying 192.168.234.185...
+</span></span><span style="display:flex;"><span>* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>&gt; GET /service/1 HTTP/1.1
+</span></span><span style="display:flex;"><span>&gt; User-Agent: curl/7.29.0
+</span></span><span style="display:flex;"><span>&gt; Host: 192.168.234.185:8000
+</span></span><span style="display:flex;"><span>&gt; Accept: */*
+</span></span><span style="display:flex;"><span>&gt; 
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>&lt; content-length: <span style="color:#ae81ff">89</span>
+</span></span><span style="display:flex;"><span>&lt; server: envoy
+</span></span><span style="display:flex;"><span>&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:01:00 GMT
+</span></span><span style="display:flex;"><span>&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: aac59ca26f25 resolvedhostname: 172.18.0.5
+</span></span><span style="display:flex;"><span>* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
+</span></span><span style="display:flex;"><span>* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>*   Trying 192.168.234.185...
+</span></span><span style="display:flex;"><span>* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>&gt; GET /service/1 HTTP/1.1
+</span></span><span style="display:flex;"><span>&gt; User-Agent: curl/7.29.0
+</span></span><span style="display:flex;"><span>&gt; Host: 192.168.234.185:8000
+</span></span><span style="display:flex;"><span>&gt; Accept: */*
+</span></span><span style="display:flex;"><span>&gt; 
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>&lt; content-length: <span style="color:#ae81ff">89</span>
+</span></span><span style="display:flex;"><span>&lt; server: envoy
+</span></span><span style="display:flex;"><span>&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:01:01 GMT
+</span></span><span style="display:flex;"><span>&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: b23dda0a4e84 resolvedhostname: 172.18.0.3
+</span></span><span style="display:flex;"><span>* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost front-proxy<span style="color:#f92672">]</span><span style="color:#75715e"># curl -v 192.168.234.185:8000/service/1</span>
+</span></span><span style="display:flex;"><span>* About to connect<span style="color:#f92672">()</span> to 192.168.234.185 port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>*   Trying 192.168.234.185...
+</span></span><span style="display:flex;"><span>* Connected to 192.168.234.185 <span style="color:#f92672">(</span>192.168.234.185<span style="color:#f92672">)</span> port <span style="color:#ae81ff">8000</span> <span style="color:#f92672">(</span><span style="color:#75715e">#0)</span>
+</span></span><span style="display:flex;"><span>&gt; GET /service/1 HTTP/1.1
+</span></span><span style="display:flex;"><span>&gt; User-Agent: curl/7.29.0
+</span></span><span style="display:flex;"><span>&gt; Host: 192.168.234.185:8000
+</span></span><span style="display:flex;"><span>&gt; Accept: */*
+</span></span><span style="display:flex;"><span>&gt; 
+</span></span><span style="display:flex;"><span>&lt; HTTP/1.1 <span style="color:#ae81ff">200</span> OK
+</span></span><span style="display:flex;"><span>&lt; content-type: text/html; charset<span style="color:#f92672">=</span>utf-8
+</span></span><span style="display:flex;"><span>&lt; content-length: <span style="color:#ae81ff">89</span>
+</span></span><span style="display:flex;"><span>&lt; server: envoy
+</span></span><span style="display:flex;"><span>&lt; date: Fri, <span style="color:#ae81ff">01</span> Mar <span style="color:#ae81ff">2019</span> 03:01:04 GMT
+</span></span><span style="display:flex;"><span>&lt; x-envoy-upstream-service-time: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>&lt; 
+</span></span><span style="display:flex;"><span>Hello from behind Envoy <span style="color:#f92672">(</span>service 1<span style="color:#f92672">)</span>! hostname: c1cb6c31f7f4 resolvedhostname: 172.18.0.6
+</span></span><span style="display:flex;"><span>* Connection <span style="color:#75715e">#0 to host 192.168.234.185 left intact</span>
+</span></span></code></pre></div><p>获取监测信息和服务信息:</p>
 <p><code>docker-compose exec front-envoy /bin/bash</code></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">root@c08407f9ebea:/# curl localhost:8001/server_info
-<span style="color:#f92672">{</span>
- <span style="color:#e6db74">&#34;version&#34;</span>: <span style="color:#e6db74">&#34;9612555c2e8171901b0c04a51af0030b11178116/1.10.0-dev/Clean/RELEASE/BoringSSL&#34;</span>,
- <span style="color:#e6db74">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;LIVE&#34;</span>,
- <span style="color:#e6db74">&#34;command_line_options&#34;</span>: <span style="color:#f92672">{</span>
-  <span style="color:#e6db74">&#34;base_id&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
-  <span style="color:#e6db74">&#34;concurrency&#34;</span>: 4,
-  <span style="color:#e6db74">&#34;config_path&#34;</span>: <span style="color:#e6db74">&#34;/etc/front-envoy.yaml&#34;</span>,
-  <span style="color:#e6db74">&#34;config_yaml&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
-  <span style="color:#e6db74">&#34;allow_unknown_fields&#34;</span>: false,
-  <span style="color:#e6db74">&#34;admin_address_path&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
-  <span style="color:#e6db74">&#34;local_address_ip_version&#34;</span>: <span style="color:#e6db74">&#34;v4&#34;</span>,
-  <span style="color:#e6db74">&#34;log_level&#34;</span>: <span style="color:#e6db74">&#34;info&#34;</span>,
-  <span style="color:#e6db74">&#34;component_log_level&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
-  <span style="color:#e6db74">&#34;log_format&#34;</span>: <span style="color:#e6db74">&#34;[%Y-%m-%d %T.%e][%t][%l][%n] %v&#34;</span>,
-  <span style="color:#e6db74">&#34;log_path&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
-  <span style="color:#e6db74">&#34;hot_restart_version&#34;</span>: false,
-  <span style="color:#e6db74">&#34;service_cluster&#34;</span>: <span style="color:#e6db74">&#34;front-proxy&#34;</span>,
-  <span style="color:#e6db74">&#34;service_node&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
-  <span style="color:#e6db74">&#34;service_zone&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
-  <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;Serve&#34;</span>,
-  <span style="color:#e6db74">&#34;max_stats&#34;</span>: <span style="color:#e6db74">&#34;16384&#34;</span>,
-  <span style="color:#e6db74">&#34;max_obj_name_len&#34;</span>: <span style="color:#e6db74">&#34;60&#34;</span>,
-  <span style="color:#e6db74">&#34;disable_hot_restart&#34;</span>: false,
-  <span style="color:#e6db74">&#34;enable_mutex_tracing&#34;</span>: false,
-  <span style="color:#e6db74">&#34;restart_epoch&#34;</span>: 0,
-  <span style="color:#e6db74">&#34;file_flush_interval&#34;</span>: <span style="color:#e6db74">&#34;10s&#34;</span>,
-  <span style="color:#e6db74">&#34;drain_time&#34;</span>: <span style="color:#e6db74">&#34;600s&#34;</span>,
-  <span style="color:#e6db74">&#34;parent_shutdown_time&#34;</span>: <span style="color:#e6db74">&#34;900s&#34;</span>
- <span style="color:#f92672">}</span>,
- <span style="color:#e6db74">&#34;uptime_current_epoch&#34;</span>: <span style="color:#e6db74">&#34;3870s&#34;</span>,
- <span style="color:#e6db74">&#34;uptime_all_epochs&#34;</span>: <span style="color:#e6db74">&#34;3870s&#34;</span>
-<span style="color:#f92672">}</span>
-
-root@c08407f9ebea:/# curl localhost:8001/stats
-access_log_file.flushed_by_timer: <span style="color:#ae81ff">274</span>
-access_log_file.reopen_failed: <span style="color:#ae81ff">0</span>
-access_log_file.write_buffered: <span style="color:#ae81ff">4</span>
-access_log_file.write_completed: <span style="color:#ae81ff">4</span>
-access_log_file.write_total_buffered: <span style="color:#ae81ff">0</span>
-cluster.service1.bind_errors: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.default.cx_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.default.rq_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.default.rq_pending_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.default.rq_retry_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.high.cx_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.high.rq_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.high.rq_pending_open: <span style="color:#ae81ff">0</span>
-cluster.service1.circuit_breakers.high.rq_retry_open: <span style="color:#ae81ff">0</span>
-cluster.service1.external.upstream_rq_200: <span style="color:#ae81ff">15</span>
-cluster.service1.external.upstream_rq_2xx: <span style="color:#ae81ff">15</span>
-cluster.service1.external.upstream_rq_completed: <span style="color:#ae81ff">15</span>
-cluster.service1.http2.header_overflow: <span style="color:#ae81ff">0</span>
-cluster.service1.http2.headers_cb_no_stream: <span style="color:#ae81ff">0</span>
-cluster.service1.http2.rx_messaging_error: <span style="color:#ae81ff">0</span>
-cluster.service1.http2.rx_reset: <span style="color:#ae81ff">0</span>
-cluster.service1.http2.too_many_header_frames: <span style="color:#ae81ff">0</span>
-cluster.service1.http2.trailers: <span style="color:#ae81ff">0</span>
-cluster.service1.http2.tx_reset: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_healthy_panic: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_local_cluster_not_ok: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_recalculate_zone_structures: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_subsets_active: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_subsets_created: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_subsets_fallback: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_subsets_removed: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_subsets_selected: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_zone_cluster_too_small: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_zone_no_capacity_left: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_zone_number_differs: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_zone_routing_all_directly: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_zone_routing_cross_zone: <span style="color:#ae81ff">0</span>
-cluster.service1.lb_zone_routing_sampled: <span style="color:#ae81ff">0</span>
-cluster.service1.max_host_weight: <span style="color:#ae81ff">1</span>
-cluster.service1.membership_change: <span style="color:#ae81ff">2</span>
-cluster.service1.membership_degraded: <span style="color:#ae81ff">0</span>
-cluster.service1.membership_healthy: <span style="color:#ae81ff">3</span>
-cluster.service1.membership_total: <span style="color:#ae81ff">3</span>
-cluster.service1.original_dst_host_invalid: <span style="color:#ae81ff">0</span>
-cluster.service1.retry_or_shadow_abandoned: <span style="color:#ae81ff">0</span>
-cluster.service1.update_attempt: <span style="color:#ae81ff">783</span>
-cluster.service1.update_empty: <span style="color:#ae81ff">0</span>
-cluster.service1.update_failure: <span style="color:#ae81ff">0</span>
-cluster.service1.update_no_rebuild: <span style="color:#ae81ff">781</span>
-cluster.service1.update_success: <span style="color:#ae81ff">783</span>
-cluster.service1.upstream_cx_active: <span style="color:#ae81ff">8</span>
-cluster.service1.upstream_cx_close_notify: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_connect_attempts_exceeded: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_connect_fail: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_connect_timeout: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_destroy: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_destroy_local: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_destroy_local_with_active_rq: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_destroy_remote: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_destroy_remote_with_active_rq: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_destroy_with_active_rq: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_http1_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_http2_total: <span style="color:#ae81ff">8</span>
-cluster.service1.upstream_cx_idle_timeout: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_max_requests: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_none_healthy: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_overflow: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_protocol_error: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_rx_bytes_buffered: <span style="color:#ae81ff">1396</span>
-cluster.service1.upstream_cx_rx_bytes_total: <span style="color:#ae81ff">2936</span>
-cluster.service1.upstream_cx_total: <span style="color:#ae81ff">8</span>
-cluster.service1.upstream_cx_tx_bytes_buffered: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_cx_tx_bytes_total: <span style="color:#ae81ff">2044</span>
-cluster.service1.upstream_flow_control_backed_up_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_flow_control_drained_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_flow_control_paused_reading_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_flow_control_resumed_reading_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_internal_redirect_failed_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_internal_redirect_succeeded_total: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_200: <span style="color:#ae81ff">15</span>
-cluster.service1.upstream_rq_2xx: <span style="color:#ae81ff">15</span>
-cluster.service1.upstream_rq_active: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_cancelled: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_completed: <span style="color:#ae81ff">15</span>
-cluster.service1.upstream_rq_maintenance_mode: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_pending_active: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_pending_failure_eject: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_pending_overflow: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_pending_total: <span style="color:#ae81ff">8</span>
-cluster.service1.upstream_rq_per_try_timeout: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_retry: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_retry_overflow: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_retry_success: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_rx_reset: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_timeout: <span style="color:#ae81ff">0</span>
-cluster.service1.upstream_rq_total: <span style="color:#ae81ff">15</span>
-cluster.service1.upstream_rq_tx_reset: <span style="color:#ae81ff">0</span>
-cluster.service1.version: <span style="color:#ae81ff">0</span>
-cluster.service2.bind_errors: <span style="color:#ae81ff">0</span>
-.....
-.....
-</code></pre></div><p>以下是envoy-front服务的envoy配置和service1的服务配置:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">static_resources</span>:
-  <span style="color:#f92672">listeners</span>:
-  - <span style="color:#f92672">address</span>:
-      <span style="color:#f92672">socket_address</span>:
-        <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
-        <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
-    <span style="color:#f92672">filter_chains</span>:
-    - <span style="color:#f92672">filters</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.http_connection_manager</span>
-        <span style="color:#f92672">typed_config</span>:
-          <span style="color:#f92672">&#34;@type&#34;: </span><span style="color:#ae81ff">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
-          <span style="color:#f92672">codec_type</span>: <span style="color:#ae81ff">auto</span>
-          <span style="color:#f92672">stat_prefix</span>: <span style="color:#ae81ff">ingress_http</span>
-          <span style="color:#f92672">route_config</span>:
-            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local_route</span>
-            <span style="color:#f92672">virtual_hosts</span>:
-            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">backend</span>
-              <span style="color:#f92672">domains</span>:
-              - <span style="color:#e6db74">&#34;*&#34;</span>
-              <span style="color:#f92672">routes</span>:
-              - <span style="color:#f92672">match</span>:
-                  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;/service/1&#34;</span>
-                <span style="color:#f92672">route</span>:
-                  <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">service1</span>
-              - <span style="color:#f92672">match</span>:
-                  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;/service/2&#34;</span>
-                <span style="color:#f92672">route</span>:
-                  <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">service2</span>
-          <span style="color:#f92672">http_filters</span>:
-          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.router</span>
-            <span style="color:#f92672">typed_config</span>: {}
-  <span style="color:#f92672">clusters</span>:
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">service1</span>
-    <span style="color:#f92672">connect_timeout</span>: <span style="color:#ae81ff">0.</span><span style="color:#ae81ff">25s</span>
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">strict_dns</span>
-    <span style="color:#f92672">lb_policy</span>: <span style="color:#ae81ff">round_robin</span>
-    <span style="color:#f92672">http2_protocol_options</span>: {}
-    <span style="color:#f92672">load_assignment</span>:
-      <span style="color:#f92672">cluster_name</span>: <span style="color:#ae81ff">service1</span>
-      <span style="color:#f92672">endpoints</span>:
-      - <span style="color:#f92672">lb_endpoints</span>:
-        - <span style="color:#f92672">endpoint</span>:
-            <span style="color:#f92672">address</span>:
-              <span style="color:#f92672">socket_address</span>:
-                <span style="color:#f92672">address</span>: <span style="color:#ae81ff">service1</span>
-                <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">service2</span>
-    <span style="color:#f92672">connect_timeout</span>: <span style="color:#ae81ff">0.</span><span style="color:#ae81ff">25s</span>
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">strict_dns</span>
-    <span style="color:#f92672">lb_policy</span>: <span style="color:#ae81ff">round_robin</span>
-    <span style="color:#f92672">http2_protocol_options</span>: {}
-    <span style="color:#f92672">load_assignment</span>:
-      <span style="color:#f92672">cluster_name</span>: <span style="color:#ae81ff">service2</span>
-      <span style="color:#f92672">endpoints</span>:
-      - <span style="color:#f92672">lb_endpoints</span>:
-        - <span style="color:#f92672">endpoint</span>:
-            <span style="color:#f92672">address</span>:
-              <span style="color:#f92672">socket_address</span>:
-                <span style="color:#f92672">address</span>: <span style="color:#ae81ff">service2</span>
-                <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
-<span style="color:#f92672">admin</span>:
-  <span style="color:#f92672">access_log_path</span>: <span style="color:#e6db74">&#34;/dev/null&#34;</span>
-  <span style="color:#f92672">address</span>:
-    <span style="color:#f92672">socket_address</span>:
-      <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
-      <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">8001</span>
-</code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">static_resources</span>:
-  <span style="color:#f92672">listeners</span>:
-  - <span style="color:#f92672">address</span>:
-      <span style="color:#f92672">socket_address</span>:
-        <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
-        <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
-    <span style="color:#f92672">filter_chains</span>:
-    - <span style="color:#f92672">filters</span>:
-      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.http_connection_manager</span>
-        <span style="color:#f92672">typed_config</span>:
-          <span style="color:#f92672">&#34;@type&#34;: </span><span style="color:#ae81ff">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
-          <span style="color:#f92672">codec_type</span>: <span style="color:#ae81ff">auto</span>
-          <span style="color:#f92672">stat_prefix</span>: <span style="color:#ae81ff">ingress_http</span>
-          <span style="color:#f92672">route_config</span>:
-            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local_route</span>
-            <span style="color:#f92672">virtual_hosts</span>:
-            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">service</span>
-              <span style="color:#f92672">domains</span>:
-              - <span style="color:#e6db74">&#34;*&#34;</span>
-              <span style="color:#f92672">routes</span>:
-              - <span style="color:#f92672">match</span>:
-                  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;/service&#34;</span>
-                <span style="color:#f92672">route</span>:
-                  <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">local_service</span>
-          <span style="color:#f92672">http_filters</span>:
-          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.router</span>
-            <span style="color:#f92672">typed_config</span>: {}
-  <span style="color:#f92672">clusters</span>:
-  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local_service</span>
-    <span style="color:#f92672">connect_timeout</span>: <span style="color:#ae81ff">0.</span><span style="color:#ae81ff">25s</span>
-    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">strict_dns</span>
-    <span style="color:#f92672">lb_policy</span>: <span style="color:#ae81ff">round_robin</span>
-    <span style="color:#f92672">load_assignment</span>:
-      <span style="color:#f92672">cluster_name</span>: <span style="color:#ae81ff">local_service</span>
-      <span style="color:#f92672">endpoints</span>:
-      - <span style="color:#f92672">lb_endpoints</span>:
-        - <span style="color:#f92672">endpoint</span>:
-            <span style="color:#f92672">address</span>:
-              <span style="color:#f92672">socket_address</span>:
-                <span style="color:#f92672">address</span>: <span style="color:#ae81ff">127.0.0.1</span>
-                <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">8080</span>
-<span style="color:#f92672">admin</span>:
-  <span style="color:#f92672">access_log_path</span>: <span style="color:#e6db74">&#34;/dev/null&#34;</span>
-  <span style="color:#f92672">address</span>:
-    <span style="color:#f92672">socket_address</span>:
-      <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
-      <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">8081</span>
-</code></pre></div><h3 id="动态配置">动态配置</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>root@c08407f9ebea:/# curl localhost:8001/server_info
+</span></span><span style="display:flex;"><span><span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#34;version&#34;</span>: <span style="color:#e6db74">&#34;9612555c2e8171901b0c04a51af0030b11178116/1.10.0-dev/Clean/RELEASE/BoringSSL&#34;</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#34;state&#34;</span>: <span style="color:#e6db74">&#34;LIVE&#34;</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#34;command_line_options&#34;</span>: <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;base_id&#34;</span>: <span style="color:#e6db74">&#34;0&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;concurrency&#34;</span>: 4,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;config_path&#34;</span>: <span style="color:#e6db74">&#34;/etc/front-envoy.yaml&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;config_yaml&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;allow_unknown_fields&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;admin_address_path&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;local_address_ip_version&#34;</span>: <span style="color:#e6db74">&#34;v4&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;log_level&#34;</span>: <span style="color:#e6db74">&#34;info&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;component_log_level&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;log_format&#34;</span>: <span style="color:#e6db74">&#34;[%Y-%m-%d %T.%e][%t][%l][%n] %v&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;log_path&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;hot_restart_version&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;service_cluster&#34;</span>: <span style="color:#e6db74">&#34;front-proxy&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;service_node&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;service_zone&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;mode&#34;</span>: <span style="color:#e6db74">&#34;Serve&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;max_stats&#34;</span>: <span style="color:#e6db74">&#34;16384&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;max_obj_name_len&#34;</span>: <span style="color:#e6db74">&#34;60&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;disable_hot_restart&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;enable_mutex_tracing&#34;</span>: false,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;restart_epoch&#34;</span>: 0,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;file_flush_interval&#34;</span>: <span style="color:#e6db74">&#34;10s&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;drain_time&#34;</span>: <span style="color:#e6db74">&#34;600s&#34;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#34;parent_shutdown_time&#34;</span>: <span style="color:#e6db74">&#34;900s&#34;</span>
+</span></span><span style="display:flex;"><span> <span style="color:#f92672">}</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#34;uptime_current_epoch&#34;</span>: <span style="color:#e6db74">&#34;3870s&#34;</span>,
+</span></span><span style="display:flex;"><span> <span style="color:#e6db74">&#34;uptime_all_epochs&#34;</span>: <span style="color:#e6db74">&#34;3870s&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>root@c08407f9ebea:/# curl localhost:8001/stats
+</span></span><span style="display:flex;"><span>access_log_file.flushed_by_timer: <span style="color:#ae81ff">274</span>
+</span></span><span style="display:flex;"><span>access_log_file.reopen_failed: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>access_log_file.write_buffered: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>access_log_file.write_completed: <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>access_log_file.write_total_buffered: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.bind_errors: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.default.cx_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.default.rq_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.default.rq_pending_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.default.rq_retry_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.high.cx_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.high.rq_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.high.rq_pending_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.circuit_breakers.high.rq_retry_open: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.external.upstream_rq_200: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.external.upstream_rq_2xx: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.external.upstream_rq_completed: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.header_overflow: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.headers_cb_no_stream: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.rx_messaging_error: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.rx_reset: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.too_many_header_frames: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.trailers: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.http2.tx_reset: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_healthy_panic: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_local_cluster_not_ok: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_recalculate_zone_structures: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_subsets_active: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_subsets_created: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_subsets_fallback: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_subsets_removed: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_subsets_selected: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_zone_cluster_too_small: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_zone_no_capacity_left: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_zone_number_differs: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_zone_routing_all_directly: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_zone_routing_cross_zone: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.lb_zone_routing_sampled: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.max_host_weight: <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>cluster.service1.membership_change: <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>cluster.service1.membership_degraded: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.membership_healthy: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>cluster.service1.membership_total: <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>cluster.service1.original_dst_host_invalid: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.retry_or_shadow_abandoned: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.update_attempt: <span style="color:#ae81ff">783</span>
+</span></span><span style="display:flex;"><span>cluster.service1.update_empty: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.update_failure: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.update_no_rebuild: <span style="color:#ae81ff">781</span>
+</span></span><span style="display:flex;"><span>cluster.service1.update_success: <span style="color:#ae81ff">783</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_active: <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_close_notify: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_connect_attempts_exceeded: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_connect_fail: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_connect_timeout: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_destroy: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_destroy_local: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_destroy_local_with_active_rq: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_destroy_remote: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_destroy_remote_with_active_rq: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_destroy_with_active_rq: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_http1_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_http2_total: <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_idle_timeout: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_max_requests: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_none_healthy: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_overflow: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_protocol_error: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_rx_bytes_buffered: <span style="color:#ae81ff">1396</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_rx_bytes_total: <span style="color:#ae81ff">2936</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_total: <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_tx_bytes_buffered: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_cx_tx_bytes_total: <span style="color:#ae81ff">2044</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_flow_control_backed_up_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_flow_control_drained_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_flow_control_paused_reading_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_flow_control_resumed_reading_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_internal_redirect_failed_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_internal_redirect_succeeded_total: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_200: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_2xx: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_active: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_cancelled: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_completed: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_maintenance_mode: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_pending_active: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_pending_failure_eject: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_pending_overflow: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_pending_total: <span style="color:#ae81ff">8</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_per_try_timeout: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_retry: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_retry_overflow: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_retry_success: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_rx_reset: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_timeout: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_total: <span style="color:#ae81ff">15</span>
+</span></span><span style="display:flex;"><span>cluster.service1.upstream_rq_tx_reset: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service1.version: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>cluster.service2.bind_errors: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>.....
+</span></span><span style="display:flex;"><span>.....
+</span></span></code></pre></div><p>以下是envoy-front服务的envoy配置和service1的服务配置:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">static_resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">listeners</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filter_chains</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">filters</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.http_connection_manager</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">typed_config</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;@type&#34;: </span><span style="color:#ae81ff">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">codec_type</span>: <span style="color:#ae81ff">auto</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">stat_prefix</span>: <span style="color:#ae81ff">ingress_http</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">route_config</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local_route</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">virtual_hosts</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">backend</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">domains</span>:
+</span></span><span style="display:flex;"><span>              - <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">routes</span>:
+</span></span><span style="display:flex;"><span>              - <span style="color:#f92672">match</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;/service/1&#34;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">route</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">service1</span>
+</span></span><span style="display:flex;"><span>              - <span style="color:#f92672">match</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;/service/2&#34;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">route</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">service2</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">http_filters</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.router</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">typed_config</span>: {}
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">clusters</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">service1</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">connect_timeout</span>: <span style="color:#ae81ff">0.</span><span style="color:#ae81ff">25s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">strict_dns</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">lb_policy</span>: <span style="color:#ae81ff">round_robin</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">http2_protocol_options</span>: {}
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">load_assignment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cluster_name</span>: <span style="color:#ae81ff">service1</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">endpoints</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">lb_endpoints</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">endpoint</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">address</span>: <span style="color:#ae81ff">service1</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">service2</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">connect_timeout</span>: <span style="color:#ae81ff">0.</span><span style="color:#ae81ff">25s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">strict_dns</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">lb_policy</span>: <span style="color:#ae81ff">round_robin</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">http2_protocol_options</span>: {}
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">load_assignment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cluster_name</span>: <span style="color:#ae81ff">service2</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">endpoints</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">lb_endpoints</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">endpoint</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">address</span>: <span style="color:#ae81ff">service2</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">admin</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">access_log_path</span>: <span style="color:#e6db74">&#34;/dev/null&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">8001</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">static_resources</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">listeners</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">80</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">filter_chains</span>:
+</span></span><span style="display:flex;"><span>    - <span style="color:#f92672">filters</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.http_connection_manager</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">typed_config</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">&#34;@type&#34;: </span><span style="color:#ae81ff">type.googleapis.com/envoy.config.filter.network.http_connection_manager.v2.HttpConnectionManager</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">codec_type</span>: <span style="color:#ae81ff">auto</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">stat_prefix</span>: <span style="color:#ae81ff">ingress_http</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">route_config</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local_route</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">virtual_hosts</span>:
+</span></span><span style="display:flex;"><span>            - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">service</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">domains</span>:
+</span></span><span style="display:flex;"><span>              - <span style="color:#e6db74">&#34;*&#34;</span>
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">routes</span>:
+</span></span><span style="display:flex;"><span>              - <span style="color:#f92672">match</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">prefix</span>: <span style="color:#e6db74">&#34;/service&#34;</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">route</span>:
+</span></span><span style="display:flex;"><span>                  <span style="color:#f92672">cluster</span>: <span style="color:#ae81ff">local_service</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">http_filters</span>:
+</span></span><span style="display:flex;"><span>          - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">envoy.router</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">typed_config</span>: {}
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">clusters</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">local_service</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">connect_timeout</span>: <span style="color:#ae81ff">0.</span><span style="color:#ae81ff">25s</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">type</span>: <span style="color:#ae81ff">strict_dns</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">lb_policy</span>: <span style="color:#ae81ff">round_robin</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">load_assignment</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">cluster_name</span>: <span style="color:#ae81ff">local_service</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">endpoints</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">lb_endpoints</span>:
+</span></span><span style="display:flex;"><span>        - <span style="color:#f92672">endpoint</span>:
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>              <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">address</span>: <span style="color:#ae81ff">127.0.0.1</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">8080</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">admin</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">access_log_path</span>: <span style="color:#e6db74">&#34;/dev/null&#34;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">address</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">socket_address</span>:
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">address</span>: <span style="color:#ae81ff">0.0.0.0</span>
+</span></span><span style="display:flex;"><span>      <span style="color:#f92672">port_value</span>: <span style="color:#ae81ff">8081</span>
+</span></span></code></pre></div><h3 id="动态配置">动态配置</h3>
 <p>以上的简单例子是envoy的静态配置，而envoy更强大的是使用xDS协议进行动态配置</p>
 <p>Envoy 提供了如下的 API：</p>
 <ul>
@@ -691,6 +691,8 @@ cluster.service2.bind_errors: <span style="color:#ae81ff">0</span>
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/dns" title="dns">dns</a>
+    
       <a class="ui label" href="/tags/docker" title="docker">docker</a>
     
       <a class="ui label" href="/tags/golang" title="golang">golang</a>
@@ -738,6 +740,12 @@ cluster.service2.bind_errors: <span style="color:#ae81ff">0</span>
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/dns/" class="item">dns查询原理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -998,7 +1006,7 @@ cluster.service2.bind_errors: <span style="color:#ae81ff">0</span>
 
   <section class="ui bottom attached center aligned segment">
       
-      <p>© 2017 - 2021 Hanamichi的博客</p>
+      <p>© 2017 - 2023 Hanamichi的博客</p>
       
       <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
   </section>
@@ -1097,7 +1105,7 @@ cluster.service2.bind_errors: <span style="color:#ae81ff">0</span>
 <p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
 <p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
 <p>我的<strong>微信赞赏码</strong>：</p>
-<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+<img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" />
         </div>
       </article>
     </section>

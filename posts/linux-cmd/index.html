@@ -20,7 +20,7 @@ linux常用命令记录
 
 
 
-<meta name="generator" content="Hugo 0.88.1" />
+<meta name="generator" content="Hugo 0.101.0" />
 
 <link rel="canonical" href="https://hanamichi.wiki/posts/linux-cmd/" />
 
@@ -169,66 +169,66 @@ sudo dmidecode -t bios           (BIOS)
 </code></pre><h2 id="centos相关">centos相关</h2>
 <h3 id="yum-相关">yum 相关</h3>
 <p>1 <strong>语法</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum <span style="color:#f92672">(</span>选项<span style="color:#f92672">)(</span>参数<span style="color:#f92672">)</span>
-</code></pre></div><p>2 <strong>选项</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-h：显示帮助信息； 
--y：对所有的提问都回答“yes”；
--c：指定配置文件； 
--q：安静模式； 
--v：详细模式； 
--d：设置调试等级（0-10）； 
--e：设置错误等级（0-10）； 
--R：设置yum处理一个命令的最大等待时间； 
--C：完全从缓存中运行，而不去下载或者更新任何头文件。
-</code></pre></div><p>3 <strong>参数</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">install：安装rpm软件包； 
-update：更新rpm软件包； 
-check-update：检查是否有可用的更新rpm软件包； 
-remove：删除指定的rpm软件包； 
-list：显示软件包的信息； 
-search：检查软件包的信息； 
-info：显示指定的rpm软件包的描述信息和概要信息； 
-clean：清理yum过期的缓存； 
-shell：进入yum的shell提示符； 
-resolvedep：显示rpm软件包的依赖关系； 
-localinstall：安装本地的rpm软件包； 
-localupdate：显示本地rpm软件包进行更新； 
-deplist：显示rpm软件包的所有依赖关系;
-whatprovides:查找软件所在的包和仓库
-</code></pre></div><p>4 <strong>实例</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum <span style="color:#f92672">(</span>选项<span style="color:#f92672">)(</span>参数<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>2 <strong>选项</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-h：显示帮助信息； 
+</span></span><span style="display:flex;"><span>-y：对所有的提问都回答“yes”；
+</span></span><span style="display:flex;"><span>-c：指定配置文件； 
+</span></span><span style="display:flex;"><span>-q：安静模式； 
+</span></span><span style="display:flex;"><span>-v：详细模式； 
+</span></span><span style="display:flex;"><span>-d：设置调试等级（0-10）； 
+</span></span><span style="display:flex;"><span>-e：设置错误等级（0-10）； 
+</span></span><span style="display:flex;"><span>-R：设置yum处理一个命令的最大等待时间； 
+</span></span><span style="display:flex;"><span>-C：完全从缓存中运行，而不去下载或者更新任何头文件。
+</span></span></code></pre></div><p>3 <strong>参数</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>install：安装rpm软件包； 
+</span></span><span style="display:flex;"><span>update：更新rpm软件包； 
+</span></span><span style="display:flex;"><span>check-update：检查是否有可用的更新rpm软件包； 
+</span></span><span style="display:flex;"><span>remove：删除指定的rpm软件包； 
+</span></span><span style="display:flex;"><span>list：显示软件包的信息； 
+</span></span><span style="display:flex;"><span>search：检查软件包的信息； 
+</span></span><span style="display:flex;"><span>info：显示指定的rpm软件包的描述信息和概要信息； 
+</span></span><span style="display:flex;"><span>clean：清理yum过期的缓存； 
+</span></span><span style="display:flex;"><span>shell：进入yum的shell提示符； 
+</span></span><span style="display:flex;"><span>resolvedep：显示rpm软件包的依赖关系； 
+</span></span><span style="display:flex;"><span>localinstall：安装本地的rpm软件包； 
+</span></span><span style="display:flex;"><span>localupdate：显示本地rpm软件包进行更新； 
+</span></span><span style="display:flex;"><span>deplist：显示rpm软件包的所有依赖关系;
+</span></span><span style="display:flex;"><span>whatprovides:查找软件所在的包和仓库
+</span></span></code></pre></div><p>4 <strong>实例</strong></p>
 <ul>
 <li>自动搜索最快镜像插件<code>yum install yum-fastestmirror</code></li>
 <li>安装yum图形窗口插件<code>yum install yumex</code></li>
 <li>查看可能批量安装的列表<code>yum grouplist</code></li>
 </ul>
 <p>5 <strong>清除缓存</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">yum clean packages <span style="color:#75715e">#清除缓存目录下的软件包 </span>
-yum clean headers <span style="color:#75715e">#清除缓存目录下的 headers </span>
-yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 headers</span>
-</code></pre></div><h3 id="rpm命令">rpm命令</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>yum clean packages <span style="color:#75715e">#清除缓存目录下的软件包 </span>
+</span></span><span style="display:flex;"><span>yum clean headers <span style="color:#75715e">#清除缓存目录下的 headers </span>
+</span></span><span style="display:flex;"><span>yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 headers</span>
+</span></span></code></pre></div><h3 id="rpm命令">rpm命令</h3>
 <p>1 <strong>语法</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm <span style="color:#f92672">(</span>选项<span style="color:#f92672">)(</span>参数<span style="color:#f92672">)</span>
-</code></pre></div><p>2 <strong>选项</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-a：查询所有套件；
--b&lt;完成阶段&gt;&lt;套件档&gt;+或-t &lt;完成阶段&gt;&lt;套件档&gt;+：设置包装套件的完成阶段，并指定套件档的文件名称； 
--c：只列出组态配置文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
--d：只列出文本文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
--e&lt;套件档&gt;或--erase&lt;套件档&gt;：删除指定的套件； 
--f&lt;文件&gt;+：查询拥有指定文件的套件； 
--h或--hash：套件安装时列出标记； 
--i：显示套件的相关信息；
--i&lt;套件档&gt;或--install&lt;套件档&gt;：安装指定的套件档； 
--l：显示套件的文件列表； 
--p&lt;套件档&gt;+：查询指定的RPM套件档； 
--q：使用询问模式，当遇到任何问题时，rpm指令会先询问用户； 
--R：显示套件的关联性信息； 
--s：显示文件状态，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
--U&lt;套件档&gt;或--upgrade&lt;套件档&gt;：升级指定的套件档； 
--v：显示指令执行过程； 
--vv：详细显示指令执行过程，便于排错。
-</code></pre></div><p>3 <strong>参数</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">软件包：指定要操纵的rpm软件包。
-</code></pre></div><p>4 <strong>实例</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rpm <span style="color:#f92672">(</span>选项<span style="color:#f92672">)(</span>参数<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p>2 <strong>选项</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>-a：查询所有套件；
+</span></span><span style="display:flex;"><span>-b&lt;完成阶段&gt;&lt;套件档&gt;+或-t &lt;完成阶段&gt;&lt;套件档&gt;+：设置包装套件的完成阶段，并指定套件档的文件名称； 
+</span></span><span style="display:flex;"><span>-c：只列出组态配置文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
+</span></span><span style="display:flex;"><span>-d：只列出文本文件，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
+</span></span><span style="display:flex;"><span>-e&lt;套件档&gt;或--erase&lt;套件档&gt;：删除指定的套件； 
+</span></span><span style="display:flex;"><span>-f&lt;文件&gt;+：查询拥有指定文件的套件； 
+</span></span><span style="display:flex;"><span>-h或--hash：套件安装时列出标记； 
+</span></span><span style="display:flex;"><span>-i：显示套件的相关信息；
+</span></span><span style="display:flex;"><span>-i&lt;套件档&gt;或--install&lt;套件档&gt;：安装指定的套件档； 
+</span></span><span style="display:flex;"><span>-l：显示套件的文件列表； 
+</span></span><span style="display:flex;"><span>-p&lt;套件档&gt;+：查询指定的RPM套件档； 
+</span></span><span style="display:flex;"><span>-q：使用询问模式，当遇到任何问题时，rpm指令会先询问用户； 
+</span></span><span style="display:flex;"><span>-R：显示套件的关联性信息； 
+</span></span><span style="display:flex;"><span>-s：显示文件状态，本参数需配合<span style="color:#e6db74">&#34;-l&#34;</span>参数使用； 
+</span></span><span style="display:flex;"><span>-U&lt;套件档&gt;或--upgrade&lt;套件档&gt;：升级指定的套件档； 
+</span></span><span style="display:flex;"><span>-v：显示指令执行过程； 
+</span></span><span style="display:flex;"><span>-vv：详细显示指令执行过程，便于排错。
+</span></span></code></pre></div><p>3 <strong>参数</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>软件包：指定要操纵的rpm软件包。
+</span></span></code></pre></div><p>4 <strong>实例</strong></p>
 <ul>
 <li>安装rpm包:<code>rpm -ivh your-package.rpm</code></li>
 <li>强制安装rpm包:<code>rpm -ivh --force your-pachage.rpm</code></li>
@@ -237,12 +237,12 @@ yum clean oldheaders <span style="color:#75715e">#清除缓存目录下旧的 he
 <li>卸载rpm包:<code>rpm -e 包名</code>包名含版本号等信息，不能有rpm后缀，使用<code>--nodeps</code>强制卸载</li>
 </ul>
 <p>5 <strong>不安装提取rpm包文件</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">rpm2cpio xxx.rpm | cpio -vi 
-rpm2cpio xxx.rpm | cpio -idmv 
-rpm2cpio xxx.rpm | cpio --extract --make-directories
-
-//参数i和extract相同，表示提取文件。v表示指示执行进程，d和make-directory相同，表示根据包中文件原来的路径建立目录，m表示保持文件的更新时间
-</code></pre></div><p>6 <strong>查看rpm包中有哪些文件</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>rpm2cpio xxx.rpm | cpio -vi 
+</span></span><span style="display:flex;"><span>rpm2cpio xxx.rpm | cpio -idmv 
+</span></span><span style="display:flex;"><span>rpm2cpio xxx.rpm | cpio --extract --make-directories
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>//参数i和extract相同，表示提取文件。v表示指示执行进程，d和make-directory相同，表示根据包中文件原来的路径建立目录，m表示保持文件的更新时间
+</span></span></code></pre></div><p>6 <strong>查看rpm包中有哪些文件</strong></p>
 <ul>
 <li>一个没有安装过的软件包，使用<code>rpm -qlp xxxx.rpm</code></li>
 <li>一个已经安装过的软件包，还可以使用<code>rpm -ql xxxxx.rpm</code></li>
@@ -267,32 +267,32 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 <ol>
 <li>
 <p>导入key</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpm --import https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+</span></span></code></pre></div></li>
 <li>
 <p>安装repo</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum install https://www.elrepo.org/elrepo-release-7.0-4.el7.elrepo.noarch.rpm
+</span></span></code></pre></div></li>
 <li>
 <p>查看可用的内核包(lt为稳定版，ml为最新版)</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*&#34;</span> --enablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;elrepo-kernel&#34;</span> list available
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum --disablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;*&#34;</span> --enablerepo<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;elrepo-kernel&#34;</span> list available
+</span></span></code></pre></div></li>
 <li>
 <p>安装最新版内核</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum --disablerepo<span style="color:#f92672">=</span><span style="color:#ae81ff">\*</span> --enablerepo<span style="color:#f92672">=</span>elrepo-kernel install  kernel-ml.x86_64
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>yum --disablerepo<span style="color:#f92672">=</span><span style="color:#ae81ff">\*</span> --enablerepo<span style="color:#f92672">=</span>elrepo-kernel install  kernel-ml.x86_64
+</span></span></code></pre></div></li>
 <li>
 <p>查看系统可用内核</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">awk -F<span style="color:#ae81ff">\&#39;</span> <span style="color:#e6db74">&#39;$1==&#34;menuentry &#34; {print i++ &#34; : &#34; $2}&#39;</span> /etc/grub2.cfg
-<span style="color:#75715e">#output..</span>
-<span style="color:#75715e">#0 : CentOS Linux (5.4.3-1.el7.elrepo.x86_64) 7 (Core)</span>
-<span style="color:#75715e">#1 : CentOS Linux (0-rescue-9871dd427bb842f8ae4396c60d6abed4) 7 (Core)</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>awk -F<span style="color:#ae81ff">\&#39;</span> <span style="color:#e6db74">&#39;$1==&#34;menuentry &#34; {print i++ &#34; : &#34; $2}&#39;</span> /etc/grub2.cfg
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#output..</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#0 : CentOS Linux (5.4.3-1.el7.elrepo.x86_64) 7 (Core)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#1 : CentOS Linux (0-rescue-9871dd427bb842f8ae4396c60d6abed4) 7 (Core)</span>
+</span></span></code></pre></div></li>
 <li>
 <p>设置最新的内核为默认版本</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">grub2-set-default <span style="color:#ae81ff">0</span>
-<span style="color:#75715e"># 0 为上一条命令输出的相应序号</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>grub2-set-default <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 0 为上一条命令输出的相应序号</span>
+</span></span></code></pre></div></li>
 </ol>
 <p>参考链接</p>
 <ul>
@@ -300,56 +300,56 @@ rpm2cpio xxx.rpm | cpio --extract --make-directories
 <li><a href="http://elrepo.org/tiki/tiki-index.php">http://elrepo.org/tiki/tiki-index.php</a></li>
 </ul>
 <h3 id="静态ip配置文件">静态ip配置文件</h3>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#f92672">[</span>root@localhost docker<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/sysconfig/network-scripts/ifcfg-ens33 </span>
-TYPE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Ethernet&#34;</span>
-PROXY_METHOD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>
-BROWSER_ONLY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
-BOOTPROTO<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;static&#34;</span>
-DEFROUTE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
-IPV4_FAILURE_FATAL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
-IPV6INIT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
-IPV6_AUTOCONF<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
-IPV6_DEFROUTE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
-IPV6_FAILURE_FATAL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
-IPV6_ADDR_GEN_MODE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stable-privacy&#34;</span>
-NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ens33&#34;</span>
-UUID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;eab6b1ea-2bc3-4832-8186-c8b8805a2ece&#34;</span>
-DEVICE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ens33&#34;</span>
-ONBOOT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
-IPADDR<span style="color:#f92672">=</span>192.168.200.100
-NETMASK<span style="color:#f92672">=</span>255.255.255.0
-GATEWAY<span style="color:#f92672">=</span>192.168.200.1
-DNS1<span style="color:#f92672">=</span>8.8.8.8
-</code></pre></div><h3 id="网桥配置">网桥配置</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#f92672">[</span>root@localhost docker<span style="color:#f92672">]</span><span style="color:#75715e"># cat /etc/sysconfig/network-scripts/ifcfg-ens33 </span>
+</span></span><span style="display:flex;"><span>TYPE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Ethernet&#34;</span>
+</span></span><span style="display:flex;"><span>PROXY_METHOD<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;none&#34;</span>
+</span></span><span style="display:flex;"><span>BROWSER_ONLY<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
+</span></span><span style="display:flex;"><span>BOOTPROTO<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;static&#34;</span>
+</span></span><span style="display:flex;"><span>DEFROUTE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span><span style="display:flex;"><span>IPV4_FAILURE_FATAL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
+</span></span><span style="display:flex;"><span>IPV6INIT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span><span style="display:flex;"><span>IPV6_AUTOCONF<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span><span style="display:flex;"><span>IPV6_DEFROUTE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span><span style="display:flex;"><span>IPV6_FAILURE_FATAL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;no&#34;</span>
+</span></span><span style="display:flex;"><span>IPV6_ADDR_GEN_MODE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;stable-privacy&#34;</span>
+</span></span><span style="display:flex;"><span>NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ens33&#34;</span>
+</span></span><span style="display:flex;"><span>UUID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;eab6b1ea-2bc3-4832-8186-c8b8805a2ece&#34;</span>
+</span></span><span style="display:flex;"><span>DEVICE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ens33&#34;</span>
+</span></span><span style="display:flex;"><span>ONBOOT<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;yes&#34;</span>
+</span></span><span style="display:flex;"><span>IPADDR<span style="color:#f92672">=</span>192.168.200.100
+</span></span><span style="display:flex;"><span>NETMASK<span style="color:#f92672">=</span>255.255.255.0
+</span></span><span style="display:flex;"><span>GATEWAY<span style="color:#f92672">=</span>192.168.200.1
+</span></span><span style="display:flex;"><span>DNS1<span style="color:#f92672">=</span>8.8.8.8
+</span></span></code></pre></div><h3 id="网桥配置">网桥配置</h3>
 <p>假定物理网卡为<strong>eth0</strong>，网桥为<strong>br0</strong></p>
 <p><code>vim /etc/sysconfig/network-scripts/ifcfg-eht0</code></p>
 <p>更改文件中的以下条目：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># NAME,DEVICE,UUID写成自己环境中的值</span>
-TYPE<span style="color:#f92672">=</span>Ethernet
-BOOTPROTO<span style="color:#f92672">=</span>none
-NAME<span style="color:#f92672">=</span>eth0
-UUID<span style="color:#f92672">=</span>XXXXXXXXXXX
-DEVICE<span style="color:#f92672">=</span>eth0
-ONBOOT<span style="color:#f92672">=</span>yes
-BRIDGE<span style="color:#f92672">=</span>br0
-</code></pre></div><p><code>vim /etc/sysconfig/network-scripts/ifcfg-br0 </code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># NAME,DEVICE,UUID写成自己环境中的值</span>
+</span></span><span style="display:flex;"><span>TYPE<span style="color:#f92672">=</span>Ethernet
+</span></span><span style="display:flex;"><span>BOOTPROTO<span style="color:#f92672">=</span>none
+</span></span><span style="display:flex;"><span>NAME<span style="color:#f92672">=</span>eth0
+</span></span><span style="display:flex;"><span>UUID<span style="color:#f92672">=</span>XXXXXXXXXXX
+</span></span><span style="display:flex;"><span>DEVICE<span style="color:#f92672">=</span>eth0
+</span></span><span style="display:flex;"><span>ONBOOT<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>BRIDGE<span style="color:#f92672">=</span>br0
+</span></span></code></pre></div><p><code>vim /etc/sysconfig/network-scripts/ifcfg-br0 </code></p>
 <p>文件内容如下：</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 更改相应ip，也可用dhcp</span>
-TYPE<span style="color:#f92672">=</span>Bridge
-DEVICE<span style="color:#f92672">=</span>br0
-BOOTPROTO<span style="color:#f92672">=</span>static
-ONBOOT<span style="color:#f92672">=</span>yes
-IPADDR<span style="color:#f92672">=</span>172.16.73.201
-NETMASK<span style="color:#f92672">=</span>255.255.0.0
-GATEWAY<span style="color:#f92672">=</span>172.16.0.1
-DNS1<span style="color:#f92672">=</span>202.103.24.68
-</code></pre></div><p><code>service network restart</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># 更改相应ip，也可用dhcp</span>
+</span></span><span style="display:flex;"><span>TYPE<span style="color:#f92672">=</span>Bridge
+</span></span><span style="display:flex;"><span>DEVICE<span style="color:#f92672">=</span>br0
+</span></span><span style="display:flex;"><span>BOOTPROTO<span style="color:#f92672">=</span>static
+</span></span><span style="display:flex;"><span>ONBOOT<span style="color:#f92672">=</span>yes
+</span></span><span style="display:flex;"><span>IPADDR<span style="color:#f92672">=</span>172.16.73.201
+</span></span><span style="display:flex;"><span>NETMASK<span style="color:#f92672">=</span>255.255.0.0
+</span></span><span style="display:flex;"><span>GATEWAY<span style="color:#f92672">=</span>172.16.0.1
+</span></span><span style="display:flex;"><span>DNS1<span style="color:#f92672">=</span>202.103.24.68
+</span></span></code></pre></div><p><code>service network restart</code></p>
 <p>禁用网络过滤</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#增加以下条目</span>
-net.bridge.bridge-nf-call-ip6tables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.bridge.bridge-nf-call-iptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
-</code></pre></div><p><code>sysctl -p /etc/sysctl.conf</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#增加以下条目</span>
+</span></span><span style="display:flex;"><span>net.bridge.bridge-nf-call-ip6tables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>net.bridge.bridge-nf-call-iptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+</span></span></code></pre></div><p><code>sysctl -p /etc/sysctl.conf</code></p>
 <p><strong>注意</strong>：更改网络接口文件前可先备份</p>
 <h3 id="docker配置">docker配置</h3>
 <p>在较新的docker版本中，有两种方式可以更改dockerd的配置:</p>
@@ -359,14 +359,14 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
 </ul>
 <p>⚠️： 以上两种方式不兼容，同一个配置在两种方式中都有定义，dockerd会启动报错</p>
 <p>daemon.json文件的样例:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
-    <span style="color:#f92672">&#34;exec-opts&#34;</span>: [<span style="color:#e6db74">&#34;native.cgroupdriver=systemd&#34;</span>],
-    <span style="color:#f92672">&#34;log-driver&#34;</span>: <span style="color:#e6db74">&#34;json-file&#34;</span>,
-    <span style="color:#f92672">&#34;log-opts&#34;</span>: { <span style="color:#f92672">&#34;max-size&#34;</span>: <span style="color:#e6db74">&#34;100m&#34;</span> },
-    <span style="color:#f92672">&#34;storage-driver&#34;</span>: <span style="color:#e6db74">&#34;overlay2&#34;</span>,
-    <span style="color:#f92672">&#34;storage-opts&#34;</span>: [ <span style="color:#e6db74">&#34;overlay2.override_kernel_check=true&#34;</span> ]
-}
-</code></pre></div><h3 id="参考链接">参考链接</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-json" data-lang="json"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;exec-opts&#34;</span>: [<span style="color:#e6db74">&#34;native.cgroupdriver=systemd&#34;</span>],
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;log-driver&#34;</span>: <span style="color:#e6db74">&#34;json-file&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;log-opts&#34;</span>: { <span style="color:#f92672">&#34;max-size&#34;</span>: <span style="color:#e6db74">&#34;100m&#34;</span> },
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;storage-driver&#34;</span>: <span style="color:#e6db74">&#34;overlay2&#34;</span>,
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">&#34;storage-opts&#34;</span>: [ <span style="color:#e6db74">&#34;overlay2.override_kernel_check=true&#34;</span> ]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><h3 id="参考链接">参考链接</h3>
 <ul>
 <li><a href="https://docs.docker.com/config/daemon/">Configure and trOubleshoot the docker daemon</a></li>
 </ul></article>
@@ -427,6 +427,8 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
     
       <a class="ui label" href="/tags/c&#43;&#43;" title="c&#43;&#43;">c&#43;&#43;</a>
     
+      <a class="ui label" href="/tags/dns" title="dns">dns</a>
+    
       <a class="ui label" href="/tags/docker" title="docker">docker</a>
     
       <a class="ui label" href="/tags/golang" title="golang">golang</a>
@@ -474,6 +476,12 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
         </div>
         <div class="content">
           <div class="ui list">
+          
+            <div class="item">
+              <div class="content">
+                <a href="https://hanamichi.wiki/posts/dns/" class="item">dns查询原理</a>
+              </div>
+            </div>
           
             <div class="item">
               <div class="content">
@@ -734,7 +742,7 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
 
   <section class="ui bottom attached center aligned segment">
       
-      <p>© 2017 - 2021 Hanamichi的博客</p>
+      <p>© 2017 - 2023 Hanamichi的博客</p>
       
       <p>Powered by <a href="https://gohugo.io/" target="_blank">Hugo</a> with theme <a href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</p>
   </section>
@@ -833,7 +841,7 @@ net.bridge.bridge-nf-call-arptables <span style="color:#f92672">=</span> <span s
 <p>如果你喜欢我的文章 or 我的项目，或者它们可以给你带来帮助。</p>
 <p>You can <a href="/posts/buy-me-a-coffee">buy me a coffee</a>. ~</p>
 <p>我的<strong>微信赞赏码</strong>：</p>
-<p><img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" /></p>
+<img class="ui image" src="/me/微信赞赏码.jpg" alt="wechat" />
         </div>
       </article>
     </section>
